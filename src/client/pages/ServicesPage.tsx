@@ -7,13 +7,8 @@ import { useFaqs } from "@/client/hooks/useFaqs";
 import { mapApiFaqToFaq } from "@/client/lib/mappers";
 
 export default function ServicesPage() {
-  const { data: apiFaqs, isPending, isError } = useFaqs();
-  // Falls back to the static FAQ_DATA (FaqSection's own default) while
-  // loading, on error, or once nothing published exists yet.
-  const faqs =
-    !isPending && !isError && apiFaqs && apiFaqs.length > 0
-      ? apiFaqs.map(mapApiFaqToFaq)
-      : undefined;
+  const { data: apiFaqs } = useFaqs();
+  const faqs = (apiFaqs ?? []).map(mapApiFaqToFaq);
 
   return (
     <div className="relative overflow-hidden">
@@ -30,7 +25,7 @@ export default function ServicesPage() {
         <ServicesHero />
         <ServiceGrid />
         <Process />
-        <FaqSection faqs={faqs} />
+        {faqs.length > 0 && <FaqSection faqs={faqs} />}
 
         <PanelCTA
           title="Not sure which one you need?"

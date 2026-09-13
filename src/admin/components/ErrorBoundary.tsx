@@ -15,12 +15,8 @@ interface ErrorBoundaryState {
 }
 
 /**
- * Catches render/lifecycle errors in the CMS and shows the real error to the
- * operator, since admin users are technical and benefit from enough detail to
- * self-diagnose or file a precise bug report.
- *
- * This does not catch errors from async code (fetch failures, event
- * handlers) — those already surface via ApiError + the toast system.
+ * Shows the real render error (admins are technical). Async and event-handler
+ * errors aren't caught here — they surface through ApiError and toasts.
  */
 export default class ErrorBoundary extends Component<
   ErrorBoundaryProps,

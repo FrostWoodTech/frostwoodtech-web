@@ -74,8 +74,14 @@ export default function PricingPage() {
   const [searchInput, setSearchInput] = useSearchParamState<string>("q", "");
   const search = useDebounce(searchInput);
   const [kind, setKind] = useSearchParamState<KindFilter>("kind", "");
-  const [serviceId, setServiceId] = useSearchParamState<string>("serviceId", "");
-  const [published, setPublished] = useSearchParamState<string>("published", "");
+  const [serviceId, setServiceId] = useSearchParamState<string>(
+    "serviceId",
+    "",
+  );
+  const [published, setPublished] = useSearchParamState<string>(
+    "published",
+    "",
+  );
   const [pageParam, setPageParam] = useSearchParamState<string>("page", "1");
   const page = Number(pageParam) || 1;
   const setPage = (updater: number | ((prev: number) => number)) => {
@@ -85,12 +91,13 @@ export default function PricingPage() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState<AdminPricingPlan | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<AdminPricingPlan | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminPricingPlan | null>(
+    null,
+  );
   const [publishingId, setPublishingId] = useState<string | null>(null);
 
   const listParams = {
-    // comboOnly/serviceId/tiersOnly are mutually exclusive — comboOnly wins over the other two,
-    // and a specific serviceId wins over the "any service's tiers" tiersOnly filter.
+    // Mutually exclusive: comboOnly wins, then serviceId, then tiersOnly.
     comboOnly: kind === "combo" ? true : undefined,
     serviceId: kind === "service" ? serviceId || undefined : undefined,
     tiersOnly: kind === "service" && !serviceId ? true : undefined,
@@ -132,7 +139,9 @@ export default function PricingPage() {
 
   function serviceName(id?: string): string {
     if (!id) return "Combo pack";
-    return services.find((service) => service.id === id)?.name ?? "Service tier";
+    return (
+      services.find((service) => service.id === id)?.name ?? "Service tier"
+    );
   }
 
   function openCreate() {
@@ -176,14 +185,7 @@ export default function PricingPage() {
     }
   }
 
-  /**
-   * Sends the whole page renumbered densely from the dropped order rather
-   * than just the two swapped rows, so the numbering stays contiguous
-   * however it started. Writes the reordered rows into the query cache
-   * immediately (before the request resolves) so dnd-kit's already-reordered
-   * drop position sticks instead of snapping back while the request is in
-   * flight, and rolls back to the pre-drag snapshot on failure.
-   */
+  /** Renumbers the whole page and writes it to the cache optimistically; rolls back on failure. */
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -200,14 +202,18 @@ export default function PricingPage() {
     }));
 
     const queryKey = pricingKeys.list(listParams);
-    const previous = queryClient.getQueryData<PagedResult<AdminPricingPlan>>(queryKey);
+    const previous =
+      queryClient.getQueryData<PagedResult<AdminPricingPlan>>(queryKey);
 
     queryClient.setQueryData<PagedResult<AdminPricingPlan> | undefined>(
       queryKey,
       (old) =>
         old && {
           ...old,
-          items: next.map((plan, at) => ({ ...plan, sortOrder: items[at].sortOrder })),
+          items: next.map((plan, at) => ({
+            ...plan,
+            sortOrder: items[at].sortOrder,
+          })),
         },
     );
 
@@ -263,7 +269,9 @@ export default function PricingPage() {
           label="Kind"
           options={KIND_OPTIONS}
           value={kind}
-          onChange={(event) => handleKindChange(event.target.value as KindFilter)}
+          onChange={(event) =>
+            handleKindChange(event.target.value as KindFilter)
+          }
           containerClassName="w-40"
         />
 
@@ -346,9 +354,12 @@ export default function PricingPage() {
         </DataTableShell>
       </Card>
 
-      <Pagination page={page} totalPages={totalPages} onChange={(next) => setPage(next)} />
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onChange={(next) => setPage(next)}
+      />
 
-      {/* Keyed so switching rows remounts the form with fresh defaults. */}
       {isFormOpen && (
         <PricingFormModal
           key={editing?.id ?? "new"}

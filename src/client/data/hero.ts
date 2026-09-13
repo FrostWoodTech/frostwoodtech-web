@@ -22,7 +22,7 @@ export const HERO_DATA: HeroData = {
     "Fixed-scope proposals · No retainers required · Ships in weeks, not quarters",
 } as const;
 
-/** Logo row under the hero. Replace the brackets with real client marks. */
+/** TODO: replace the placeholders with real client logos. */
 export const TRUSTED_BY: readonly string[] = [
   "[CLIENT 1]",
   "[CLIENT 2]",

@@ -114,7 +114,7 @@ export default function CurrenciesPage() {
       toast.success("Currency deleted.");
       setDeleteTarget(null);
     } catch (cause) {
-      // Surfaces the API's `currency_in_use` message, which names how many plans still price in it.
+      // Surfaces the API's `currency_in_use` message.
       toast.error(toErrorMessage(cause));
     }
   }
@@ -217,17 +217,26 @@ export default function CurrenciesPage() {
                           {item.effectiveRateFromUsd.toLocaleString()}
                           <Badge
                             variant="outline"
-                            tone={item.manualRateFromUsd !== undefined ? "brand" : "neutral"}
+                            tone={
+                              item.manualRateFromUsd !== undefined
+                                ? "brand"
+                                : "neutral"
+                            }
                             className="ml-2"
                           >
-                            {item.manualRateFromUsd !== undefined ? "Override" : "Live"}
+                            {item.manualRateFromUsd !== undefined
+                              ? "Override"
+                              : "Live"}
                           </Badge>
                         </>
                       ) : (
                         <Badge tone="warning">No rate yet</Badge>
                       )}
                     </TD>
-                    <TD variant="nowrap" className="tabular-nums text-text-secondary">
+                    <TD
+                      variant="nowrap"
+                      className="tabular-nums text-text-secondary"
+                    >
                       {item.liveRateFromUsd !== undefined
                         ? item.liveRateFromUsd.toLocaleString()
                         : "—"}
@@ -241,7 +250,9 @@ export default function CurrenciesPage() {
                       </div>
                     </TD>
                     <TD variant="nowrap">
-                      {item.liveRateFetchedAt ? formatDate(item.liveRateFetchedAt) : "—"}
+                      {item.liveRateFetchedAt
+                        ? formatDate(item.liveRateFetchedAt)
+                        : "—"}
                     </TD>
                     <TD>
                       <div className="flex items-center justify-end gap-1">
@@ -273,7 +284,6 @@ export default function CurrenciesPage() {
         onChange={(next) => setPage(next)}
       />
 
-      {/* Keyed so switching rows remounts the form with fresh defaults. */}
       {isFormOpen && (
         <CurrencyFormModal
           key={editing?.id ?? "new"}

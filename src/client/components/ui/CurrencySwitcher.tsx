@@ -5,18 +5,12 @@ interface CurrencySwitcherProps {
   readonly className?: string;
 }
 
-/**
- * Lets a visitor override the currency guessed from their locale.
- *
- * A native `<select>` rather than a custom dropdown: it is three options on a marketing header,
- * and the native control already handles keyboard, mobile and screen readers correctly.
- */
+/** Overrides the currency guessed from the visitor's locale. */
 export default function CurrencySwitcher({
   className = "",
 }: CurrencySwitcherProps) {
   const { currency, currencies, setCurrency } = useCurrency();
 
-  // Nothing to switch between until the list loads, or if the admin only has USD active.
   if (currencies.length < 2) return null;
 
   return (

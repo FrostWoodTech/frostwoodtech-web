@@ -12,10 +12,6 @@ const TEXT_CLASSES: Record<"sm" | "md", string> = {
   md: "text-[20px]",
 };
 
-/**
- * The frost mark: a six-point crystal with a forest-green core — the two
- * halves of the name in one glyph.
- */
 export default function Logo({ size = "md", className = "" }: LogoProps) {
   return (
     <Link

@@ -9,6 +9,7 @@ import {
   Mail,
   MessageSquareQuote,
   Newspaper,
+  Package,
   Tags,
   UserCheck,
   Users,
@@ -29,11 +30,7 @@ export interface NavGroup {
   readonly items: readonly NavItem[];
 }
 
-/**
- * Sidebar navigation, lifted out of `AdminLayout` so the layout file is
- * markup and the route list is data — and so `Topbar` can reuse it to label
- * breadcrumbs without importing the layout.
- */
+/** Sidebar navigation; also used by `Topbar` for breadcrumbs. */
 export const NAV_GROUPS: readonly NavGroup[] = [
   {
     label: "Overview",
@@ -70,6 +67,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         end: false,
       },
       { to: "/admin/articles", label: "Articles", icon: Newspaper, end: false },
+      { to: "/admin/products", label: "Products", icon: Package, end: false },
       { to: "/admin/tags", label: "Tags", icon: Tags, end: false },
       { to: "/admin/services", label: "Services", icon: Wrench, end: false },
       { to: "/admin/pricing", label: "Pricing", icon: CreditCard, end: false },
@@ -108,15 +106,13 @@ export const NAV_GROUPS: readonly NavGroup[] = [
   },
 ];
 
-/**
- * Path segment → human label, for the topbar breadcrumbs. Segments absent
- * here (an id, say) fall back to the raw segment.
- */
+/** Path segment → breadcrumb label. */
 export const ROUTE_LABELS: Readonly<Record<string, string>> = {
   admin: "Dashboard",
   users: "Users",
   approvals: "Approvals",
   projects: "Projects",
+  products: "Products",
   articles: "Articles",
   tags: "Tags",
   services: "Services",

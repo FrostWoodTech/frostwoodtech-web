@@ -59,7 +59,9 @@ export default function CertificatesPage() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState<AdminCertificate | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<AdminCertificate | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminCertificate | null>(
+    null,
+  );
 
   const {
     data: result,
@@ -79,14 +81,7 @@ export default function CertificatesPage() {
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
-  /**
-   * Sends the whole page renumbered densely from the dropped order rather
-   * than just the two swapped rows, so the numbering stays contiguous
-   * however it started. Writes the reordered rows into the query cache
-   * immediately (before the request resolves) so dnd-kit's already-reordered
-   * drop position sticks instead of snapping back while the request is in
-   * flight, and rolls back to the pre-drag snapshot on failure.
-   */
+  /** Renumbers the whole page and writes it to the cache optimistically; rolls back on failure. */
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -102,7 +97,11 @@ export default function CertificatesPage() {
       sortOrder: (page - 1) * PAGE_SIZE + at,
     }));
 
-    const queryKey = certificateKeys.list({ search, page, pageSize: PAGE_SIZE });
+    const queryKey = certificateKeys.list({
+      search,
+      page,
+      pageSize: PAGE_SIZE,
+    });
     const previous =
       queryClient.getQueryData<PagedResult<AdminCertificate>>(queryKey);
 
@@ -111,7 +110,10 @@ export default function CertificatesPage() {
       (old) =>
         old && {
           ...old,
-          items: next.map((row, at) => ({ ...row, sortOrder: items[at].sortOrder })),
+          items: next.map((row, at) => ({
+            ...row,
+            sortOrder: items[at].sortOrder,
+          })),
         },
     );
 
@@ -233,9 +235,12 @@ export default function CertificatesPage() {
         </DataTableShell>
       </Card>
 
-      <Pagination page={page} totalPages={totalPages} onChange={(next) => setPage(next)} />
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onChange={(next) => setPage(next)}
+      />
 
-      {/* Keyed so switching rows remounts the form with fresh defaults. */}
       {isFormOpen && (
         <CertificateFormModal
           key={editing?.id ?? "new"}

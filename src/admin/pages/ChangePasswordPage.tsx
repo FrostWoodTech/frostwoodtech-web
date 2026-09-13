@@ -35,7 +35,6 @@ export default function ChangePasswordPage() {
 
   async function onSubmit(values: ChangePasswordFormValues) {
     try {
-      // Answers 204 with no body — nothing to read back.
       await changePasswordMutation.mutateAsync(values);
       reset();
       toast.success("Password updated.");

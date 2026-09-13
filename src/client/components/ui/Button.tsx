@@ -16,7 +16,7 @@ interface ButtonAsButton extends ButtonBaseProps {
   readonly onClick?: () => void;
   readonly type?: "button" | "submit" | "reset";
   readonly disabled?: boolean;
-  /** Shows a spinner and blocks interaction while an action is in flight. */
+  /** Shows a spinner and disables the button. */
   readonly loading?: boolean;
 }
 
@@ -31,8 +31,7 @@ interface ButtonAsLink extends ButtonBaseProps {
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  // `fw-btn` carries the ice→forest gradient and its matching ink colour,
-  // both of which flip with the theme (see index.css).
+  // `fw-btn` gradient and ink both flip with the theme (index.css).
   primary: "fw-btn shadow-btn hover:brightness-110",
   secondary:
     "bg-card text-text-primary border border-card-br shadow-card hover:border-hair-strong",

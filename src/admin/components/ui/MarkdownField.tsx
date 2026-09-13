@@ -8,27 +8,18 @@ interface MarkdownFieldProps {
   readonly value: string;
   readonly onChange: (value: string) => void;
   readonly error?: string;
-  /** Supporting text under the field, shown only when there is no error. */
+  /** Shown only when there is no error. */
   readonly hint?: string;
   readonly height?: number;
   readonly containerClassName?: string;
 }
 
-// There's no upload wired behind these fields — unlike the article editor's
-// content, nothing here turns an inserted `![]()` into a real image — so the
-// image toolbar button would just leave a dead placeholder. Every other
-// default command stays.
+// No image command: these fields have no upload behind them.
 const TOOLBAR_COMMANDS = commands
   .getCommands()
   .filter((command) => command.name !== "image");
 
-/**
- * A lighter markdown field than the article editor's `MDEditor` usage: edit
- * mode by default, with a manual toggle to check the rendered output before
- * saving, rather than a permanent split preview pane. Meant for forms with
- * several markdown fields on one screen (Projects' case study fields), where
- * a always-on live preview per field would eat too much space.
- */
+/** Compact markdown field (edit mode with a preview toggle) for forms with several markdown fields. */
 export default function MarkdownField({
   label,
   required,

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { useProjects } from "@/client/hooks/useProjects";
+import { useTags } from "@/client/hooks/useTags";
 import { toErrorMessage } from "@/client/services/ApiError";
 import WorkHeader from "@/client/components/work-page/WorkHeader";
 import WorkFilters from "@/client/components/work-page/WorkFilters";
@@ -14,7 +15,24 @@ export default function WorkPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
-  const { data: projects = [], isLoading, isError, error } = useProjects();
+  const {
+    data: projects = [],
+    isLoading,
+    isError,
+    error,
+  } = useProjects({
+    pageSize: 100,
+  });
+  const { data: categoryTags = [] } = useTags({ isTechnology: false });
+
+  // Only offer categories that at least one project carries.
+  const categories = useMemo(
+    () =>
+      categoryTags
+        .map((tag) => tag.name)
+        .filter((name) => projects.some((p) => p.categories.includes(name))),
+    [categoryTags, projects],
+  );
 
   const handleCategoryToggle = (category: string) => {
     setSelectedCategories((prev) =>
@@ -64,6 +82,7 @@ export default function WorkPage() {
 
         <div className="flex flex-col gap-5">
           <WorkFilters
+            categories={categories}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             selectedCategories={selectedCategories}

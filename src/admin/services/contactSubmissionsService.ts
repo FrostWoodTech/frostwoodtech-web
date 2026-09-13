@@ -17,7 +17,14 @@ export interface GetContactSubmissionsParams {
 }
 
 export async function getContactSubmissions(
-  { status, site, serviceId, search, page, pageSize }: GetContactSubmissionsParams = {},
+  {
+    status,
+    site,
+    serviceId,
+    search,
+    page,
+    pageSize,
+  }: GetContactSubmissionsParams = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<AdminContactSubmission>> {
   const { data } = await httpClient.get<PagedResult<AdminContactSubmission>>(
@@ -38,7 +45,7 @@ export async function getContactSubmission(
   return data;
 }
 
-/** Triage only — status and internal notes. Moving status to `replied` stamps repliedAt/repliedBy server-side. */
+/** Setting status to `replied` stamps repliedAt/repliedBy server-side. */
 export async function updateContactSubmission(
   id: string,
   body: ContactSubmissionUpdateRequest,
@@ -50,7 +57,6 @@ export async function updateContactSubmission(
   return data;
 }
 
-/** Soft delete. */
 export async function deleteContactSubmission(id: string): Promise<void> {
   await httpClient.delete(`/admin/contact-submissions/${id}`);
 }

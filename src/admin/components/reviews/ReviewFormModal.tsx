@@ -19,7 +19,7 @@ import {
 } from "@/admin/components/ui";
 
 interface ReviewFormModalProps {
-  /** `null` opens the dialog in create mode — an admin manually adding a testimonial. */
+  /** `null` means create mode. */
   readonly review: AdminReview | null;
   readonly onClose: () => void;
   readonly onSaved: () => void;
@@ -53,16 +53,13 @@ function toFormValues(review: AdminReview | null): ReviewFormValues {
   };
 }
 
-/** `""` is how an untouched optional field reaches us; the API wants it gone. */
+/** Untouched optional fields are `""`; the API wants them omitted. */
 function blank(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 }
 
-/**
- * Mounted only while the dialog is open, and keyed on the review by
- * `ReviewsPage`, so the form state starts fresh for every row.
- */
+/** Mounted only while open and keyed per row by the page, so form state starts fresh. */
 export default function ReviewFormModal({
   review,
   onClose,
@@ -88,7 +85,7 @@ export default function ReviewFormModal({
   });
 
   async function onSubmit(values: ReviewFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so any omitted field would wipe out.
+    // Built explicitly: PUT replaces the whole record, so no field may be omitted.
     const body: ReviewWriteRequest = {
       name: values.name.trim(),
       country: values.country.trim(),

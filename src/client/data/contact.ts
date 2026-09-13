@@ -9,15 +9,6 @@ export const CONTACT_DATA: ContactData = {
   phone: "[+00 000 000 0000]",
   location: "[CITY, COUNTRY] — remote worldwide",
   availability: "Taking new projects — next start date [MONTH YEAR]",
-  serviceTypes: [
-    "SaaS product",
-    "Website",
-    "E-commerce",
-    "Mobile app",
-    "Design system",
-    "SEO",
-    "Not sure yet",
-  ],
   formFields: [
     {
       id: "name",
@@ -36,6 +27,14 @@ export const CONTACT_DATA: ContactData = {
       halfWidth: true,
     },
     {
+      id: "phone",
+      label: "Phone",
+      type: "tel",
+      placeholder: "+1 555 000 0000",
+      required: false,
+      halfWidth: true,
+    },
+    {
       id: "company",
       label: "Company",
       type: "text",
@@ -44,18 +43,19 @@ export const CONTACT_DATA: ContactData = {
       halfWidth: true,
     },
     {
-      id: "budget",
+      // Values are the API's `ContactBudgetRange` enum.
+      id: "budgetRange",
       label: "Budget range",
       type: "select",
       placeholder: "Select a range",
       required: false,
-      halfWidth: true,
+      halfWidth: false,
       options: [
-        "Under $5,000",
-        "$5,000 – $15,000",
-        "$15,000 – $40,000",
-        "$40,000+",
-        "Not sure yet",
+        { value: "under_one_k", label: "Under $1,000" },
+        { value: "one_to_five_k", label: "$1,000 – $5,000" },
+        { value: "five_to_fifteen_k", label: "$5,000 – $15,000" },
+        { value: "over_fifteen_k", label: "$15,000+" },
+        { value: "not_sure", label: "Not sure yet" },
       ],
     },
     {

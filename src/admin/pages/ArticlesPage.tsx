@@ -54,10 +54,7 @@ function toIsPublished(status: StatusFilter): boolean | undefined {
   return undefined;
 }
 
-/**
- * Visibility is a pair of flags per site rather than a status enum, so each
- * site earns a chip only when shown, upgraded when it is also featured.
- */
+/** One chip per site the article is shown on, marked when also featured. */
 function visibilityBadges(article: AdminArticle) {
   const badges: { key: string; label: string; featured: boolean }[] = [];
 

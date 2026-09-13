@@ -1,21 +1,17 @@
-import { useMemo, useState } from "react";
-import { useReviews } from "@/client/hooks/useReviews";
+import { useState } from "react";
 import Testimonial from "@/client/components/testimonial/Testimonial";
 import Button from "@/client/components/ui/Button";
 import SectionHeader from "@/client/components/ui/SectionHeader";
 import { REVIEWS_HEADER } from "@/client/data/reviews";
+import type { ApiReview } from "@/client/types";
 
-export default function TestimonialCarousel() {
-  const { data } = useReviews({ sort: "rating", pageSize: 20 });
+interface TestimonialCarouselProps {
+  readonly reviews: readonly ApiReview[];
+}
 
-  // Once the backend supports marking reviews as featured, only those show
-  // here; until then every fetched review is eligible.
-  const reviews = useMemo(() => {
-    const all = data?.items ?? [];
-    const featured = all.filter((review) => review.isFeatured);
-    return featured.length > 0 ? featured : all;
-  }, [data]);
-
+export default function TestimonialCarousel({
+  reviews,
+}: TestimonialCarouselProps) {
   const [index, setIndex] = useState(0);
 
   if (reviews.length === 0) return null;

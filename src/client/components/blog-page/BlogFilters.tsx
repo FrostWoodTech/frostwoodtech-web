@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
-import { BLOG_CATEGORIES } from "@/client/data/blog-page";
 
 interface BlogFiltersProps {
+  readonly categories: readonly string[];
   readonly searchQuery: string;
   readonly onSearchChange: (query: string) => void;
   readonly selectedCategory: string | null;
@@ -9,6 +9,7 @@ interface BlogFiltersProps {
 }
 
 export default function BlogFilters({
+  categories,
   searchQuery,
   onSearchChange,
   selectedCategory,
@@ -30,7 +31,7 @@ export default function BlogFilters({
           All posts
         </button>
 
-        {BLOG_CATEGORIES.map((category) => {
+        {categories.map((category) => {
           const isActive = selectedCategory === category;
           return (
             <button

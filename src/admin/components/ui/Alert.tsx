@@ -14,11 +14,7 @@ interface AlertProps {
   readonly className?: string;
 }
 
-/**
- * A left accent rule plus an icon carries the severity, so the message reads
- * at a glance without relying on colour alone — the previous version was a
- * tinted box whose meaning was only in its border colour.
- */
+/** Accent rule plus icon, so severity doesn't rely on colour alone. */
 const VARIANT_CLASSES: Record<AlertVariant, string> = {
   error:
     "bg-danger-50 text-danger-500 border-danger-400/40 border-l-danger-500",

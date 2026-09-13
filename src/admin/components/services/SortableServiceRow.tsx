@@ -6,7 +6,7 @@ import { IconButton } from "@/admin/components/ui";
 
 interface SortableServiceRowProps {
   readonly service: AdminService;
-  /** Which column this row is rendered in — both icons act on this site only. */
+  /** The column's site; both toggles act on this site only. */
   readonly site: Site;
   readonly isTogglingShow: boolean;
   readonly isTogglingFeatured: boolean;
@@ -14,10 +14,7 @@ interface SortableServiceRowProps {
   readonly onToggleFeatured: (service: AdminService, site: Site) => void;
 }
 
-/**
- * One draggable row inside a site's reorder column — same shape as
- * `SortableArticleRow`/`SortableProjectRow`.
- */
+/** A row in a site's reorder column (see `SortableArticleRow`). */
 export default function SortableServiceRow({
   service,
   site,
@@ -26,10 +23,17 @@ export default function SortableServiceRow({
   onToggleShow,
   onToggleFeatured,
 }: SortableServiceRowProps) {
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
-    useSortable({ id: service.id });
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: service.id });
 
-  const shown = site === "agency" ? service.showOnAgency : service.showOnPersonal;
+  const shown =
+    site === "agency" ? service.showOnAgency : service.showOnPersonal;
   const featured =
     site === "agency" ? service.featuredOnAgency : service.featuredOnPersonal;
 
@@ -60,11 +64,7 @@ export default function SortableServiceRow({
       <div className="flex shrink-0 items-center gap-0.5">
         <IconButton
           icon={
-            shown ? (
-              <Eye className="h-4 w-4" />
-            ) : (
-              <EyeOff className="h-4 w-4" />
-            )
+            shown ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />
           }
           label={
             shown
@@ -76,7 +76,12 @@ export default function SortableServiceRow({
           className={`h-7 w-7 ${shown ? "text-primary-500 hover:text-primary-400" : ""}`}
         />
         <IconButton
-          icon={<Star className="h-4 w-4" fill={featured ? "currentColor" : "none"} />}
+          icon={
+            <Star
+              className="h-4 w-4"
+              fill={featured ? "currentColor" : "none"}
+            />
+          }
           label={
             featured
               ? `Unfeature “${service.name}” on this site`

@@ -10,11 +10,6 @@ export interface GetServicesParams {
 
 const SITE: Site = "agency";
 
-// No VITE_USE_MOCK_DATA branch here, unlike projects/articles/reviews — the
-// services page had no live API to mock against until now, so there is no
-// existing mock fixture to keep working; add one to mockData.ts if offline
-// development against services becomes worth it.
-
 export async function getServices(
   { site = SITE, featured, page = 1, pageSize = 20 }: GetServicesParams = {},
   signal?: AbortSignal,
@@ -26,7 +21,7 @@ export async function getServices(
   return data;
 }
 
-/** The detail response — unlike the list, this carries `projects` and `faqs`. */
+/** Unlike the list, includes `projects` and `faqs`. */
 export async function getService(
   slug: string,
   site: Site = SITE,

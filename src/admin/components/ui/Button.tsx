@@ -9,7 +9,6 @@ interface ButtonBaseProps {
   readonly className?: string;
   readonly icon?: React.ReactNode;
   readonly iconPosition?: "left" | "right";
-  /** Stretches to the container — the default for form submit buttons. */
   readonly fullWidth?: boolean;
 }
 
@@ -18,7 +17,7 @@ interface ButtonAsButton extends ButtonBaseProps {
   readonly onClick?: () => void;
   readonly type?: "button" | "submit" | "reset";
   readonly disabled?: boolean;
-  /** Shows a spinner and blocks interaction while an action is in flight. */
+  /** Shows a spinner and disables the button. */
   readonly loading?: boolean;
 }
 
@@ -46,12 +45,7 @@ const VARIANT_CLASSES: Record<AdminButtonVariant, string> = {
   danger: "bg-danger-500 text-white shadow-btn hover:bg-danger-400",
 };
 
-/**
- * Fixed heights rather than vertical padding: the filter toolbars lay buttons
- * and fields out side by side, and matching `h-*` values are what keep that
- * row on a single baseline. Radius scales with size for the same reason —
- * a `lg` button with `sm` corners reads unfinished.
- */
+/** Fixed heights match the field heights so toolbar rows share a baseline. */
 const SIZE_CLASSES: Record<AdminButtonSize, string> = {
   xs: "h-8 px-2.5 text-xs gap-1.5 rounded-md",
   sm: "h-9 px-3.5 text-sm gap-1.5 rounded-lg",
@@ -59,11 +53,7 @@ const SIZE_CLASSES: Record<AdminButtonSize, string> = {
   lg: "h-12 px-7 text-base gap-2.5 rounded-xl",
 };
 
-/**
- * The admin panel's button. Mirrors the client `Button` API so call sites are
- * interchangeable, but stays flat — no coloured shadows or glow — to suit the
- * light admin theme.
- */
+/** Same API as the client `Button`, styled flat for the admin theme. */
 export default function Button({
   variant = "primary",
   size = "md",

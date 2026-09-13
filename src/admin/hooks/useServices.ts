@@ -64,13 +64,7 @@ export function useSetServicePublished() {
   });
 }
 
-/**
- * No `invalidateQueries` here — the caller (the reorder/visibility screen)
- * writes the reordered rows straight into the cache as an optimistic update,
- * and a successful reorder leaves that cache exactly matching the server, so
- * a refetch here would just swap in fresh object references a beat later and
- * jolt the drag positions for no reason — see `ArticleOrderPage`'s reorder.
- */
+/** No invalidation: the optimistic write matches the server, and a refetch would jolt dnd-kit. */
 export function useReorderServices() {
   return useMutation({
     mutationFn: (body: ReorderRequest) => servicesService.reorderServices(body),

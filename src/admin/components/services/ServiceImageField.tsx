@@ -25,7 +25,7 @@ interface ServiceImageFieldProps {
   readonly disabled?: boolean;
 }
 
-/** Reads pixel dimensions from the file itself — the presigned upload response carries none. */
+/** Reads pixel dimensions from the file; the upload response has none. */
 function readImageDimensions(
   file: File,
 ): Promise<{ width: number; height: number }> {
@@ -44,11 +44,7 @@ function readImageDimensions(
   });
 }
 
-/**
- * A single uploaded image — icon or hero — going straight to Neon Object
- * Storage, same presigned-upload contract as project images. Unlike the
- * gallery, there's only ever one: uploading again just replaces it.
- */
+/** A single image slot via presigned upload; uploading again replaces it. */
 export default function ServiceImageField({
   label,
   hint,

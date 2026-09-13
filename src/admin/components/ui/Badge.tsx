@@ -1,22 +1,8 @@
 import type { AdminBadgeTone, AdminBadgeVariant } from "./types";
 
-/**
- * Status pill for tables and detail headers.
- *
- * The CMS previously borrowed the client `Badge`, which is built from the
- * marketing theme's bespoke tokens (`fw-icon-bg`, `text-icon-fg`, `bg-raise`,
- * `border-hair`). Those are not declared in the `admin-light` block, so the
- * badge inherited the marketing gradient — and flipped to its dark-theme
- * values whenever the visitor had dark mode selected on `<html>`. Owning the
- * component here keeps it on admin tokens only.
- *
- * `tone` says what the label means; `variant` says how loud it is. Keeping
- * them separate is what lets a table show "Published" and "Draft" as the
- * same shape at different weights.
- */
+/** Admin status pill (don't reuse the client `Badge` — its tokens follow the visitor's theme). `tone` = meaning, `variant` = emphasis. */
 
-/* Written out per tone/variant rather than interpolated: Tailwind scans for
-   whole class names, so `bg-${tone}-50` would never be generated. */
+/* Full class names, not interpolated — Tailwind only generates classes it can find verbatim. */
 const TONE_CLASSES: Record<
   AdminBadgeVariant,
   Record<AdminBadgeTone, string>

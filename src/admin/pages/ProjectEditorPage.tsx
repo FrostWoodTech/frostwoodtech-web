@@ -39,11 +39,7 @@ const TABS: readonly { id: TabId; label: string }[] = [
   { id: "visibility", label: "Visibility & SEO" },
 ];
 
-/**
- * Which fields live under which tab, so a tab can flag that it is hiding an
- * error. Every panel stays mounted, so validation fires regardless of which
- * tab is showing — this only drives the dot.
- */
+/** Fields per tab, used only to show an error dot on a tab. */
 const TAB_FIELDS: Record<TabId, readonly (keyof ProjectFormValues)[]> = {
   details: [
     "title",
@@ -63,7 +59,7 @@ const TAB_FIELDS: Record<TabId, readonly (keyof ProjectFormValues)[]> = {
 const TAB_BASE =
   "relative px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer";
 
-/** Built fresh per mount so a new project defaults to this year, not load time. */
+/** A function so the default year is computed per mount. */
 function blankValues(): ProjectFormValues {
   return {
     title: "",
@@ -88,11 +84,7 @@ function blankValues(): ProjectFormValues {
   };
 }
 
-/**
- * The response carries whole tags while the request wants bare ids, so the
- * relation is flattened on the way into the form. Absent optional strings
- * become `""` — that is the shape an untouched field has in the form.
- */
+/** Flattens tags to ids and absent optional strings to `""`. */
 function toFormValues(project: AdminProject | null): ProjectFormValues {
   if (!project) return blankValues();
 
@@ -119,22 +111,17 @@ function toFormValues(project: AdminProject | null): ProjectFormValues {
   };
 }
 
-/** `""` is how an untouched optional field reaches us; the API wants it gone. */
+/** Untouched optional fields are `""`; the API wants them omitted. */
 function blank(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 }
 
-/**
- * Serves both `/admin/projects/new` and `/admin/projects/:id`. A project has
- * far more fields than the other content types, so it gets its own route with
- * tabbed panels rather than the modal the smaller entities use.
- */
+/** Serves both `/admin/projects/new` and `/admin/projects/:id`. */
 export default function ProjectEditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  // Set by the create flow below, so a brand-new project can land straight on
-  // the Gallery tab instead of the user having to find and click it.
+  // After a create, navigation state opens the Gallery tab.
   const location = useLocation();
   const initialTab = (location.state as { openTab?: TabId } | null)?.openTab;
 
@@ -164,7 +151,7 @@ export default function ProjectEditorPage() {
     );
   }
 
-  // Keyed so navigating to a different project remounts the form instead of reusing stale defaults.
+  // Keyed so switching projects remounts the form with fresh defaults.
   return (
     <ProjectForm
       key={project?.id ?? "new"}
@@ -176,9 +163,8 @@ export default function ProjectEditorPage() {
 }
 
 interface ProjectFormProps {
-  /** `null` puts the form in create mode. */
+  /** `null` means create mode. */
   readonly project: AdminProject | null;
-  /** Where to land after a create redirected here — usually "gallery". */
   readonly initialTab?: TabId;
   readonly onDone: () => void;
 }
@@ -219,7 +205,7 @@ function ProjectForm({ project, initialTab, onDone }: ProjectFormProps) {
   }, [errors]);
 
   async function onSubmit(values: ProjectFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so any omitted field would wipe out.
+    // Built explicitly: PUT replaces the whole record, so no field may be omitted.
     const body: ProjectWriteRequest = {
       title: values.title.trim(),
       slug: blank(values.slug),
@@ -235,8 +221,7 @@ function ProjectForm({ project, initialTab, onDone }: ProjectFormProps) {
       isPublished: values.isPublished,
       seoTitle: blank(values.seoTitle),
       seoDescription: blank(values.seoDescription),
-      // Show/feature per site are set from the Reorder & Visibility screen, not
-      // this form — carried through untouched so saving other fields doesn't reset them.
+      // Edited on the reorder screen; carried through unchanged.
       showOnAgency: values.showOnAgency,
       featuredOnAgency: values.featuredOnAgency,
       showOnPersonal: values.showOnPersonal,
@@ -254,9 +239,7 @@ function ProjectForm({ project, initialTab, onDone }: ProjectFormProps) {
         const created = await createProjectMutation.mutateAsync(body);
         toast.success("Project created — add gallery images below.");
         clearPersisted();
-        // Straight into edit mode on the Gallery tab, not the list — a brand
-        // new project has no gallery until it has an id, so this is the
-        // earliest point images can be added.
+        // Images need an id, so go straight to the Gallery tab.
         navigate(`/admin/projects/${created.id}`, {
           state: { openTab: "gallery" },
         });
@@ -286,7 +269,7 @@ function ProjectForm({ project, initialTab, onDone }: ProjectFormProps) {
         }
       />
 
-      {/* Panels are hidden, never unmounted, so an error on another tab still blocks submit and shows its dot. */}
+      {/* Panels are hidden, not unmounted, so errors on other tabs still block submit. */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div
           role="tablist"

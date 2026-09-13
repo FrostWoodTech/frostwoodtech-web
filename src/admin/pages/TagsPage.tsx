@@ -129,7 +129,7 @@ export default function TagsPage() {
       toast.success("Tag deleted.");
       setDeleteTarget(null);
     } catch (cause) {
-      // Surfaces the API's `tag_in_use` message, which names the content still holding the tag.
+      // Surfaces the API's `tag_in_use` message.
       toast.error(toErrorMessage(cause));
     }
   }
@@ -273,7 +273,6 @@ export default function TagsPage() {
         onChange={(next) => setPage(next)}
       />
 
-      {/* Keyed so switching rows remounts the form with fresh defaults. */}
       {isFormOpen && (
         <TagFormModal
           key={editing?.id ?? "new"}

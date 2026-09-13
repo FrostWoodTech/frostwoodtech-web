@@ -13,24 +13,17 @@ import {
 import { Button, Spinner } from "@/admin/components/ui";
 
 interface ArticleCoverPickerProps {
-  /** The article body — the only source of selectable images. */
   readonly markdown: string;
-  /** Currently chosen cover reference (a `media://` token or legacy url), or `""` when none is set yet. */
+  /** A `media://` token or legacy URL; `""` when unset. */
   readonly coverUrl: string;
-  /** Folder the upload lands in; the API rejects an articles upload without it. */
+  /** Required by the API for article uploads. */
   readonly slug: string;
   readonly onInsert: (snippet: string) => void;
   readonly onSelectCover: (reference: string) => void;
   readonly error?: string;
 }
 
-/**
- * Uploads go straight to storage and are appended to the body as markdown, so
- * every image an article carries is visible in its content. The cover is then
- * chosen from exactly those images rather than uploaded separately — that
- * pairing is what keeps the stored cover url pointing at something the article
- * actually shows.
- */
+/** Uploads are appended to the body, and the cover is picked from the body's images so it never points at a missing file. */
 export default function ArticleCoverPicker({
   markdown,
   coverUrl,
@@ -59,7 +52,7 @@ export default function ArticleCoverPicker({
       const reference = await uploadImage({ target: "articles", slug }, file);
 
       onInsert(imageMarkdown(reference, altText));
-      // First image in is almost always the intended cover; still overridable below.
+      // Default the cover to the first upload.
       if (!coverUrl) onSelectCover(reference);
       toast.success("Image uploaded and added to the content.");
     } catch (cause) {
@@ -122,7 +115,10 @@ export default function ArticleCoverPicker({
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {images.map((reference) => {
             const isCover = reference === coverUrl;
-            const displayUrl = resolveMediaDisplayUrl(reference, mediaConfig?.publicBaseUrl);
+            const displayUrl = resolveMediaDisplayUrl(
+              reference,
+              mediaConfig?.publicBaseUrl,
+            );
 
             return (
               <li key={reference}>

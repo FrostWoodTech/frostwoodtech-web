@@ -4,11 +4,7 @@ import type { GetFaqsParams } from "@/admin/services/faqsService";
 import { faqKeys } from "@/admin/hooks/queryKeys";
 import type { FaqReorderRequest, FaqWriteRequest } from "@/admin/types";
 
-/**
- * `enabled: false` skips the request entirely rather than fetching and
- * discarding the result — used when the site checkboxes leave nothing
- * selected, since there is no query that means "match no site".
- */
+/** Pass `enabled: false` when no site is selected — there's no "match no site" query. */
 export function useFaqs(params: GetFaqsParams, enabled = true) {
   return useQuery({
     queryKey: faqKeys.list(params),
@@ -49,12 +45,7 @@ export function useDeleteFaq() {
   });
 }
 
-/**
- * No `invalidateQueries` here — the caller writes the reordered rows straight
- * into the cache as an optimistic update, and a successful reorder leaves
- * that cache exactly matching the server (the endpoint sets each `sortOrder`
- * to what was sent), so there's nothing left to refetch.
- */
+/** No invalidation: the caller's optimistic cache write already matches the server. */
 export function useReorderFaqs() {
   return useMutation({
     mutationFn: (body: FaqReorderRequest) => faqsService.reorderFaqs(body),

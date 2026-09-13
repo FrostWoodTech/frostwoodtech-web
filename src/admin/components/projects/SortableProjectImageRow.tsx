@@ -12,7 +12,7 @@ interface SortableProjectImageRowProps {
   readonly onDelete: (image: ProjectImage) => void;
 }
 
-/** One gallery card — only the grip handle starts a drag, so the row actions stay ordinary clicks. */
+/** Only the grip handle starts a drag, so the row actions stay normal clicks. */
 export default function SortableProjectImageRow({
   image,
   busy,
@@ -20,8 +20,14 @@ export default function SortableProjectImageRow({
   onMakePrimary,
   onDelete,
 }: SortableProjectImageRowProps) {
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
-    useSortable({ id: image.id });
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: image.id });
 
   return (
     <li
@@ -72,7 +78,9 @@ export default function SortableProjectImageRow({
           label={image.isPrimary ? "Primary image" : "Make primary"}
           onClick={() => onMakePrimary(image)}
           disabled={busy || image.isPrimary}
-          className={image.isPrimary ? "!text-primary-400 disabled:!opacity-100" : ""}
+          className={
+            image.isPrimary ? "!text-primary-400 disabled:!opacity-100" : ""
+          }
         />
         <IconButton
           icon={<Trash2 className="h-4 w-4" />}

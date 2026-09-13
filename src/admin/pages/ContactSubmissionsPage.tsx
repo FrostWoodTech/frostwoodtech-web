@@ -38,11 +38,13 @@ const PAGE_SIZE = 20;
 /** Well above any realistic service count — this filter isn't paged. */
 const SERVICE_PAGE_SIZE = 100;
 
-const STATUS_OPTIONS: readonly { value: ContactSubmissionStatus; label: string }[] =
-  ["new", "read", "replied", "archived", "spam"].map((value) => ({
-    value: value as ContactSubmissionStatus,
-    label: contactStatusLabel(value as ContactSubmissionStatus),
-  }));
+const STATUS_OPTIONS: readonly {
+  value: ContactSubmissionStatus;
+  label: string;
+}[] = ["new", "read", "replied", "archived", "spam"].map((value) => ({
+  value: value as ContactSubmissionStatus,
+  label: contactStatusLabel(value as ContactSubmissionStatus),
+}));
 
 const SITE_OPTIONS: readonly { value: Site; label: string }[] = [
   { value: "agency", label: "Agency" },
@@ -81,9 +83,8 @@ export default function ContactSubmissionsPage() {
   };
 
   const [selected, setSelected] = useState<AdminContactSubmission | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<AdminContactSubmission | null>(
-    null,
-  );
+  const [deleteTarget, setDeleteTarget] =
+    useState<AdminContactSubmission | null>(null);
 
   const { data: servicesResult } = useServices({ pageSize: SERVICE_PAGE_SIZE });
   const serviceOptions = [

@@ -4,12 +4,7 @@ import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import ErrorBoundary from "@/admin/components/ErrorBoundary";
 
-/**
- * The CMS shell: a fixed sidebar, a sticky topbar, and the routed page.
- *
- * The sidebar is taken out of flow (`md:pl-68` on the content column
- * reserves its width), so it stays put while long pages scroll.
- */
+/** CMS shell. The sidebar is fixed; `md:pl-68` on the content column reserves its width. */
 export default function AdminLayout() {
   const [navOpen, setNavOpen] = useState(false);
   const { pathname } = useLocation();
@@ -22,7 +17,7 @@ export default function AdminLayout() {
         <Topbar onMenu={() => setNavOpen(true)} />
 
         <main className="min-w-0 flex-1 px-5 py-8 md:px-10 md:py-10">
-          {/* Keyed by path so navigating away from a crashed page remounts the boundary. */}
+          {/* Keyed by path so leaving a crashed page resets the boundary. */}
           <ErrorBoundary key={pathname}>
             <Outlet />
           </ErrorBoundary>

@@ -3,11 +3,7 @@ import type { Project } from "@/client/types";
 
 interface WorkGridProps {
   readonly projects: readonly Project[];
-  /**
-   * Promotes the first project to a full-width lead card. Only passed when
-   * nothing is filtered, so we never call an arbitrary search result
-   * "featured".
-   */
+  /** Promotes the first project to a lead card; only set when nothing is filtered. */
   readonly showFeatured?: boolean;
 }
 

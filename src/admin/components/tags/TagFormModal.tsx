@@ -9,7 +9,11 @@ import {
 import ApiError, { toErrorMessage } from "@/admin/api/ApiError";
 import useToast from "@/admin/context/useToast";
 import { slugify } from "@/admin/utils/format";
-import { FIELD_BASE, FIELD_LABEL, FIELD_SIZE } from "@/admin/components/ui/fieldClasses";
+import {
+  FIELD_BASE,
+  FIELD_LABEL,
+  FIELD_SIZE,
+} from "@/admin/components/ui/fieldClasses";
 import type { AdminTag, TagWriteRequest, TechCategory } from "@/admin/types";
 import { tagSchema, type TagFormValues } from "@/admin/validation/tagSchemas";
 import {
@@ -22,7 +26,7 @@ import {
 } from "@/admin/components/ui";
 
 interface TagFormModalProps {
-  /** `null` opens the dialog in create mode. */
+  /** `null` means create mode. */
   readonly tag: AdminTag | null;
   readonly onClose: () => void;
   readonly onSaved: () => void;
@@ -46,16 +50,13 @@ function toFormValues(tag: AdminTag | null): TagFormValues {
   };
 }
 
-/** `""` is how an untouched optional field reaches us; the API wants it gone. */
+/** Untouched optional fields are `""`; the API wants them omitted. */
 function blank(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 }
 
-/**
- * Mounted only while the dialog is open, and keyed on the tag by `TagsPage`,
- * so the form state starts fresh for every row instead of being reset.
- */
+/** Mounted only while open and keyed per row by the page, so form state starts fresh. */
 export default function TagFormModal({
   tag,
   onClose,
@@ -86,7 +87,6 @@ export default function TagFormModal({
     defaultValues: toFormValues(tag),
   });
 
-  // The technology fields only exist while this checkbox is on.
   const isTechnology = useWatch({ control, name: "isTechnology" });
   const name = useWatch({ control, name: "name" });
 

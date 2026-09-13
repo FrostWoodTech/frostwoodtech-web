@@ -8,33 +8,33 @@ import type {
 import { httpClient } from "@/admin/services/httpClient";
 
 export interface GetServicesParams {
-  /** Omit to list services across both sites — the admin view sees everything. */
   readonly site?: Site;
   readonly isPublished?: boolean;
-  /** Case-insensitive match against the name. */
   readonly search?: string;
-  /**
-   * Skips the show-on-site filter `site` would otherwise apply — the
-   * reorder/visibility screen needs every published service in both columns,
-   * including ones not yet shown anywhere, since it's the screen that turns
-   * showing on in the first place.
-   */
+  /** Skip the show-on-site filter (used by the reorder screen). */
   readonly includeHidden?: boolean;
   readonly page?: number;
   readonly pageSize?: number;
 }
 
-/**
- * Ordered by name — not by sort order. A screen that cares about the display
- * order has to sort by the site's `agencySortOrder`/`personalSortOrder` itself.
- */
+/** Ordered by name, not by the per-site sort order. */
 export async function getServices(
-  { site, isPublished, search, includeHidden, page, pageSize }: GetServicesParams = {},
+  {
+    site,
+    isPublished,
+    search,
+    includeHidden,
+    page,
+    pageSize,
+  }: GetServicesParams = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<AdminService>> {
   const { data } = await httpClient.get<PagedResult<AdminService>>(
     "/admin/services",
-    { params: { site, isPublished, search, includeHidden, page, pageSize }, signal },
+    {
+      params: { site, isPublished, search, includeHidden, page, pageSize },
+      signal,
+    },
   );
   return data;
 }
@@ -56,7 +56,7 @@ export async function createService(
   return data;
 }
 
-/** Full replacement — `body` must carry every field, not just the changed ones. */
+/** Full replacement — send every field. */
 export async function updateService(
   id: string,
   body: ServiceWriteRequest,
@@ -68,7 +68,6 @@ export async function updateService(
   return data;
 }
 
-/** The one partial update the API offers — flips the draft flag on its own. */
 export async function setServicePublished(
   id: string,
   isPublished: boolean,
@@ -80,12 +79,12 @@ export async function setServicePublished(
   return data;
 }
 
-/** Soft delete — the row keeps existing behind the API's `IsDeleted` filter. */
+/** Soft delete. */
 export async function deleteService(id: string): Promise<void> {
   await httpClient.delete(`/admin/services/${id}`);
 }
 
-/** Renumbers the given services for one site; every id must exist. */
+/** Renumbers for one site; every id must exist. */
 export async function reorderServices(body: ReorderRequest): Promise<void> {
   await httpClient.post("/admin/services/reorder", body);
 }

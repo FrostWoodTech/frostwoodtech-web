@@ -1,14 +1,4 @@
-/**
- * Table parts for the CMS list pages.
- *
- * Nine pages were each hand-writing the same `<thead>`, `<tr>` and `<td>`
- * class strings; they had already drifted apart in border colour and hover
- * treatment. These components are deliberately thin — they carry styling and
- * nothing else, so a list page still reads as ordinary table markup.
- *
- * `Table` supplies its own horizontal scroll container: a wide table must
- * scroll inside its card rather than pushing the page sideways.
- */
+/** Styling-only table parts. `Table` scrolls horizontally inside its card. */
 
 import { forwardRef } from "react";
 
@@ -30,8 +20,6 @@ export function Table({ children, className = "" }: TableProps) {
 export function THead({ children }: { readonly children: React.ReactNode }) {
   return (
     <thead>
-      {/* Same token as the form micro-label — headers and labels are one
-          system, so they share a style rather than merely resembling one. */}
       <tr className="border-b border-border-subtle bg-surface-800/60 text-[11px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
         {children}
       </tr>
@@ -63,32 +51,31 @@ export function TBody({ children }: { readonly children: React.ReactNode }) {
   return <tbody>{children}</tbody>;
 }
 
-interface TRProps
-  extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "children"> {
+interface TRProps extends Omit<
+  React.HTMLAttributes<HTMLTableRowElement>,
+  "children"
+> {
   readonly children: React.ReactNode;
 }
 
-/**
- * Forwards its ref and any extra `<tr>` props (style, drag-and-drop
- * attributes/listeners, ...) so list pages can wire it up as a dnd-kit
- * sortable row without a bespoke row component.
- */
-export const TR = forwardRef<HTMLTableRowElement, TRProps>(
-  function TR({ children, className = "", ...rest }, ref) {
-    return (
-      <tr
-        ref={ref}
-        className={`border-b border-border-subtle/70 last:border-0 hover:bg-surface-800/50 transition-colors duration-150 ${className}`}
-        {...rest}
-      >
-        {children}
-      </tr>
-    );
-  },
-);
+/** Forwards ref and `<tr>` props so it can be a dnd-kit sortable row. */
+export const TR = forwardRef<HTMLTableRowElement, TRProps>(function TR(
+  { children, className = "", ...rest },
+  ref,
+) {
+  return (
+    <tr
+      ref={ref}
+      className={`border-b border-border-subtle/70 last:border-0 hover:bg-surface-800/50 transition-colors duration-150 ${className}`}
+      {...rest}
+    >
+      {children}
+    </tr>
+  );
+});
 
 interface TDProps extends CellProps {
-  /** `primary` is the row's identifying cell — darker and medium weight. */
+  /** `primary` marks the row's identifying cell. */
   readonly variant?: "default" | "primary" | "nowrap";
 }
 

@@ -34,7 +34,7 @@ export async function createCurrency(
   return data;
 }
 
-/** Full replacement — changing today's rate goes through this. */
+/** Full replacement — send every field. */
 export async function updateCurrency(
   id: string,
   body: CurrencyWriteRequest,
@@ -46,12 +46,11 @@ export async function updateCurrency(
   return data;
 }
 
-/** Soft delete. Refused for USD, and while a pricing plan still prices in it. */
+/** Refused for USD and for currencies still used by a pricing plan. */
 export async function deleteCurrency(id: string): Promise<void> {
   await httpClient.delete(`/admin/currencies/${id}`);
 }
 
-/** The "Refresh live rates" button — one call updates every currency's live rate at once. */
 export async function refreshCurrencyRates(): Promise<RefreshCurrencyRatesResponse> {
   const { data } = await httpClient.post<RefreshCurrencyRatesResponse>(
     "/admin/currencies/refresh-rates",

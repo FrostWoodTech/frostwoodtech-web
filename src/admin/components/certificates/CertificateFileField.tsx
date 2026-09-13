@@ -13,7 +13,7 @@ export interface CertificateFileValue {
   readonly objectKey: string;
   readonly url: string;
   readonly mimeType: string;
-  /** Absent for a PDF, which has no pixel dimensions. */
+  /** Absent for a PDF. */
   readonly width?: number;
   readonly height?: number;
   readonly altText: string;
@@ -25,7 +25,7 @@ interface CertificateFileFieldProps {
   readonly disabled?: boolean;
 }
 
-/** Reads pixel dimensions from the file itself — only meaningful for an image. */
+/** Reads pixel dimensions from an image file. */
 function readImageDimensions(
   file: File,
 ): Promise<{ width: number; height: number }> {
@@ -44,12 +44,7 @@ function readImageDimensions(
   });
 }
 
-/**
- * The certificate's one file — a PDF or an image — uploaded straight to Neon
- * Object Storage via the same presigned-upload contract as every other
- * uploaded asset. Unlike a project's image gallery there's only ever one:
- * uploading again just replaces it.
- */
+/** The certificate's single file (PDF or image) via presigned upload; uploading again replaces it. */
 export default function CertificateFileField({
   value,
   onChange,

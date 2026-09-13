@@ -7,30 +7,14 @@ interface PendingChange {
   readonly defaultValue: string;
 }
 
-/**
- * Shared across every `useSearchParamState` instance on the page — see the
- * note in `setValue` below for why a module-level queue, not per-hook state,
- * is what makes batching work.
- */
+/** Module-level so changes from every instance batch together (see below). */
 let pendingChanges: PendingChange[] = [];
 let flushScheduled = false;
 
 /**
- * A single filter value synced to the URL's query string instead of local
- * state, so the current view survives a refresh and can be shared as a link.
- * Uses `replace` navigation — every keystroke would otherwise be a back-button
- * stop — and omits the key entirely once it matches `defaultValue`, keeping
- * URLs clean.
- *
- * Calls to `setValue` are queued and flushed together in one microtask
- * rather than applied immediately. React Router's `setSearchParams` builds
- * its next URL from the `location.search` captured at render time, so
- * multiple calls in the same handler (e.g. resetting the page *and* changing
- * a filter) would otherwise each start from that same stale snapshot —
- * `replace: true` then collapses them onto one history entry and only the
- * *last* call's change survives, silently dropping the others. Queuing and
- * applying every change from one tick in a single `setSearchParams` call
- * fixes that at the source, so no call site needs to know about it.
+ * A filter value stored in the query string (replace navigation; omitted when it equals the default).
+ * Updates are batched per microtask: separate `setSearchParams` calls in one handler would each
+ * start from the same stale URL, and only the last one would survive.
  */
 export function useSearchParamState<T extends string>(
   key: string,
@@ -39,8 +23,7 @@ export function useSearchParamState<T extends string>(
   const [searchParams, setSearchParams] = useSearchParams();
   const value = (searchParams.get(key) as T | null) ?? defaultValue;
 
-  // The flush runs after this render's handler returns, so it must call
-  // whatever `setSearchParams` is current at flush time, not at schedule time.
+  // The flush must use the `setSearchParams` current at flush time.
   const setSearchParamsRef = useRef(setSearchParams);
   useEffect(() => {
     setSearchParamsRef.current = setSearchParams;

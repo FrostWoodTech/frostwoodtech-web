@@ -6,7 +6,6 @@ interface BackLinkProps {
   readonly children: React.ReactNode;
 }
 
-/** "Back to …" link above an editor page's heading. */
 export default function BackLink({ to, children }: BackLinkProps) {
   return (
     <Link

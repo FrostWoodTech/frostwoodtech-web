@@ -10,7 +10,8 @@ import type {
 export function useCertificates(params: GetCertificatesParams) {
   return useQuery({
     queryKey: certificateKeys.list(params),
-    queryFn: ({ signal }) => certificatesService.getCertificates(params, signal),
+    queryFn: ({ signal }) =>
+      certificatesService.getCertificates(params, signal),
     placeholderData: (previous) => previous,
   });
 }
@@ -47,11 +48,7 @@ export function useDeleteCertificate() {
   });
 }
 
-/**
- * No `invalidateQueries` here — the caller writes the reordered rows straight
- * into the cache as an optimistic update, and a successful reorder leaves
- * that cache exactly matching the server, so there's nothing left to refetch.
- */
+/** No invalidation: the caller's optimistic cache write already matches the server. */
 export function useReorderCertificates() {
   return useMutation({
     mutationFn: (body: CertificateReorderRequest) =>

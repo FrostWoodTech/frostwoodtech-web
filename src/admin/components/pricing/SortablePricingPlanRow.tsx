@@ -14,7 +14,7 @@ interface SortablePricingPlanRowProps {
   readonly onDelete: (plan: AdminPricingPlan) => void;
 }
 
-/** One draggable row — only the grip handle starts a drag, so the other actions stay ordinary clicks. */
+/** Only the grip handle starts a drag, so the other actions stay normal clicks. */
 export default function SortablePricingPlanRow({
   plan,
   serviceName,
@@ -23,8 +23,14 @@ export default function SortablePricingPlanRow({
   onEdit,
   onDelete,
 }: SortablePricingPlanRowProps) {
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
-    useSortable({ id: plan.id });
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: plan.id });
 
   return (
     <TR
@@ -81,10 +87,16 @@ export default function SortablePricingPlanRow({
                 <Archive className="h-4 w-4" />
               )
             }
-            label={plan.isPublished ? `Unpublish “${plan.name}”` : `Publish “${plan.name}”`}
+            label={
+              plan.isPublished
+                ? `Unpublish “${plan.name}”`
+                : `Publish “${plan.name}”`
+            }
             onClick={() => onTogglePublished(plan)}
             disabled={isPublishing}
-            className={plan.isPublished ? "text-primary-500 hover:text-primary-400" : ""}
+            className={
+              plan.isPublished ? "text-primary-500 hover:text-primary-400" : ""
+            }
           />
           <IconButton
             icon={<Pencil className="h-4 w-4" />}

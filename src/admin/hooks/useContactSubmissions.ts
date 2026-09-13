@@ -24,7 +24,9 @@ export function useUpdateContactSubmission() {
       body: ContactSubmissionUpdateRequest;
     }) => contactSubmissionsService.updateContactSubmission(id, body),
     onSuccess: (_data, { id }) => {
-      queryClient.invalidateQueries({ queryKey: contactSubmissionKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: contactSubmissionKeys.lists(),
+      });
       queryClient.invalidateQueries({
         queryKey: contactSubmissionKeys.detail(id),
       });
@@ -38,7 +40,9 @@ export function useDeleteContactSubmission() {
     mutationFn: (id: string) =>
       contactSubmissionsService.deleteContactSubmission(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: contactSubmissionKeys.lists() });
+      queryClient.invalidateQueries({
+        queryKey: contactSubmissionKeys.lists(),
+      });
     },
   });
 }

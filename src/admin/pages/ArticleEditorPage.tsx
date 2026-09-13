@@ -32,7 +32,6 @@ import {
   Textarea,
 } from "@/admin/components/ui";
 
-/** Built fresh per mount so a new article defaults to today, not to load time. */
 function blankValues(): ArticleFormValues {
   return {
     title: "",
@@ -49,10 +48,7 @@ function blankValues(): ArticleFormValues {
   };
 }
 
-/**
- * The response carries whole tags while the request wants bare ids, so the
- * relation is flattened on the way into the form.
- */
+/** Flattens tags to ids. */
 function toFormValues(article: AdminArticle | null): ArticleFormValues {
   if (!article) return blankValues();
 
@@ -71,17 +67,13 @@ function toFormValues(article: AdminArticle | null): ArticleFormValues {
   };
 }
 
-/** `""` is how an untouched optional field reaches us; the API wants it gone. */
+/** Untouched optional fields are `""`; the API wants them omitted. */
 function blank(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 }
 
-/**
- * Serves both `/admin/articles/new` and `/admin/articles/:id`. Moved off the
- * modal onto its own route so the markdown editor and tag picker have room to
- * breathe, matching the pattern `ProjectEditorPage` already established.
- */
+/** Serves both `/admin/articles/new` and `/admin/articles/:id`. */
 export default function ArticleEditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -112,7 +104,7 @@ export default function ArticleEditorPage() {
     );
   }
 
-  // Keyed so navigating to a different article remounts the form instead of reusing stale defaults.
+  // Keyed so switching articles remounts the form with fresh defaults.
   return (
     <ArticleForm
       key={article?.id ?? "new"}
@@ -123,7 +115,7 @@ export default function ArticleEditorPage() {
 }
 
 interface ArticleFormProps {
-  /** `null` puts the form in create mode. */
+  /** `null` means create mode. */
   readonly article: AdminArticle | null;
   readonly onDone: () => void;
 }
@@ -160,15 +152,10 @@ function ArticleForm({ article, onDone }: ArticleFormProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const { data: mediaConfig } = useMediaConfig();
 
-  /** Uploads land under the article's folder, so they need its slug up front. */
+  /** Uploads are stored under the article's slug. */
   const uploadSlug = slugify(slugValue?.trim() || title?.trim() || "");
 
-  /**
-   * Drops the image where the caret is rather than at the end, so an upload can
-   * land mid-article. MDEditor owns its textarea, hence reaching for it through
-   * the wrapper instead of holding a ref to it directly; with no caret to read
-   * (the editor was never focused) appending is the sane fallback.
-   */
+  /** Inserts at the caret (MDEditor's textarea is reached via the wrapper); appends if never focused. */
   function insertIntoContent(snippet: string) {
     const current = getValues("contentMarkdown") ?? "";
     const textarea = editorRef.current?.querySelector<HTMLTextAreaElement>(
@@ -194,17 +181,15 @@ function ArticleForm({ article, onDone }: ArticleFormProps) {
   }
 
   async function onSubmit(values: ArticleFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so any omitted field would wipe out.
+    // Built explicitly: PUT replaces the whole record, so no field may be omitted.
     const body: ArticleWriteRequest = {
       title: values.title.trim(),
       excerpt: values.excerpt.trim(),
       slug: blank(values.slug),
-      // Required by the schema, and always a full url the picker took from the body.
       coverImageKey: values.coverImageKey.trim(),
       contentMarkdown: blank(values.contentMarkdown),
       isPublished: values.isPublished,
-      // Show/feature per site are set from the reorder screen, not this form —
-      // carried through untouched so saving other fields doesn't reset them.
+      // Edited on the reorder screen; carried through unchanged.
       showOnAgency: values.showOnAgency,
       featuredOnAgency: values.featuredOnAgency,
       showOnPersonal: values.showOnPersonal,
@@ -267,7 +252,7 @@ function ArticleForm({ article, onDone }: ArticleFormProps) {
             {...register("slug")}
           />
 
-          {/* Registered so the resolver sees it; the value is only ever set by the picker below. */}
+          {/* Registered for validation; only the picker below sets it. */}
           <input type="hidden" {...register("coverImageKey")} />
 
           <Controller
@@ -289,9 +274,7 @@ function ArticleForm({ article, onDone }: ArticleFormProps) {
                   preview="live"
                   visibleDragbar={false}
                   previewOptions={{
-                    // The stored markdown holds `media://` tokens, not loadable
-                    // urls — the live preview pane needs each <img> src resolved
-                    // the same way the cover picker's thumbnails are.
+                    // Resolve `media://` tokens so preview images load.
                     rehypeRewrite: (node) => {
                       if (
                         node.type === "element" &&

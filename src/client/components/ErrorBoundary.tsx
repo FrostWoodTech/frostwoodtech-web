@@ -10,14 +10,7 @@ interface ErrorBoundaryState {
   readonly errorId: string;
 }
 
-/**
- * Catches render/lifecycle errors on the public site and shows visitors a
- * generic, reassuring fallback — no stack trace, no technical detail, since
- * this audience isn't expected to make sense of either.
- *
- * This does not catch errors from async code (fetch failures, event
- * handlers) — those already surface via ApiError + the toast system.
- */
+/** Shows visitors a generic fallback with no technical detail. Async errors aren't caught here. */
 export default class ErrorBoundary extends Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
@@ -41,13 +34,11 @@ export default class ErrorBoundary extends Component<
           Something went wrong
         </h1>
         <p className="max-w-md text-text-secondary">
-          We hit an unexpected error loading this page. Please try again — if
-          it keeps happening, let us know.
+          We hit an unexpected error loading this page. Please try again — if it
+          keeps happening, let us know.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-          <Button onClick={() => window.location.reload()}>
-            Reload page
-          </Button>
+          <Button onClick={() => window.location.reload()}>Reload page</Button>
           <Button variant="outline" href="/">
             Go home
           </Button>

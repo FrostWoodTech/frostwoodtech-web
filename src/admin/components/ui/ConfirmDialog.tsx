@@ -9,10 +9,7 @@ interface ConfirmDialogProps {
   readonly onConfirm: () => void;
   readonly onCancel: () => void;
   readonly loading?: boolean;
-  /**
-   * Defaults to `danger` — nearly every caller is a delete. Pass `default`
-   * for a confirmation that is merely significant rather than destructive.
-   */
+  /** Defaults to `danger`; use `default` for non-destructive confirmations. */
   readonly tone?: "danger" | "default";
 }
 

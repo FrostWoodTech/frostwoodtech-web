@@ -3,7 +3,7 @@ import type { ApiFaq, Site } from "@/client/types";
 
 const SITE: Site = "agency";
 
-/** The global FAQ list — service-scoped FAQs ride along on `getService` instead. */
+/** General FAQs only; service FAQs come with `getService`. */
 export async function getFaqs(
   site: Site = SITE,
   signal?: AbortSignal,

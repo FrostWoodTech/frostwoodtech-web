@@ -1,16 +1,6 @@
 import { z } from "zod";
 
-/**
- * Mirrors the hand-rolled checks in the API's `Services/PricingService.cs`,
- * including its wording, so client and server messages stay consistent.
- *
- * Pricing is agency-only — no site fields, no per-site "featured requires
- * shown" cross-check, and no editable sort order field — a new plan is
- * appended to the end of its group server-side, and order only ever changes
- * by dragging rows in the admin list. The one cross-field rule that remains
- * is that a `custom` price must not carry an amount (that is how "Contact
- * us" is expressed).
- */
+/** Mirrors `Services/PricingService.cs` checks and wording. A `custom` price carries no amount. */
 
 const ISO_CURRENCY = /^[A-Za-z]{3}$/;
 
@@ -28,10 +18,7 @@ export const PRICE_TYPES = [
   "custom",
 ] as const;
 
-/**
- * A feature row. `id` is present only for one the API already stores, which
- * is how the modal tells an insert from an update on save.
- */
+/** `id` is set only for saved features, so the modal can tell inserts from updates. */
 export const pricingFeatureSchema = z.object({
   id: z.string().optional(),
   text: z.string().trim().min(1, "Text is required."),
@@ -40,7 +27,7 @@ export const pricingFeatureSchema = z.object({
 
 export const pricingPlanSchema = z
   .object({
-    // Not a server field — it decides whether `serviceId` is sent at all.
+    // Form-only: decides whether `serviceId` is sent.
     kind: z.enum(["combo", "service"]),
     serviceId: optionalText,
     name: z.string().trim().min(1, "Name is required."),
@@ -96,7 +83,6 @@ export const pricingPlanSchema = z
         });
       }
     }
-
   });
 
 export type PricingFeatureValues = z.infer<typeof pricingFeatureSchema>;

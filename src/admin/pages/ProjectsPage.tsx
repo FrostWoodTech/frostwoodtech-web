@@ -67,10 +67,7 @@ function toIsPublished(status: StatusFilter): boolean | undefined {
   return undefined;
 }
 
-/**
- * Visibility is a pair of flags per site rather than a status enum, so each
- * site earns a chip only when shown, upgraded when it is also featured.
- */
+/** One chip per site the project is shown on, marked when also featured. */
 function visibilityBadges(project: AdminProject) {
   const badges: { key: string; label: string; featured: boolean }[] = [];
 
@@ -323,7 +320,11 @@ export default function ProjectsPage() {
                         }
                         onClick={() => togglePublished(item)}
                         disabled={publishingId === item.id}
-                        className={item.isPublished ? "text-primary-500 hover:text-primary-400" : ""}
+                        className={
+                          item.isPublished
+                            ? "text-primary-500 hover:text-primary-400"
+                            : ""
+                        }
                       />
                       <IconButton
                         icon={<Pencil className="h-4 w-4" />}

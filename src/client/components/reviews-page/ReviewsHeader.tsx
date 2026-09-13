@@ -2,7 +2,7 @@ import { Star } from "lucide-react";
 import Eyebrow from "@/client/components/ui/Eyebrow";
 
 interface ReviewsHeaderProps {
-  /** Averaged from the loaded reviews — null while none have arrived. */
+  /** `null` until reviews have loaded. */
   readonly average: number | null;
   readonly count: number;
 }

@@ -17,20 +17,12 @@ const GROUP_LABEL_CLASSES =
 const LINK_BASE =
   "flex items-center gap-3 pl-3 pr-3 py-2 rounded-lg border-l-2 text-sm font-medium transition-colors duration-150";
 
-/**
- * The CMS sidebar. Fixed on desktop and an off-canvas drawer below `md`.
- *
- * It used to be an in-flow flex column, which meant it scrolled away with
- * the page — on the longer editor screens the navigation was simply gone by
- * the time you reached the bottom. On mobile it stacked the entire nav above
- * every page's content.
- */
+/** Fixed on desktop, off-canvas drawer below `md`. */
 export default function Sidebar({ open, onClose }: SidebarProps) {
   const { user } = useAuth();
   const { pathname } = useLocation();
 
-  // Navigating from the drawer should close it; without this the panel stays
-  // over the page the user just asked for.
+  // Close the drawer on navigation.
   useEffect(() => {
     onClose();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- close on navigation only

@@ -4,9 +4,7 @@ import CurrencySwitcher from "@/client/components/ui/CurrencySwitcher";
 
 export default function HeaderActions() {
   return (
-    // The switcher sits outside the `lg:` gate on purpose, so the toggle stays
-    // reachable from the collapsed header without opening the mobile menu.
-    // Below `lg` the nav and this CTA give way to the hamburger.
+    // Switchers stay outside the `lg:` gate so they're reachable without opening the mobile menu.
     <div className="flex shrink-0 items-center gap-3">
       <CurrencySwitcher />
       <ThemeSwitcher />

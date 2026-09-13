@@ -9,28 +9,43 @@ import type {
 import { httpClient } from "@/admin/services/httpClient";
 
 export interface GetPricingPlansParams {
-  /** Wins over `tiersOnly` when both are sent; ignored whenever `comboOnly` is true. */
+  /** Wins over `tiersOnly`; ignored when `comboOnly` is set. */
   readonly serviceId?: string;
-  /** `true` narrows to combo packs (the plans with no service). Wins over `serviceId`/`tiersOnly`. */
+  /** Combo packs only. Wins over `serviceId`/`tiersOnly`. */
   readonly comboOnly?: boolean;
-  /** `true` narrows to every service's tiers — any service, not one specific `serviceId`. */
+  /** Tiers of any service. */
   readonly tiersOnly?: boolean;
   readonly isPublished?: boolean;
-  /** Case-insensitive match against the name. */
   readonly search?: string;
   readonly page?: number;
   readonly pageSize?: number;
 }
 
-/** Ordered by name — not by sort order. A screen that cares about the display order sorts by `sortOrder` itself. */
+/** Ordered by name, not `sortOrder`. */
 export async function getPricingPlans(
-  { serviceId, comboOnly, tiersOnly, isPublished, search, page, pageSize }: GetPricingPlansParams = {},
+  {
+    serviceId,
+    comboOnly,
+    tiersOnly,
+    isPublished,
+    search,
+    page,
+    pageSize,
+  }: GetPricingPlansParams = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<AdminPricingPlan>> {
   const { data } = await httpClient.get<PagedResult<AdminPricingPlan>>(
     "/admin/pricing-plans",
     {
-      params: { serviceId, comboOnly, tiersOnly, isPublished, search, page, pageSize },
+      params: {
+        serviceId,
+        comboOnly,
+        tiersOnly,
+        isPublished,
+        search,
+        page,
+        pageSize,
+      },
       signal,
     },
   );
@@ -58,7 +73,7 @@ export async function createPricingPlan(
   return data;
 }
 
-/** Full replacement — `body` must carry every field, not just the changed ones. */
+/** Full replacement — send every field. */
 export async function updatePricingPlan(
   id: string,
   body: PricingPlanWriteRequest,
@@ -70,7 +85,6 @@ export async function updatePricingPlan(
   return data;
 }
 
-/** The one partial update the API offers — flips the draft flag on its own. */
 export async function setPricingPlanPublished(
   id: string,
   isPublished: boolean,
@@ -82,12 +96,12 @@ export async function setPricingPlanPublished(
   return data;
 }
 
-/** Soft delete — the row keeps existing behind the API's `IsDeleted` filter. */
+/** Soft delete. */
 export async function deletePricingPlan(id: string): Promise<void> {
   await httpClient.delete(`/admin/pricing-plans/${id}`);
 }
 
-/** Bulk sort-order update — pricing shares one global order. Every id must exist. Answers 204. */
+/** Every id must exist. */
 export async function reorderPricingPlans(
   body: PricingReorderRequest,
 ): Promise<void> {
@@ -112,7 +126,7 @@ export async function updatePricingPlanFeature(
   );
 }
 
-/** Hard delete — features have no soft-delete flag. */
+/** Hard delete. */
 export async function deletePricingPlanFeature(
   planId: string,
   featureId: string,

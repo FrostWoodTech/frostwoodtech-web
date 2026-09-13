@@ -1,7 +1,4 @@
-/**
- * Mirrors the DTOs exposed by FrostWoodTech Web.API (Azure Functions).
- * JSON is camelCase; enums are serialised as snake_case strings.
- */
+/** Mirrors the Web.API DTOs. JSON is camelCase; enums are snake_case strings; null members are omitted. */
 
 export type UserRole = "super_admin" | "admin";
 
@@ -20,11 +17,8 @@ export interface AdminUser {
   readonly lastName: string;
   readonly role: UserRole;
   readonly status: UserStatus;
-  /** Omitted entirely by the API when the user has never signed in. */
   readonly lastLoginAt?: string;
-  /** Set once the account is approved; the API omits it otherwise. */
   readonly approvedAt?: string;
-  /** Only set when `status` is `rejected`. */
   readonly rejectionReason?: string;
   readonly createdAt: string;
 }
@@ -34,10 +28,7 @@ export interface RejectUserRequest {
   readonly reason: string;
 }
 
-/**
- * `DTOs/Admin/AuthResponse.cs`. `expiresAt` is an absolute ISO-8601 timestamp with offset.
- * The refresh token never appears here — it rides along as an httpOnly cookie.
- */
+/** `DTOs/Admin/AuthResponse.cs`. The refresh token is never here — it's an httpOnly cookie. */
 export interface AuthResponse {
   readonly accessToken: string;
   readonly expiresAt: string;
@@ -72,10 +63,7 @@ export interface ResendVerificationRequest {
   readonly email: string;
 }
 
-/**
- * `DTOs/Admin/ResendVerificationResponse.cs` — always the same generic
- * message, whatever the email resolves to.
- */
+/** `DTOs/Admin/ResendVerificationResponse.cs` — always a generic message (no account enumeration). */
 export interface ResendVerificationResponse {
   readonly message: string;
 }
@@ -91,10 +79,7 @@ export interface ForgotPasswordRequest {
   readonly email: string;
 }
 
-/**
- * `DTOs/Admin/ForgotPasswordResponse.cs` — always the same generic message,
- * whatever the email resolves to.
- */
+/** `DTOs/Admin/ForgotPasswordResponse.cs` — always a generic message (no account enumeration). */
 export interface ForgotPasswordResponse {
   readonly message: string;
 }
@@ -106,7 +91,7 @@ export interface SetPasswordRequest {
   readonly confirmPassword: string;
 }
 
-/** `Enums/TechCategory.cs` — serialised as its snake_case name. */
+/** `Enums/TechCategory.cs` */
 export type TechCategory =
   | "frontend"
   | "backend"
@@ -119,17 +104,13 @@ export type TechCategory =
   | "design"
   | "other";
 
-/** `DTOs/Admin/TechCategoryOption.cs` — the fixed `TechCategory` list, value plus display label. */
+/** `DTOs/Admin/TechCategoryOption.cs` */
 export interface TechCategoryOption {
   readonly value: TechCategory;
   readonly label: string;
 }
 
-/**
- * `DTOs/Admin/AdminTagResponse.cs` — one table backs both project categories
- * and technologies, told apart by `isTechnology`. The API omits null members
- * entirely, hence the optional fields.
- */
+/** `DTOs/Admin/AdminTagResponse.cs` — categories and technologies share one table, split by `isTechnology`. */
 export interface AdminTag {
   readonly id: string;
   readonly name: string;
@@ -141,10 +122,7 @@ export interface AdminTag {
   readonly updatedAt: string;
 }
 
-/**
- * `DTOs/Admin/CreateTagRequest.cs` and `UpdateTagRequest.cs` share this shape.
- * PUT is a full replacement, so an edit has to send every field.
- */
+/** `DTOs/Admin/CreateTagRequest.cs` / `UpdateTagRequest.cs`. PUT is a full replacement. */
 export interface TagWriteRequest {
   readonly name: string;
   /** Generated from the name by the API when omitted. */
@@ -153,7 +131,7 @@ export interface TagWriteRequest {
   readonly technologyCategory?: TechCategory;
 }
 
-/** `Common/PagedResult.cs` — pageSize is clamped 1..100 server-side. */
+/** `Common/PagedResult.cs` — pageSize is clamped to 1..100 server-side. */
 export interface PagedResult<T> {
   readonly items: readonly T[];
   readonly page: number;
@@ -161,7 +139,7 @@ export interface PagedResult<T> {
   readonly total: number;
 }
 
-/** Stable `code` extension member on the API's RFC 7807 responses. */
+/** Stable `code` member on the API's RFC 7807 problem responses. */
 export type ApiErrorCode =
   | "validation_failed"
   | "invalid_credentials"
@@ -197,23 +175,19 @@ export interface ApiProblem {
 
 export type AuthStatus = "loading" | "authenticated" | "unauthenticated";
 
-/** `Enums/Site.cs` — the two public frontends, serialised lowercase. */
+/** `Enums/Site.cs` — the two public frontends. */
 export type Site = "agency" | "personal";
 
-/**
- * `DTOs/Admin/AdminArticleResponse.cs` — visibility is a pair of flags per
- * site rather than a status enum. Null members are omitted by the API, hence
- * the optionals.
- */
+/** `DTOs/Admin/AdminArticleResponse.cs` — visibility is a show/featured flag pair per site. */
 export interface AdminArticle {
   readonly id: string;
   readonly title: string;
   readonly excerpt: string;
   readonly slug?: string;
-  /** Set the first time the article is published; never cleared afterwards. */
+  /** Set on first publish; never cleared. */
   readonly publishedAt?: string;
   readonly coverImageKey?: string;
-  /** Raw Markdown, `media://articles/...` tokens unresolved — this is what the editor edits. */
+  /** Raw Markdown with unresolved `media://` tokens. */
   readonly contentMarkdown?: string;
   readonly isPublished: boolean;
   readonly showOnAgency: boolean;
@@ -228,9 +202,8 @@ export interface AdminArticle {
 }
 
 /**
- * `DTOs/Admin/CreateArticleRequest.cs`; `UpdateArticleRequest` extends it
- * unchanged. PUT is a full replacement — omitted booleans land as `false` and
- * an omitted `tagIds` wipes every tag, so an edit must send the whole shape.
+ * `DTOs/Admin/CreateArticleRequest.cs` (update is identical). PUT is a full replacement:
+ * omitted booleans become `false` and an omitted `tagIds` wipes every tag.
  */
 export interface ArticleWriteRequest {
   readonly title: string;
@@ -238,42 +211,34 @@ export interface ArticleWriteRequest {
   /** Generated from the title by the API when omitted. */
   readonly slug?: string;
   readonly coverImageKey?: string;
-  /** Raw Markdown, with embedded media as `media://articles/...` references. */
   readonly contentMarkdown?: string;
   readonly isPublished: boolean;
   readonly showOnAgency: boolean;
   readonly featuredOnAgency: boolean;
   readonly showOnPersonal: boolean;
   readonly featuredOnPersonal: boolean;
-  /** Always the full set — this replaces the article's tags outright. */
+  /** Replaces the article's tags outright. */
   readonly tagIds: readonly string[];
 }
 
-/** `Enums/PriceType.cs` — serialised as its snake_case name. */
+/** `Enums/PriceType.cs` */
 export type PriceType =
   "fixed" | "starting_from" | "hourly" | "monthly" | "custom";
 
-/** `DTOs/Public/PricingPlanFeatureResponse.cs` — shared by both views. */
+/** `DTOs/Public/PricingPlanFeatureResponse.cs` */
 export interface PricingPlanFeature {
   readonly id: string;
   readonly text: string;
-  /** `false` renders as a struck-through "not included" bullet. */
   readonly isIncluded: boolean;
   readonly sortOrder: number;
 }
 
 /**
- * `DTOs/Admin/AdminPricingPlanResponse.cs` — one table backs both per-service
- * tiers and combo packs, told apart by `serviceId`: null means a combo pack.
- * A null `priceAmount` is the "Custom / Contact us" case. Agency-only —
- * pricing never appears on the personal site, so there is no `showOnX`/
- * `featuredOnX` pair, just one `featured` flag and one `sortOrder`, set only
- * via drag-and-drop. The API omits null members entirely, hence the optional
- * fields.
+ * `DTOs/Admin/AdminPricingPlanResponse.cs`. No `serviceId` = combo pack; no `priceAmount` =
+ * "Contact us". Agency-only, so one `featured` flag and one drag-set `sortOrder`.
  */
 export interface AdminPricingPlan {
   readonly id: string;
-  /** Absent for a combo pack. */
   readonly serviceId?: string;
   readonly name: string;
   readonly tagline?: string;
@@ -287,7 +252,6 @@ export interface AdminPricingPlan {
   readonly ctaLabel?: string;
   readonly ctaUrl?: string;
   readonly isPublished: boolean;
-  /** Home page card flag — agency-only, so there's no per-site pair. */
   readonly featured: boolean;
   /** Drag-and-drop order — never a typed number on create/update. */
   readonly sortOrder: number;
@@ -297,15 +261,10 @@ export interface AdminPricingPlan {
 }
 
 /**
- * `DTOs/Admin/CreatePricingPlanRequest.cs`; `UpdatePricingPlanRequest` extends
- * it unchanged. PUT is a full replacement — an omitted boolean lands as
- * `false`, so an edit must send the whole shape. Features are a separate
- * sub-resource and are not part of this body. No `sortOrder` here — a new
- * plan is appended to the end of its group's order server-side, and an
- * existing one's position only changes via `reorderPricingPlans`.
+ * `DTOs/Admin/CreatePricingPlanRequest.cs` (update is identical). PUT is a full replacement.
+ * Features are a separate sub-resource; order only changes via `reorderPricingPlans`.
  */
 export interface PricingPlanWriteRequest {
-  /** Omit for a combo pack. */
   readonly serviceId?: string;
   readonly name: string;
   readonly tagline?: string;
@@ -322,25 +281,19 @@ export interface PricingPlanWriteRequest {
   readonly featured: boolean;
 }
 
-/**
- * `DTOs/Admin/PricingReorderRequest.cs` — no `site`: pricing is agency-only,
- * so there is only one order to keep.
- */
+/** `DTOs/Admin/PricingReorderRequest.cs` — no `site`: pricing is agency-only. */
 export interface PricingReorderRequest {
   readonly items: readonly ReorderItem[];
 }
 
-/**
- * `DTOs/Admin/AddPricingPlanFeatureRequest.cs`; the update request extends it
- * unchanged. Features hang off a saved plan, so they need its id.
- */
+/** `DTOs/Admin/AddPricingPlanFeatureRequest.cs` (update is identical). */
 export interface PricingFeatureWriteRequest {
   readonly text: string;
   readonly isIncluded: boolean;
   readonly sortOrder: number;
 }
 
-/** `DTOs/Admin/ReorderRequest.cs` — one entry per row being renumbered. */
+/** `DTOs/Admin/ReorderRequest.cs` */
 export interface ReorderItem {
   readonly id: string;
   readonly sortOrder: number;
@@ -357,15 +310,7 @@ export interface FeatureReorderRequest {
   readonly items: readonly ReorderItem[];
 }
 
-/**
- * `DTOs/Admin/AdminServiceResponse.cs` — the offering a pricing plan hangs
- * off. Visibility is a pair of flags per site rather than a status enum, and
- * `isPublished` is the separate draft switch on top. The API omits null
- * members entirely, hence the optional fields. Icon and hero image are each
- * an uploaded asset (Neon Object Storage), set together with their other
- * fields or not at all — same all-or-nothing rule as project images.
- */
-/** `DTOs/Admin/ServiceProjectSummary.cs` — a linked project as the service form needs it. */
+/** `DTOs/Admin/ServiceProjectSummary.cs` */
 export interface ServiceProjectSummary {
   readonly id: string;
   readonly slug: string;
@@ -374,6 +319,10 @@ export interface ServiceProjectSummary {
   readonly isPublished: boolean;
 }
 
+/**
+ * `DTOs/Admin/AdminServiceResponse.cs` — show/featured flags per site plus an `isPublished` draft
+ * switch. Each image's fields are set together or not at all.
+ */
 export interface AdminService {
   readonly id: string;
   readonly slug: string;
@@ -381,7 +330,7 @@ export interface AdminService {
   /** Markdown — the card blurb, and the fallback body when the page fields are empty. */
   readonly shortDescription: string;
   readonly eyebrow?: string;
-  /** The page's H1. Falls back to `name` when absent. */
+  /** The page's H1; falls back to `name`. */
   readonly headline?: string;
   readonly deck?: string;
   /** Markdown bullet list. */
@@ -411,12 +360,11 @@ export interface AdminService {
   readonly depthImageWidth?: number;
   readonly depthImageHeight?: number;
   readonly depthImageAltText?: string;
-  /** Linked case studies, shown newest year first. */
   readonly projects: readonly ServiceProjectSummary[];
   readonly seoTitle?: string;
   readonly seoDescription?: string;
   readonly isPublished: boolean;
-  /** Stamped the first time the service goes live; unpublishing never clears it. */
+  /** Set on first publish; never cleared. */
   readonly publishedAt?: string;
   readonly showOnAgency: boolean;
   readonly featuredOnAgency: boolean;
@@ -429,11 +377,8 @@ export interface AdminService {
 }
 
 /**
- * `DTOs/Admin/CreateServiceRequest.cs`; `UpdateServiceRequest` extends it
- * unchanged. PUT is a full replacement — an omitted boolean lands as `false`
- * and an omitted number as `0`, so an edit must send the whole shape. Show/
- * featured/sort are carried forward from the loaded service rather than
- * edited in this form — that lives on the reorder & visibility screen.
+ * `DTOs/Admin/CreateServiceRequest.cs` (update is identical). PUT is a full replacement, so
+ * show/featured/sort are carried over from the loaded service.
  */
 export interface ServiceWriteRequest {
   readonly name: string;
@@ -447,34 +392,27 @@ export interface ServiceWriteRequest {
   readonly outcomes?: string;
   readonly capabilities?: string;
   readonly inDepth?: string;
-  /** Set together with primaryCtaUrl, or not at all. */
+  /** Set together with primaryCtaUrl or not at all (same for secondary and each image group). */
   readonly primaryCtaLabel?: string;
   readonly primaryCtaUrl?: string;
-  /** Set together with secondaryCtaUrl, or not at all. */
   readonly secondaryCtaLabel?: string;
   readonly secondaryCtaUrl?: string;
-  /** Set together with the other icon* fields, or not at all. */
   readonly iconObjectKey?: string;
   readonly iconUrl?: string;
   readonly iconWidth?: number;
   readonly iconHeight?: number;
-  /** Required whenever an icon is set. */
   readonly iconAltText?: string;
-  /** Set together with the other heroImage* fields, or not at all. */
   readonly heroImageObjectKey?: string;
   readonly heroImageUrl?: string;
   readonly heroImageWidth?: number;
   readonly heroImageHeight?: number;
-  /** Required whenever a hero image is set. */
   readonly heroImageAltText?: string;
-  /** Set together with the other depthImage* fields, or not at all. */
   readonly depthImageObjectKey?: string;
   readonly depthImageUrl?: string;
   readonly depthImageWidth?: number;
   readonly depthImageHeight?: number;
-  /** Required whenever a depth image is set. */
   readonly depthImageAltText?: string;
-  /** The complete set of case studies — replaces the service's links outright. */
+  /** Replaces the service's linked projects outright. */
   readonly projectIds: readonly string[];
   readonly seoTitle?: string;
   readonly seoDescription?: string;
@@ -487,35 +425,25 @@ export interface ServiceWriteRequest {
   readonly personalSortOrder: number;
 }
 
-/**
- * `DTOs/Public/ProjectImageResponse.cs` — Neon Object Storage metadata only;
- * the API never stores bytes and never returns per-size URLs.
- */
+/** `DTOs/Public/ProjectImageResponse.cs` — object storage metadata only, no per-size URLs. */
 export interface ProjectImage {
   readonly id: string;
-  /** Neon object key. */
   readonly objectKey: string;
   readonly url: string;
   readonly altText: string;
   readonly width: number;
   readonly height: number;
-  /** Exactly one per project — the card / hero image. */
+  /** Exactly one per project. */
   readonly isPrimary: boolean;
   readonly sortOrder: number;
 }
 
-/**
- * `DTOs/Admin/AdminProjectResponse.cs` — the case-study record. Visibility is a
- * pair of flags per site rather than a status enum, and `isPublished` is the
- * separate draft switch on top. The API omits null members entirely, hence the
- * optional fields.
- */
+/** `DTOs/Admin/AdminProjectResponse.cs` — show/featured flags per site plus an `isPublished` draft switch. */
 export interface AdminProject {
   readonly id: string;
   readonly slug: string;
   readonly title: string;
   readonly year: number;
-  /** Card / list blurb. */
   readonly shortDescription: string;
   /** Markdown, long form. */
   readonly description: string;
@@ -526,7 +454,7 @@ export interface AdminProject {
   readonly proof?: string;
   readonly clientName?: string;
   readonly isPublished: boolean;
-  /** Stamped the first time the project goes live; unpublishing never clears it. */
+  /** Set on first publish; never cleared. */
   readonly publishedAt?: string;
   readonly seoTitle?: string;
   readonly seoDescription?: string;
@@ -543,11 +471,8 @@ export interface AdminProject {
 }
 
 /**
- * `DTOs/Admin/CreateProjectRequest.cs`; `UpdateProjectRequest` extends it
- * unchanged. PUT is a full replacement — an omitted boolean lands as `false`,
- * an omitted number as `0` and an omitted `tagIds` wipes every tag, so an edit
- * must send the whole shape. Images are a separate sub-resource and are not
- * part of this body.
+ * `DTOs/Admin/CreateProjectRequest.cs` (update is identical). PUT is a full replacement: omitted
+ * fields reset and an omitted `tagIds` wipes every tag. Images are a separate sub-resource.
  */
 export interface ProjectWriteRequest {
   readonly title: string;
@@ -571,22 +496,16 @@ export interface ProjectWriteRequest {
   readonly featuredOnAgency: boolean;
   readonly showOnPersonal: boolean;
   readonly featuredOnPersonal: boolean;
-  /** Always the full set — this replaces the project's tags outright. */
+  /** Replaces the project's tags outright. */
   readonly tagIds: readonly string[];
 }
 
-/**
- * `DTOs/Admin/SetPublishedRequest.cs` — flips the draft flag on its own so the
- * list can take a project live without resubmitting the whole form.
- */
+/** `DTOs/Admin/SetPublishedRequest.cs` — toggles publish without sending the full record. */
 export interface SetPublishedRequest {
   readonly isPublished: boolean;
 }
 
-/**
- * `DTOs/Admin/AddProjectImageRequest.cs`; `UpdateProjectImageRequest` extends
- * it unchanged. Setting `isPrimary` true clears the previous primary image.
- */
+/** `DTOs/Admin/AddProjectImageRequest.cs`. Setting `isPrimary` clears the previous primary. */
 export interface ProjectImageWriteRequest {
   readonly objectKey: string;
   readonly url: string;
@@ -597,24 +516,86 @@ export interface ProjectImageWriteRequest {
   readonly sortOrder: number;
 }
 
-/** `DTOs/Admin/ImageReorderRequest.cs` — a single global order, no site. */
+/** `DTOs/Admin/ImageReorderRequest.cs` — one global order, no site. */
 export interface ImageReorderRequest {
   readonly items: readonly ReorderItem[];
 }
 
-/** `Enums/MediaTarget.cs` — which folder/validation rules a signature is for. */
-export type MediaTarget =
-  | "projects"
-  | "services"
-  | "tags"
-  | "articles"
-  | "certificates";
+/** `DTOs/Public/ProductImageResponse.cs` — same shape as `ProjectImage`. */
+export interface ProductImage {
+  readonly id: string;
+  readonly objectKey: string;
+  readonly url: string;
+  readonly altText: string;
+  readonly width: number;
+  readonly height: number;
+  /** Exactly one per product. */
+  readonly isPrimary: boolean;
+  readonly sortOrder: number;
+}
 
-/**
- * `DTOs/Admin/PresignedUploadRequest.cs` — the current upload contract. The
- * server picks the folder from `target`, so the client never names a path.
- * `slug` is required when `target` is `projects` or `articles`.
- */
+/** `DTOs/Admin/AdminProductResponse.cs` — like a project, but without tags. */
+export interface AdminProduct {
+  readonly id: string;
+  readonly slug: string;
+  readonly name: string;
+  readonly tagline: string;
+  /** Markdown. */
+  readonly description: string;
+  /** Markdown — free-form pricing copy, not a converted amount. */
+  readonly priceDetails?: string;
+  readonly productUrl?: string;
+  readonly isPublished: boolean;
+  /** Set on first publish; never cleared. */
+  readonly publishedAt?: string;
+  readonly seoTitle?: string;
+  readonly seoDescription?: string;
+  readonly showOnAgency: boolean;
+  readonly featuredOnAgency: boolean;
+  readonly agencySortOrder: number;
+  readonly showOnPersonal: boolean;
+  readonly featuredOnPersonal: boolean;
+  readonly personalSortOrder: number;
+  readonly images: readonly ProductImage[];
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+/** `DTOs/Admin/CreateProductRequest.cs` (update is identical). PUT is a full replacement; images are separate. */
+export interface ProductWriteRequest {
+  readonly name: string;
+  /** Generated from the name by the API when omitted. */
+  readonly slug?: string;
+  readonly tagline: string;
+  readonly description: string;
+  readonly priceDetails?: string;
+  /** Must be an absolute http(s) URL when given. */
+  readonly productUrl?: string;
+  readonly isPublished: boolean;
+  readonly seoTitle?: string;
+  readonly seoDescription?: string;
+  readonly showOnAgency: boolean;
+  readonly featuredOnAgency: boolean;
+  readonly showOnPersonal: boolean;
+  readonly featuredOnPersonal: boolean;
+}
+
+/** `DTOs/Admin/AddProductImageRequest.cs`. Setting `isPrimary` clears the previous primary. */
+export interface ProductImageWriteRequest {
+  readonly objectKey: string;
+  readonly url: string;
+  readonly altText: string;
+  readonly width: number;
+  readonly height: number;
+  readonly isPrimary: boolean;
+  readonly sortOrder: number;
+}
+
+/** `Enums/MediaTarget.cs` — picks the upload folder and validation rules. */
+export type MediaTarget =
+  "projects" | "products" | "services" | "tags" | "articles" | "certificates";
+
+/** `DTOs/Admin/PresignedUploadRequest.cs`. `slug` is required for `projects`, `products` and `articles`. */
 export interface PresignedUploadRequest {
   readonly target: MediaTarget;
   readonly slug?: string;
@@ -622,38 +603,28 @@ export interface PresignedUploadRequest {
   readonly objectKey?: string;
 }
 
-/**
- * `DTOs/Admin/PresignedUploadResponse.cs` — PUT the raw file bytes straight to
- * `uploadUrl` with a matching content type; the bytes never touch the API.
- */
+/** `DTOs/Admin/PresignedUploadResponse.cs` — PUT the file straight to `uploadUrl` with a matching content type. */
 export interface PresignedUploadResponse {
   readonly uploadUrl: string;
   readonly objectKey: string;
-  /** Where the object reads back once the PUT lands — the API resolves it, the client can't. */
   readonly publicUrl: string;
   readonly expiresAt: string;
 }
 
-/**
- * `DTOs/Admin/MediaConfigResponse.cs` — prefix a `media://` token's key with
- * this (in place of `media://`) to get a loadable URL.
- */
+/** `DTOs/Admin/MediaConfigResponse.cs` — replaces the `media://` prefix to make a loadable URL. */
 export interface MediaConfigResponse {
   readonly publicBaseUrl: string;
 }
 
 /**
- * `DTOs/Admin/AdminFaqResponse.cs` — no `publishedAt` stamp and no dedicated
- * publish-toggle endpoint; `isPublished` only flips via a full update. Unlike
- * the other site-visible entities, FAQs have no featured flag and no
- * category — just the two visibility flags and one `sortOrder` shared across
- * both sites, set by dragging rows in the admin UI.
+ * `DTOs/Admin/AdminFaqResponse.cs` — no featured flag and no publish endpoint (`isPublished` flips
+ * via a full update). One `sortOrder` shared by both sites.
  */
 export interface AdminFaq {
   readonly id: string;
-  /** Absent means a general FAQ shared by both sites. */
+  /** Absent means a general FAQ. */
   readonly serviceId?: string;
-  /** For display next to the scope filter. Present exactly when `serviceId` is. */
+  /** Present exactly when `serviceId` is. */
   readonly serviceName?: string;
   readonly question: string;
   /** Markdown. */
@@ -666,14 +637,9 @@ export interface AdminFaq {
   readonly updatedAt: string;
 }
 
-/**
- * `DTOs/Admin/CreateFaqRequest.cs`; `UpdateFaqRequest` extends it unchanged.
- * PUT is a full replacement, so an edit has to send every field. No
- * `sortOrder` here — a new FAQ is appended to the end server-side, and an
- * existing one's position only changes via `reorderFaqs`.
- */
+/** `DTOs/Admin/CreateFaqRequest.cs` (update is identical). PUT is a full replacement; order changes via `reorderFaqs`. */
 export interface FaqWriteRequest {
-  /** Omit for a general FAQ shared by both sites; otherwise scopes it to that service's page. */
+  /** Omit for a general FAQ; otherwise scopes it to that service's page. */
   readonly serviceId?: string;
   readonly question: string;
   readonly answer: string;
@@ -682,21 +648,17 @@ export interface FaqWriteRequest {
   readonly showOnPersonal: boolean;
 }
 
-/** `DTOs/Admin/FaqReorderRequest.cs` — no `site`: FAQs share one order across both sites. */
+/** `DTOs/Admin/FaqReorderRequest.cs` — no `site`: FAQs share one order. */
 export interface FaqReorderRequest {
   readonly items: readonly ReorderItem[];
 }
 
-/**
- * `DTOs/Admin/AdminReviewResponse.cs` — draft state, featured flag, sort
- * order, and the submitter's IP for spam moderation. Reviews aren't split per
- * site, unlike articles/services/projects/FAQs.
- */
+/** `DTOs/Admin/AdminReviewResponse.cs` — not split per site. */
 export interface AdminReview {
   readonly id: string;
   readonly name: string;
   readonly country: string;
-  /** ISO 3166-1 alpha-2, e.g. `US`. */
+  /** ISO 3166-1 alpha-2. */
   readonly countryCode: string;
   readonly position?: string;
   readonly rating: number;
@@ -704,18 +666,15 @@ export interface AdminReview {
   readonly isPublished: boolean;
   readonly isFeatured: boolean;
   readonly sortOrder: number;
-  /** Set for a public submission; omitted for a review an admin added by hand. */
+  /** Only set for public submissions. */
   readonly submitterIp?: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
 
 /**
- * `DTOs/Admin/CreateReviewRequest.cs`; `UpdateReviewRequest` extends it
- * unchanged. PUT is a full replacement, so an edit has to send every field —
- * this is also how publish/unpublish and featuring both happen. No
- * `sortOrder` here — a new review is appended to the end server-side, and an
- * existing one's position only changes via `reorderReviews`.
+ * `DTOs/Admin/CreateReviewRequest.cs` (update is identical). PUT is a full replacement — also how
+ * publish and featuring change. Order changes via `reorderReviews`.
  */
 export interface ReviewWriteRequest {
   readonly name: string;
@@ -728,18 +687,12 @@ export interface ReviewWriteRequest {
   readonly isFeatured: boolean;
 }
 
-/** `DTOs/Admin/ReviewReorderRequest.cs` — reviews carry a single order, no site. */
+/** `DTOs/Admin/ReviewReorderRequest.cs` — one order, no site. */
 export interface ReviewReorderRequest {
   readonly items: readonly ReorderItem[];
 }
 
-/**
- * `DTOs/Admin/AdminCertificateResponse.cs` — personal-site only, so there is
- * no `showOnX`/`featuredOnX` pair, just one `featured` flag and one
- * `sortOrder`, same shape as pricing plans but agency's mirror image. The
- * uploaded file can be a PDF or an image, so `width`/`height` are absent
- * (the API omits null members) whenever it's a PDF.
- */
+/** `DTOs/Admin/AdminCertificateResponse.cs` — personal-site only. `width`/`height` are absent for PDFs. */
 export interface AdminCertificate {
   readonly id: string;
   readonly name: string;
@@ -749,26 +702,19 @@ export interface AdminCertificate {
   readonly marks?: string;
   readonly objectKey: string;
   readonly url: string;
-  /** e.g. `application/pdf`, `image/png`. */
   readonly mimeType: string;
   readonly width?: number;
   readonly height?: number;
   readonly altText: string;
   readonly isPublished: boolean;
   readonly featured: boolean;
-  /** Drag-and-drop order — never a typed number on create/update. */
+  /** Set by drag-and-drop only. */
   readonly sortOrder: number;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
 
-/**
- * `DTOs/Admin/CreateCertificateRequest.cs`; `UpdateCertificateRequest`
- * extends it unchanged. PUT is a full replacement, so an edit has to send
- * every field. No `sortOrder` here — a new certificate is appended to the
- * end of the single global order server-side, and an existing one's position
- * only changes via `reorderCertificates`.
- */
+/** `DTOs/Admin/CreateCertificateRequest.cs` (update is identical). Order changes via `reorderCertificates`. */
 export interface CertificateWriteRequest {
   readonly name: string;
   readonly issuedBy: string;
@@ -784,20 +730,14 @@ export interface CertificateWriteRequest {
   readonly featured: boolean;
 }
 
-/**
- * `DTOs/Admin/CertificateReorderRequest.cs` — no `site`: certificates only
- * ever exist for the personal site, so there is only one order to keep.
- */
+/** `DTOs/Admin/CertificateReorderRequest.cs` — no `site`: personal-site only. */
 export interface CertificateReorderRequest {
   readonly items: readonly ReorderItem[];
 }
 
 /**
- * `DTOs/Admin/AdminCurrencyResponse.cs`. Two independent rates: `manualRateFromUsd` ("price set by
- * me," admin-typed, sticky) wins over `liveRateFromUsd` ("actual price," from the last refresh)
- * whenever both exist — `effectiveRateFromUsd` is whichever one a visitor actually converts at,
- * absent when neither exists yet. USD is the base: its manual rate is pinned to 1 and it can be
- * neither deactivated, renamed nor deleted.
+ * `DTOs/Admin/AdminCurrencyResponse.cs`. A manual rate overrides the live one; `effectiveRateFromUsd`
+ * is what visitors convert at. USD is the base: rate pinned to 1, can't be deactivated or deleted.
  */
 export interface AdminCurrency {
   readonly id: string;
@@ -805,23 +745,17 @@ export interface AdminCurrency {
   readonly code: string;
   readonly name: string;
   readonly symbol: string;
-  /** "Price set by me." Absent means the live rate is used instead. */
   readonly manualRateFromUsd?: number;
-  /** "Actual price," as of the last refresh. Absent until one has run. */
+  /** Absent until the first refresh has run. */
   readonly liveRateFromUsd?: number;
   readonly liveRateFetchedAt?: string;
-  /** What a visitor actually converts at. Absent means neither rate exists yet. */
   readonly effectiveRateFromUsd?: number;
   readonly isActive: boolean;
   readonly createdAt: string;
   readonly updatedAt: string;
 }
 
-/**
- * `DTOs/Admin/CreateCurrencyRequest.cs`; `UpdateCurrencyRequest` extends it unchanged. PUT is a
- * full replacement, so an edit has to send every field. Only the manual override can be written
- * this way — the live rate only ever changes via `refreshCurrencyRates`.
- */
+/** `DTOs/Admin/CreateCurrencyRequest.cs` (update is identical). The live rate only changes via `refreshCurrencyRates`. */
 export interface CurrencyWriteRequest {
   readonly code: string;
   readonly name: string;
@@ -836,15 +770,10 @@ export interface RefreshCurrencyRatesResponse {
   readonly fetchedAt: string;
 }
 
-/** `DTOs/Admin/AdminContactSubmissionResponse.cs`. `spam` is server-set (honeypot), never chosen by the submitter. */
+/** `spam` is set server-side by the honeypot. */
 export type ContactSubmissionStatus =
-  | "new"
-  | "read"
-  | "replied"
-  | "archived"
-  | "spam";
+  "new" | "read" | "replied" | "archived" | "spam";
 
-/** Coarse, currency-free budget band on the contact form — qualifies a lead, not a quote. */
 export type ContactBudgetRange =
   | "under_one_k"
   | "one_to_five_k"
@@ -852,11 +781,7 @@ export type ContactBudgetRange =
   | "over_fifteen_k"
   | "not_sure";
 
-/**
- * `DTOs/Admin/AdminContactSubmissionResponse.cs` — everything the visitor sent, plus triage
- * state and the submitter's IP for spam moderation. Never public; there is no matching public
- * read endpoint, only `POST /public/contact`.
- */
+/** `DTOs/Admin/AdminContactSubmissionResponse.cs` — admin-only; the public side can only POST. */
 export interface AdminContactSubmission {
   readonly id: string;
   readonly name: string;
@@ -865,7 +790,7 @@ export interface AdminContactSubmission {
   readonly company?: string;
   readonly subject?: string;
   readonly message: string;
-  /** The service the enquiry is about. Absent means a general enquiry. */
+  /** Absent means a general enquiry. */
   readonly serviceId?: string;
   readonly serviceName?: string;
   readonly budgetRange?: ContactBudgetRange;
@@ -879,10 +804,7 @@ export interface AdminContactSubmission {
   readonly updatedAt: string;
 }
 
-/**
- * `DTOs/Admin/UpdateContactSubmissionRequest.cs` — triage only. An admin can never rewrite what
- * the visitor actually submitted.
- */
+/** `DTOs/Admin/UpdateContactSubmissionRequest.cs` — triage fields only. */
 export interface ContactSubmissionUpdateRequest {
   readonly status: ContactSubmissionStatus;
   readonly adminNotes?: string;

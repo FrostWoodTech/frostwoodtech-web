@@ -6,16 +6,19 @@ import Pricing from "@/client/components/pricing/Pricing";
 import TestimonialCarousel from "@/client/components/testimonial/TestimonialCarousel";
 import PanelCTA from "@/client/components/ui/PanelCTA";
 import { HOME_METRICS } from "@/client/data/hero";
+import { useHome } from "@/client/hooks/useHome";
 
 export default function Home() {
+  const { data: home } = useHome();
+
   return (
     <>
       <Hero />
       <TrustedBy />
-      <Services />
+      {home && <Services services={home.featuredServices} />}
       <Metrics metrics={HOME_METRICS} />
-      <Pricing />
-      <TestimonialCarousel />
+      {home && <Pricing plans={home.featuredPricingPlans} />}
+      {home && <TestimonialCarousel reviews={home.featuredReviews} />}
 
       <section className="mx-auto max-w-7xl px-4 py-26 sm:px-6 lg:px-8">
         <PanelCTA

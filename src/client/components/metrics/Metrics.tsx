@@ -6,7 +6,6 @@ interface MetricsProps {
   readonly className?: string;
 }
 
-/** The hairline-divided figures band. Shared by Home and About. */
 export default function Metrics({ metrics, className = "" }: MetricsProps) {
   return (
     <section className={`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ${className}`}>

@@ -2,11 +2,7 @@ import { Link, Outlet } from "react-router-dom";
 import Alert from "@/admin/components/ui/Alert";
 import useAuth from "@/admin/context/useAuth";
 
-/**
- * User management is `SuperAdmin`-only server-side (`UserService`), so this
- * keeps a regular `Admin` from seeing the table and hitting a raw `forbidden`
- * error on click. Assumes an auth guard already ran higher up the tree.
- */
+/** Hides super-admin-only routes from regular admins. Assumes an auth guard ran higher up. */
 export default function RequireSuperAdmin() {
   const { user } = useAuth();
 

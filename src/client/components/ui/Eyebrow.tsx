@@ -16,10 +16,7 @@ const RULE_CLASSES: Record<"ice" | "forest", string> = {
   forest: "bg-primary-400",
 };
 
-/**
- * The hairline + letter-spaced label that opens every section in the design.
- * Replaces the old rounded "badge pill" that was pasted across ~10 files.
- */
+/** Hairline + letter-spaced label that opens each section. */
 export default function Eyebrow({
   children,
   align = "left",

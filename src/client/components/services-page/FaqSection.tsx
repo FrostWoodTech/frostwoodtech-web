@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Eyebrow from "@/client/components/ui/Eyebrow";
-import { FAQ_DATA } from "@/client/data/services-page";
 import type { FAQ } from "@/client/types";
 
 interface FaqSectionProps {
-  readonly faqs?: readonly FAQ[];
+  readonly faqs: readonly FAQ[];
 }
 
-export default function FaqSection({ faqs = FAQ_DATA }: FaqSectionProps) {
+export default function FaqSection({ faqs }: FaqSectionProps) {
   const [openId, setOpenId] = useState<string | null>(faqs[0]?.id ?? null);
 
   const toggleFaq = (id: string) => {

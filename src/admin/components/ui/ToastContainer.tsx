@@ -8,8 +8,6 @@ interface ToastContainerProps {
   readonly onDismiss: (id: number) => void;
 }
 
-/* A left accent rule carries the severity, matching `Alert` — the two are the
-   same message at different urgencies and should read as one system. */
 const VARIANT_CLASSES: Record<ToastVariant, string> = {
   error: "text-danger-500 border-border-subtle border-l-danger-500",
   success: "text-success-500 border-border-subtle border-l-success-500",
@@ -17,10 +15,7 @@ const VARIANT_CLASSES: Record<ToastVariant, string> = {
   loading: "text-text-primary border-border-subtle border-l-border-strong",
 };
 
-/**
- * Stacked toast notifications, rendered above the modal layer (`z-50`)
- * through `AdminPortal` so the admin theme follows them out of `AdminRoot`.
- */
+/** Rendered above modals through `AdminPortal`. */
 export default function ToastContainer({
   toasts,
   onDismiss,

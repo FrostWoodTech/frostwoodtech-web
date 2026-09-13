@@ -18,7 +18,7 @@ import CertificateFileField, {
 import { Button, Checkbox, Input, Modal } from "@/admin/components/ui";
 
 interface CertificateFormModalProps {
-  /** `null` opens the dialog in create mode. */
+  /** `null` means create mode. */
   readonly certificate: AdminCertificate | null;
   readonly onClose: () => void;
   readonly onSaved: () => void;
@@ -39,7 +39,9 @@ const BLANK_VALUES: CertificateFormValues = {
   featured: false,
 };
 
-function toFormValues(certificate: AdminCertificate | null): CertificateFormValues {
+function toFormValues(
+  certificate: AdminCertificate | null,
+): CertificateFormValues {
   if (!certificate) return BLANK_VALUES;
 
   return {
@@ -67,15 +69,18 @@ function toFileValue(
   altText?: string,
 ): CertificateFileValue | null {
   return objectKey && url
-    ? { objectKey, url, mimeType: mimeType ?? "", width, height, altText: altText ?? "" }
+    ? {
+        objectKey,
+        url,
+        mimeType: mimeType ?? "",
+        width,
+        height,
+        altText: altText ?? "",
+      }
     : null;
 }
 
-/**
- * Mounted only while the dialog is open, and keyed on the certificate by
- * `CertificatesPage`, so the form state starts fresh for every row instead
- * of being reset.
- */
+/** Mounted only while open and keyed per row by the page, so form state starts fresh. */
 export default function CertificateFormModal({
   certificate,
   onClose,
@@ -109,16 +114,22 @@ export default function CertificateFormModal({
   });
 
   function setFile(next: CertificateFileValue | null) {
-    setValue("objectKey", next?.objectKey ?? "", { shouldDirty: true, shouldValidate: true });
+    setValue("objectKey", next?.objectKey ?? "", {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
     setValue("url", next?.url ?? "", { shouldDirty: true });
     setValue("mimeType", next?.mimeType ?? "", { shouldDirty: true });
     setValue("width", next?.width, { shouldDirty: true });
     setValue("height", next?.height, { shouldDirty: true });
-    setValue("altText", next?.altText ?? "", { shouldDirty: true, shouldValidate: true });
+    setValue("altText", next?.altText ?? "", {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   }
 
   async function onSubmit(values: CertificateFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so any omitted field resets to default.
+    // Built explicitly: PUT replaces the whole record, so no field may be omitted.
     const body: CertificateWriteRequest = {
       name: values.name.trim(),
       issuedBy: values.issuedBy.trim(),
@@ -136,7 +147,10 @@ export default function CertificateFormModal({
 
     try {
       if (certificate) {
-        await updateCertificateMutation.mutateAsync({ id: certificate.id, body });
+        await updateCertificateMutation.mutateAsync({
+          id: certificate.id,
+          body,
+        });
         toast.success("Certificate updated.");
       } else {
         await createCertificateMutation.mutateAsync(body);
@@ -164,7 +178,10 @@ export default function CertificateFormModal({
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
         <div>
-          <CertificateFileField value={toFileValue(...file)} onChange={setFile} />
+          <CertificateFileField
+            value={toFileValue(...file)}
+            onChange={setFile}
+          />
           {errors.objectKey && (
             <p className="mt-1.5 text-xs text-danger-500">
               {errors.objectKey.message}

@@ -20,12 +20,12 @@ export default function ClientLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        {/* Inside the query provider — it fetches the currency list. */}
+        {/* Must be inside the query provider. */}
         <CurrencyProvider>
           <ToastProvider>
             <Header />
             <main className="min-h-screen">
-              {/* Keyed by path so navigating away from a crashed page remounts the boundary. */}
+              {/* Keyed by path so leaving a crashed page resets the boundary. */}
               <ErrorBoundary key={pathname}>
                 <Outlet />
               </ErrorBoundary>

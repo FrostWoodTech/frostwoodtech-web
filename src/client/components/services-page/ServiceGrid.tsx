@@ -1,32 +1,52 @@
 import ServiceCard from "@/client/components/services/ServiceCard";
+import Spinner from "@/client/components/ui/Spinner";
 import { useServices } from "@/client/hooks/useServices";
 import { mapApiServiceToService } from "@/client/lib/mappers";
-import { SERVICES } from "@/client/data/services";
+import { toErrorMessage } from "@/client/services/ApiError";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 100;
 
-/**
- * Falls back to the static curated list while loading and on error, rather
- * than showing an empty grid — the six static entries are the intended
- * long-term catalog anyway, kept in sync by hand until every service that
- * matters is published through the CMS.
- */
 export default function ServiceGrid() {
-  const { data: result, isPending, isError } = useServices({
+  const {
+    data: result,
+    isPending,
+    isError,
+    error,
+  } = useServices({
     pageSize: PAGE_SIZE,
   });
 
-  // Also falls back once the request resolves with nothing published yet —
-  // an empty grid is never the right thing to show a visitor.
-  const services =
-    !isPending && !isError && result && result.items.length > 0
-      ? result.items.map(mapApiServiceToService)
-      : SERVICES;
+  if (isPending) {
+    return (
+      <div className="flex justify-center py-16 text-text-muted">
+        <Spinner className="h-8 w-8" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="py-16 text-center text-danger-400">
+        {toErrorMessage(error)}
+      </div>
+    );
+  }
+
+  if (result.items.length === 0) {
+    return (
+      <p className="py-16 text-center text-text-secondary">
+        Our services are being updated — check back soon.
+      </p>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 gap-4.5 md:grid-cols-2 lg:grid-cols-3">
-      {services.map((service) => (
-        <ServiceCard key={service.id} service={service} />
+      {result.items.map((service) => (
+        <ServiceCard
+          key={service.id}
+          service={mapApiServiceToService(service)}
+        />
       ))}
     </div>
   );

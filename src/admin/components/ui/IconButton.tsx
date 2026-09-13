@@ -1,9 +1,6 @@
 interface IconButtonProps {
   readonly icon: React.ReactNode;
-  /**
-   * Describes the action for screen readers and the tooltip. Required —
-   * an icon-only control with no label is unusable without sight.
-   */
+  /** Accessible name and tooltip. */
   readonly label: string;
   readonly onClick?: () => void;
   readonly disabled?: boolean;
@@ -17,14 +14,6 @@ const TONE_CLASSES = {
   danger: "text-text-muted hover:text-danger-500 hover:bg-danger-50",
 } as const;
 
-/**
- * Compact icon-only action, used for the row controls in list tables.
- *
- * Row actions used to be text buttons ("Edit", "Delete", "Publish"), which
- * cost a lot of horizontal room in every row and pushed the useful columns
- * off narrow screens. The label survives as the accessible name and the
- * native tooltip.
- */
 export default function IconButton({
   icon,
   label,

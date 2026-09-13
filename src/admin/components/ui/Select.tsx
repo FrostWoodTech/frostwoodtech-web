@@ -16,11 +16,10 @@ export interface SelectOption {
 interface SelectProps extends React.ComponentPropsWithoutRef<"select"> {
   readonly label: string;
   readonly options: readonly SelectOption[];
-  /** Rendered as an empty-value option at the top. */
   readonly placeholder?: string;
   readonly error?: string;
   readonly containerClassName?: string;
-  /** `sm` matches the filter toolbars; `md` is the form default. */
+  /** `sm` for filter toolbars, `md` for forms. */
   readonly fieldSize?: AdminFieldSize;
 }
 

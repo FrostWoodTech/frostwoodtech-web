@@ -1,10 +1,3 @@
-/**
- * Barrel for the admin design system.
- *
- * Pages import a lot of these at once — importing them one per line was
- * producing eight- and ten-line import blocks at the top of every CRUD page.
- */
-
 export { default as Alert } from "./Alert";
 export { default as Badge } from "./Badge";
 export { default as BackLink } from "./BackLink";

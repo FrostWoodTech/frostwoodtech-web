@@ -29,8 +29,7 @@ export default function ForgotPasswordPage() {
     try {
       await forgotPassword.mutateAsync(values);
     } finally {
-      // The endpoint always answers the same generic message, whatever the
-      // email resolves to — never branch the UI on the outcome.
+      // Always a generic response (no account enumeration) — don't branch on the outcome.
       setSent(true);
     }
   }

@@ -22,11 +22,20 @@ import {
 import { serviceKeys } from "@/admin/hooks/queryKeys";
 import { toErrorMessage } from "@/admin/api/ApiError";
 import useToast from "@/admin/context/useToast";
-import type { AdminService, PagedResult, ServiceWriteRequest, Site } from "@/admin/types";
-import { BackLink, Card, DataTableShell, PageHeader } from "@/admin/components/ui";
+import type {
+  AdminService,
+  PagedResult,
+  ServiceWriteRequest,
+  Site,
+} from "@/admin/types";
+import {
+  BackLink,
+  Card,
+  DataTableShell,
+  PageHeader,
+} from "@/admin/components/ui";
 
-// Well above any realistic service count so a column never needs pagination
-// to reorder — this screen is for arranging, not browsing.
+// High enough that a column never needs pagination.
 const COLUMN_PAGE_SIZE = 100;
 
 /** PUT is a full replacement, so a toggle from this screen still has to send every field. */
@@ -75,7 +84,9 @@ function toWriteRequest(service: AdminService): ServiceWriteRequest {
 }
 
 function sortOrderFor(service: AdminService, site: Site): number {
-  return site === "agency" ? service.agencySortOrder : service.personalSortOrder;
+  return site === "agency"
+    ? service.agencySortOrder
+    : service.personalSortOrder;
 }
 
 interface SiteColumnProps {
@@ -83,20 +94,13 @@ interface SiteColumnProps {
   readonly title: string;
 }
 
-/**
- * One site's drag-sortable list, with its own query and its own `DndContext`
- * so dragging one column never touches the other's cache entry.
- */
+/** One site's sortable column, with its own query and `DndContext`. */
 function SiteColumn({ site, title }: SiteColumnProps) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
-  // Only published services can be dragged, featured, shown or hidden here —
-  // a draft has nothing to arrange on a public site yet. Publishing itself
-  // stays on the main list; once it happens the service shows up here —
-  // `includeHidden` is what makes that true even before it's been shown on
-  // this particular site, since this is the screen that turns showing on.
+  // Published only; `includeHidden` so services not yet shown on this site can be turned on here.
   const queryParams = {
     site,
     isPublished: true,
@@ -112,8 +116,7 @@ function SiteColumn({ site, title }: SiteColumnProps) {
   const updateServiceMutation = useUpdateService();
 
   const error = queryError ? toErrorMessage(queryError) : null;
-  // The admin list is ordered alphabetically, not this site's sort order, so
-  // the column re-sorts client side.
+  // The API list isn't in this site's sort order, so re-sort client side.
   const rows = [...(result?.items ?? [])].sort(
     (a, b) => sortOrderFor(a, site) - sortOrderFor(b, site),
   );
@@ -123,12 +126,7 @@ function SiteColumn({ site, title }: SiteColumnProps) {
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
-  /**
-   * Optimistically writes the dropped order into this column's cache entry
-   * before the request resolves, so the row stays put instead of snapping
-   * back while the request is in flight — same pattern as the FAQ/Review/
-   * Article reorder screens. Rolls back on failure.
-   */
+  /** Writes the new order to the cache optimistically; rolls back on failure. */
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -138,10 +136,14 @@ function SiteColumn({ site, title }: SiteColumnProps) {
     if (fromIndex === -1 || toIndex === -1) return;
 
     const next = arrayMove([...rows], fromIndex, toIndex);
-    const items = next.map((service, at) => ({ id: service.id, sortOrder: at }));
+    const items = next.map((service, at) => ({
+      id: service.id,
+      sortOrder: at,
+    }));
 
     const queryKey = serviceKeys.list(queryParams);
-    const previous = queryClient.getQueryData<PagedResult<AdminService>>(queryKey);
+    const previous =
+      queryClient.getQueryData<PagedResult<AdminService>>(queryKey);
 
     queryClient.setQueryData<PagedResult<AdminService> | undefined>(
       queryKey,
@@ -165,13 +167,11 @@ function SiteColumn({ site, title }: SiteColumnProps) {
     }
   }
 
-  /**
-   * Both site columns' queries return the same underlying published services
-   * once `includeHidden` is in play, so a toggle has to patch every cached
-   * list — not just this column's — or the other column would briefly
-   * re-render with the pre-toggle value before the background refetch lands.
-   */
-  function patchServiceInCaches(serviceId: string, patch: Partial<AdminService>) {
+  /** Patches every cached list (both columns hold the same services) so a toggle doesn't flicker back before the refetch. */
+  function patchServiceInCaches(
+    serviceId: string,
+    patch: Partial<AdminService>,
+  ) {
     queryClient.setQueriesData<PagedResult<AdminService>>(
       { queryKey: serviceKeys.lists() },
       (old) =>
@@ -191,9 +191,11 @@ function SiteColumn({ site, title }: SiteColumnProps) {
         ? { featuredOnAgency: !service.featuredOnAgency }
         : { featuredOnPersonal: !service.featuredOnPersonal };
 
-    const previousLists = queryClient.getQueriesData<PagedResult<AdminService>>({
-      queryKey: serviceKeys.lists(),
-    });
+    const previousLists = queryClient.getQueriesData<PagedResult<AdminService>>(
+      {
+        queryKey: serviceKeys.lists(),
+      },
+    );
     patchServiceInCaches(service.id, patch);
 
     try {
@@ -203,7 +205,9 @@ function SiteColumn({ site, title }: SiteColumnProps) {
       });
       toast.success("Featured updated.");
     } catch (cause) {
-      previousLists.forEach(([key, data]) => queryClient.setQueryData(key, data));
+      previousLists.forEach(([key, data]) =>
+        queryClient.setQueryData(key, data),
+      );
       toast.error(toErrorMessage(cause));
     } finally {
       setTogglingId(null);
@@ -216,17 +220,23 @@ function SiteColumn({ site, title }: SiteColumnProps) {
       targetSite === "agency"
         ? {
             showOnAgency: !service.showOnAgency,
-            // Turning "show" off also turns "featured" off — can't be featured while hidden.
-            featuredOnAgency: service.showOnAgency ? false : service.featuredOnAgency,
+            // Hiding also un-features.
+            featuredOnAgency: service.showOnAgency
+              ? false
+              : service.featuredOnAgency,
           }
         : {
             showOnPersonal: !service.showOnPersonal,
-            featuredOnPersonal: service.showOnPersonal ? false : service.featuredOnPersonal,
+            featuredOnPersonal: service.showOnPersonal
+              ? false
+              : service.featuredOnPersonal,
           };
 
-    const previousLists = queryClient.getQueriesData<PagedResult<AdminService>>({
-      queryKey: serviceKeys.lists(),
-    });
+    const previousLists = queryClient.getQueriesData<PagedResult<AdminService>>(
+      {
+        queryKey: serviceKeys.lists(),
+      },
+    );
     patchServiceInCaches(service.id, patch);
 
     try {
@@ -236,7 +246,9 @@ function SiteColumn({ site, title }: SiteColumnProps) {
       });
       toast.success("Visibility updated.");
     } catch (cause) {
-      previousLists.forEach(([key, data]) => queryClient.setQueryData(key, data));
+      previousLists.forEach(([key, data]) =>
+        queryClient.setQueryData(key, data),
+      );
       toast.error(toErrorMessage(cause));
     } finally {
       setTogglingId(null);
@@ -249,17 +261,12 @@ function SiteColumn({ site, title }: SiteColumnProps) {
         <h2 className="text-sm font-semibold text-text-primary">{title}</h2>
         {atCap && (
           <p className="mt-1 text-xs text-text-muted">
-            Showing the first {COLUMN_PAGE_SIZE} published services on this site.
+            Showing the first {COLUMN_PAGE_SIZE} published services on this
+            site.
           </p>
         )}
       </div>
-      {/*
-        `isFetching` deliberately isn't wired to the spinner here: every
-        toggle on this page (show/feature) invalidates the list and triggers
-        a background refetch, and swapping the whole column out for a
-        spinner on every click is the exact flicker already fixed for
-        drag-and-drop elsewhere. The initial load still shows it via `isLoading`.
-      */}
+      {/* Spinner on initial load only — every toggle refetches, and `isFetching` would flicker. */}
       <DataTableShell
         error={error}
         isLoading={isLoading}
@@ -281,7 +288,9 @@ function SiteColumn({ site, title }: SiteColumnProps) {
                 key={service.id}
                 service={service}
                 site={site}
-                isTogglingShow={togglingId === service.id && updateServiceMutation.isPending}
+                isTogglingShow={
+                  togglingId === service.id && updateServiceMutation.isPending
+                }
                 isTogglingFeatured={
                   togglingId === service.id && updateServiceMutation.isPending
                 }
@@ -296,12 +305,7 @@ function SiteColumn({ site, title }: SiteColumnProps) {
   );
 }
 
-/**
- * Dedicated reorder + visibility screen: a service carries two independent
- * sort orders plus a show/featured pair per site, so a single in-table drag
- * list isn't enough — each site gets its own drag-sortable column, side by
- * side, with the show/feature controls that used to live on the edit form.
- */
+/** Reorder and show/feature services per site — one sortable column per site. */
 export default function ServiceOrderPage() {
   return (
     <div>

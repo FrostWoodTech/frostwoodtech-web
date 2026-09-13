@@ -9,7 +9,7 @@ import type { AdminTag } from "@/admin/types";
 
 interface TagPickerProps {
   readonly label: string;
-  /** The full set of selected ids — this replaces the article's tags outright. */
+  /** Replaces the tags outright. */
   readonly value: readonly string[];
   readonly onChange: (ids: string[]) => void;
   readonly hint?: string;
@@ -17,19 +17,10 @@ interface TagPickerProps {
   readonly containerClassName?: string;
 }
 
-/**
- * The tag list is small and shared by every article, so it is fetched once per
- * mount rather than searched server-side. `pageSize` sits at the API's cap of
- * 100; beyond that the picker would need its own paging.
- */
+/** The API's page-size cap; tags are fetched once, not searched server-side. */
 const TAG_PAGE_SIZE = 100;
 
-/**
- * Multi-select built from the existing primitives: selected tags are removable
- * chips and the `<select>` below offers only what is left. React Hook Form
- * drives it through `Controller`, since the value is an array rather than a
- * DOM field.
- */
+/** Removable chips plus a select of the remaining tags. Use via react-hook-form `Controller`. */
 export default function TagPicker({
   label,
   value,
@@ -49,7 +40,7 @@ export default function TagPicker({
   );
   const loadError = queryError ? toErrorMessage(queryError) : null;
 
-  // Chips follow `value`'s order; an id with no matching tag is hidden but kept in the form value.
+  // Unknown ids are hidden but kept in the form value.
   const selected = useMemo(
     () =>
       value
@@ -108,7 +99,7 @@ export default function TagPicker({
             </ul>
           )}
 
-          {/* Resets to the placeholder after each pick — reads as an "add" action, not a selection. */}
+          {/* Resets after each pick, acting as an "add" control. */}
           <Select
             label="Add a tag"
             placeholder={

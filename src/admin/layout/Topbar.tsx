@@ -16,13 +16,7 @@ interface Crumb {
   readonly to: string;
 }
 
-/**
- * Builds the breadcrumb trail from the URL.
- *
- * Segments the CMS knows about get a friendly label; anything else — a record
- * id in `/admin/articles/:id` — is shown as "Edit" rather than exposing a raw
- * uuid in the chrome.
- */
+/** Breadcrumbs from the URL; unknown segments (record ids) show as "Edit". */
 function crumbsFor(pathname: string): Crumb[] {
   const segments = pathname.split("/").filter(Boolean);
 
@@ -33,14 +27,6 @@ function crumbsFor(pathname: string): Crumb[] {
   });
 }
 
-/**
- * Sticky header above the page content.
- *
- * Carries the mobile drawer trigger, breadcrumbs, a link out to the live
- * site, sign-out, and the account avatar (role/status, sign-in details).
- * There is deliberately no global search: the API has no cross-entity search
- * endpoint, and a search box that does nothing is worse than none.
- */
 export default function Topbar({ onMenu }: TopbarProps) {
   const { logout } = useAuth();
   const navigate = useNavigate();

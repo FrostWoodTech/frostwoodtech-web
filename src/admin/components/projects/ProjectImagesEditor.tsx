@@ -38,7 +38,7 @@ interface ProjectImagesEditorProps {
   readonly images: readonly ProjectImage[];
 }
 
-/** Reads pixel dimensions from the file itself — the presigned upload response carries none. */
+/** Reads pixel dimensions from the file; the upload response has none. */
 function readImageDimensions(
   file: File,
 ): Promise<{ width: number; height: number }> {
@@ -57,12 +57,7 @@ function readImageDimensions(
   });
 }
 
-/**
- * Images hang off a saved project via their own endpoints, so this operates
- * directly against the API rather than through the project form's Save
- * button — an upload can't be deferred into reviewable form state the way a
- * plain field can.
- */
+/** Images have their own endpoints, so changes hit the API directly rather than waiting for the form's Save. */
 export default function ProjectImagesEditor({
   projectId,
   projectSlug,
@@ -74,9 +69,13 @@ export default function ProjectImagesEditor({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [busyId, setBusyId] = useState<string | null>(null);
-  // Both the outgoing and incoming primary flip in the same request — freeze both rows while it's in flight.
-  const [primaryUpdateIds, setPrimaryUpdateIds] = useState<readonly string[]>([]);
-  const [editingAltText, setEditingAltText] = useState<ProjectImage | null>(null);
+  // Old and new primary change in one request, so both rows are frozen while it runs.
+  const [primaryUpdateIds, setPrimaryUpdateIds] = useState<readonly string[]>(
+    [],
+  );
+  const [editingAltText, setEditingAltText] = useState<ProjectImage | null>(
+    null,
+  );
   const [altTextDraft, setAltTextDraft] = useState("");
 
   const addImageMutation = useAddProjectImage();
@@ -84,12 +83,8 @@ export default function ProjectImagesEditor({
   const deleteImageMutation = useDeleteProjectImage();
   const reorderImagesMutation = useReorderProjectImages();
 
-  // Mirrored into local state (rather than read straight from `images` every
-  // render) so a drop can reorder the list synchronously, in the same commit
-  // as dnd-kit's own internal reset of the dragged item's transform. Waiting
-  // on the query cache to propagate through React Query's external-store
-  // subscription lands the reorder one render late, which is what caused the
-  // dropped card to flash back to its old slot before snapping to the new one.
+  // Local copy so a drop reorders in the same commit as dnd-kit's reset;
+  // reading the query cache lands a render late and the card flashes back.
   const [rows, setRows] = useState(() =>
     [...images].sort((a, b) => a.sortOrder - b.sortOrder),
   );
@@ -109,7 +104,9 @@ export default function ProjectImagesEditor({
       toast.error("An image needs alt text before it can be uploaded.");
       return;
     }
-    if (rows.some((row) => row.altText.toLowerCase() === altText.toLowerCase())) {
+    if (
+      rows.some((row) => row.altText.toLowerCase() === altText.toLowerCase())
+    ) {
       toast.error(`An image named "${altText}" is already in this gallery.`);
       return;
     }
@@ -226,15 +223,7 @@ export default function ProjectImagesEditor({
     }
   }
 
-  /**
-   * Primary is just a flag on whichever image the user picked — it has no
-   * bearing on drag order, so this is a plain reorder of the whole list.
-   * `setRows` runs first and synchronously (same event, same commit as
-   * dnd-kit's own drop cleanup) so there's no in-between frame where the
-   * dragged card renders back at its pre-drag DOM position. The query cache
-   * write follows so the order survives a remount/refetch, with a rollback —
-   * to both the local list and the cache — on failure.
-   */
+  /** Reorders locally first (no flicker), then in the cache; rolls both back on failure. */
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -251,15 +240,19 @@ export default function ProjectImagesEditor({
 
     const queryKey = projectKeys.detail(projectId);
     const previousCache = queryClient.getQueryData<AdminProject>(queryKey);
-    queryClient.setQueryData<AdminProject | undefined>(queryKey, (old) =>
-      old && { ...old, images: reordered },
+    queryClient.setQueryData<AdminProject | undefined>(
+      queryKey,
+      (old) => old && { ...old, images: reordered },
     );
 
     try {
       await reorderImagesMutation.mutateAsync({
         projectId,
         body: {
-          items: reordered.map((image) => ({ id: image.id, sortOrder: image.sortOrder })),
+          items: reordered.map((image) => ({
+            id: image.id,
+            sortOrder: image.sortOrder,
+          })),
         },
       });
       toast.success("Order updated.");
@@ -324,7 +317,9 @@ export default function ProjectImagesEditor({
                 <SortableProjectImageRow
                   key={image.id}
                   image={image}
-                  busy={busyId === image.id || primaryUpdateIds.includes(image.id)}
+                  busy={
+                    busyId === image.id || primaryUpdateIds.includes(image.id)
+                  }
                   onEditAltText={openAltTextEditor}
                   onMakePrimary={handleMakePrimary}
                   onDelete={handleDelete}
@@ -337,8 +332,8 @@ export default function ProjectImagesEditor({
 
       <p className="flex items-center gap-2 text-xs text-text-muted">
         <Upload className="h-3.5 w-3.5" aria-hidden="true" />
-        Images upload straight to Neon Object Storage; the API only stores
-        their metadata.
+        Images upload straight to Neon Object Storage; the API only stores their
+        metadata.
       </p>
 
       <Modal
@@ -359,9 +354,12 @@ export default function ProjectImagesEditor({
               type="button"
               variant="primary"
               onClick={saveAltText}
-              loading={busyId === editingAltText?.id && updateImageMutation.isPending}
+              loading={
+                busyId === editingAltText?.id && updateImageMutation.isPending
+              }
               disabled={
-                !altTextDraft.trim() || altTextDraft.trim() === editingAltText?.altText
+                !altTextDraft.trim() ||
+                altTextDraft.trim() === editingAltText?.altText
               }
             >
               Save

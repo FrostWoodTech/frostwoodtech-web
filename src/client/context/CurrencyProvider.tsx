@@ -15,7 +15,7 @@ function readStoredCurrency(): string | null {
   try {
     return localStorage.getItem(CURRENCY_STORAGE_KEY);
   } catch {
-    // Storage is unavailable in private mode; treat it as "no preference".
+    // Storage can be unavailable (private mode).
     return null;
   }
 }
@@ -24,7 +24,7 @@ function persistCurrency(code: string) {
   try {
     localStorage.setItem(CURRENCY_STORAGE_KEY, code);
   } catch {
-    // The choice just won't survive a reload.
+    // Not persisted; the choice lasts until reload.
   }
 }
 
@@ -32,16 +32,9 @@ export default function CurrencyProvider({ children }: CurrencyProviderProps) {
   const { data } = useCurrencies();
   const [chosen, setChosen] = useState<string | null>(readStoredCurrency);
 
-  const currencies = useMemo(
-    () => data ?? [BASE_CURRENCY],
-    [data],
-  );
+  const currencies = useMemo(() => data ?? [BASE_CURRENCY], [data]);
 
-  /*
-   * Resolution order: what the visitor picked → what their locale suggests → USD. Each step only
-   * counts if that currency is actually active, so deactivating one in the admin quietly moves
-   * everyone still on it back to USD rather than showing a stale rate.
-   */
+  // Picked → locale guess → USD, each only if that currency is still active.
   const currency = useMemo(() => {
     const find = (code: string | null) =>
       code ? currencies.find((item) => item.code === code) : undefined;

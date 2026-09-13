@@ -1,21 +1,14 @@
 import { z } from "zod";
 
 /**
- * Mirrors the hand-rolled checks in the API's `Services/ProjectService.cs`,
- * including its wording, so client and server messages stay consistent.
- *
- * `showOnAgency`/`featuredOnAgency`/`showOnPersonal`/`featuredOnPersonal` are
- * part of the shape (the API's `ProjectWriteRequest` needs all four on every
- * save) but aren't editable through this form — they're carried through from
- * the loaded project untouched. Reorder & Visibility is what changes them,
- * and it enforces "featured requires shown" itself, so this schema doesn't
- * need to.
+ * Mirrors `Services/ProjectService.cs` checks and wording. The show/featured flags are carried
+ * through unchanged; the reorder screen edits and validates them.
  */
 
 /** `ProjectService.EarliestYear`. */
 const EARLIEST_YEAR = 1990;
 
-/** The API recomputes this per request, so it is derived rather than frozen. */
+/** Computed per call, as the API does. */
 function latestYear(): number {
   return new Date().getFullYear() + 1;
 }

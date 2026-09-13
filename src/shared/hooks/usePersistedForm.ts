@@ -16,11 +16,8 @@ function readDraft<T>(storageKey: string): Partial<T> | null {
 }
 
 /**
- * Wraps `useForm` with a localStorage-backed draft, so an accidental refresh
- * or a stray back/forward doesn't lose in-progress input. The draft is
- * cleared automatically on unmount, which is the same moment a modal closes
- * or a route change tears the form down — a real browser refresh does not
- * run unmount effects, so the draft survives exactly the cases it should.
+ * `useForm` with a localStorage draft that survives a refresh. The draft is cleared on unmount
+ * (modal close or navigation), which a browser refresh doesn't trigger.
  */
 export function usePersistedForm<T extends FieldValues>(
   storageKey: string,
@@ -40,7 +37,7 @@ export function usePersistedForm<T extends FieldValues>(
     try {
       localStorage.removeItem(storageKey);
     } catch {
-      // Storage can be unavailable (private browsing, quota); losing the draft is harmless.
+      // Storage can be unavailable; losing the draft is harmless.
     }
   }).current;
 
@@ -49,7 +46,7 @@ export function usePersistedForm<T extends FieldValues>(
       try {
         localStorage.setItem(storageKey, JSON.stringify(values));
       } catch {
-        // Same as above — persistence is a convenience, not a requirement.
+        // Persistence is best-effort.
       }
     });
     return () => subscription.unsubscribe();
@@ -57,7 +54,7 @@ export function usePersistedForm<T extends FieldValues>(
 
   useEffect(() => {
     return () => clearPersisted();
-    // Only ever wired to the mount/unmount of this instance, not `clearPersisted`'s identity.
+    // Mount/unmount only.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

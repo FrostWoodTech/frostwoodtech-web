@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Archive, ArrowUpDown, Globe, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  Archive,
+  ArrowUpDown,
+  Globe,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import {
   useDeleteService,
   useServices,
@@ -257,7 +264,11 @@ export default function ServicesPage() {
                             <Archive className="h-4 w-4" />
                           )
                         }
-                        className={item.isPublished ? "text-primary-500 hover:text-primary-400" : ""}
+                        className={
+                          item.isPublished
+                            ? "text-primary-500 hover:text-primary-400"
+                            : ""
+                        }
                         label={
                           item.isPublished
                             ? `Unpublish “${item.name}”`

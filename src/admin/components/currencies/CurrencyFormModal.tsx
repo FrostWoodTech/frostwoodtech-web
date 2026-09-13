@@ -30,7 +30,7 @@ import {
 } from "@/admin/components/ui";
 
 interface CurrencyFormModalProps {
-  /** `null` opens the dialog in create mode. */
+  /** `null` means create mode. */
   readonly currency: AdminCurrency | null;
   readonly onClose: () => void;
   readonly onSaved: () => void;
@@ -56,17 +56,14 @@ function toFormValues(currency: AdminCurrency | null): CurrencyFormValues {
   };
 }
 
-/** A blank number field must arrive as `undefined` — "use the live rate" — not `NaN` or `0`. */
+/** Blank means `undefined` ("use the live rate"), never `NaN` or `0`. */
 function toOptionalNumber(raw: unknown): number | undefined {
   if (raw === "" || raw === null || raw === undefined) return undefined;
   const parsed = Number(raw);
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
-/**
- * Mounted only while the dialog is open, and keyed on the currency by
- * `CurrenciesPage`, so the form state starts fresh for every row.
- */
+/** Mounted only while open and keyed per row by the page, so form state starts fresh. */
 export default function CurrencyFormModal({
   currency,
   onClose,
@@ -101,21 +98,16 @@ export default function CurrencyFormModal({
   const isBase = currency?.code === BASE_CURRENCY_CODE;
   const manualRate = useWatch({ control, name: "manualRateFromUsd" });
 
-  /*
-   * What the last picked code would have filled in, so a field the admin edited by hand is left
-   * alone while an untouched one keeps following the picker.
-   *
-   * On edit this is seeded from the row's own code rather than left blank: a stored name that
-   * still matches what Intl derives was never hand-written, so switching LKR to AUD should carry
-   * the name and symbol along with it. A genuinely custom name doesn't match, and survives.
-   */
+  // Last auto-filled name/symbol: fields still matching it follow the code picker, hand edits are kept.
   const autoFilled = useRef(
     currency
-      ? { name: currencyName(currency.code), symbol: currencySymbol(currency.code) }
+      ? {
+          name: currencyName(currency.code),
+          symbol: currencySymbol(currency.code),
+        }
       : { name: "", symbol: "" },
   );
 
-  /** Fills name and symbol from the picked code, without clobbering a deliberate edit. */
   function handleCodeChange(next: string) {
     setValue("code", next, { shouldDirty: true, shouldValidate: true });
     if (!next) return;
@@ -126,7 +118,10 @@ export default function CurrencyFormModal({
       const current = (getValues(field) ?? "").trim();
 
       if (current === "" || current === autoFilled.current[field]) {
-        setValue(field, derived[field], { shouldDirty: true, shouldValidate: true });
+        setValue(field, derived[field], {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
       }
     }
 
@@ -163,12 +158,15 @@ export default function CurrencyFormModal({
   }
 
   const upperCode = (code ?? "").trim().toUpperCase();
-  // What a visitor would actually see right now: the override if one's being typed, else the
-  // last-fetched live rate — mirrors the API's `EffectiveRateFromUsd`.
+  // Mirrors the API's `EffectiveRateFromUsd`.
   const effectiveRate = manualRate ?? currency?.liveRateFromUsd;
-  const usingLive = manualRate === undefined && currency?.liveRateFromUsd !== undefined;
+  const usingLive =
+    manualRate === undefined && currency?.liveRateFromUsd !== undefined;
   const ratePreview =
-    Number.isFinite(effectiveRate) && effectiveRate! > 0 && upperCode && upperCode !== BASE_CURRENCY_CODE
+    Number.isFinite(effectiveRate) &&
+    effectiveRate! > 0 &&
+    upperCode &&
+    upperCode !== BASE_CURRENCY_CODE
       ? `$100 shows as ${(100 * effectiveRate!).toLocaleString()} ${upperCode}${usingLive ? " (using the actual price)" : ""}`
       : null;
 
@@ -205,7 +203,7 @@ export default function CurrencyFormModal({
               )}
             />
           ) : (
-            // Safari < 15.4 has no Intl.supportedValuesOf — same free-text field as before.
+            // Fallback for browsers without Intl.supportedValuesOf.
             <Input
               label="Code"
               required

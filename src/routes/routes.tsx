@@ -12,6 +12,7 @@ import ServicesPage from "@/client/pages/ServicesPage";
 import ServiceDetailPage from "@/client/pages/ServiceDetailPage";
 import ClientPricingPage from "@/client/pages/PricingPage";
 import ProductsPage from "@/client/pages/ProductsPage";
+import ProductDetailPage from "@/client/pages/ProductDetailPage";
 import AdminRoot from "@/admin/layout/AdminRoot";
 import RequireAuth from "@/admin/components/RequireAuth";
 import RequireSuperAdmin from "@/admin/components/RequireSuperAdmin";
@@ -38,6 +39,9 @@ import PricingPage from "@/admin/pages/PricingPage";
 import ProjectsPage from "@/admin/pages/ProjectsPage";
 import ProjectEditorPage from "@/admin/pages/ProjectEditorPage";
 import ProjectOrderPage from "@/admin/pages/ProjectOrderPage";
+import AdminProductsPage from "@/admin/pages/ProductsPage";
+import ProductEditorPage from "@/admin/pages/ProductEditorPage";
+import ProductOrderPage from "@/admin/pages/ProductOrderPage";
 import FaqsPage from "@/admin/pages/FaqsPage";
 import CertificatesPage from "@/admin/pages/CertificatesPage";
 import ReviewsPage from "@/admin/pages/ReviewsPage";
@@ -74,6 +78,10 @@ export const router = createBrowserRouter([
         element: <ProductsPage />,
       },
       {
+        path: "products/:slug",
+        element: <ProductDetailPage />,
+      },
+      {
         path: "work",
         element: <WorkPage />,
       },
@@ -100,7 +108,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    // The CMS lives outside the marketing layout and owns its own auth state.
+    // The CMS sits outside the marketing layout and has its own auth state.
     path: "/admin",
     element: <AdminRoot />,
     children: [
@@ -162,8 +170,6 @@ export const router = createBrowserRouter([
                 element: <ProjectsPage />,
               },
               {
-                // A project has far more fields than the other content types,
-                // so it is edited on its own route rather than in a modal.
                 path: "projects/new",
                 element: <ProjectEditorPage />,
               },
@@ -174,6 +180,22 @@ export const router = createBrowserRouter([
               {
                 path: "projects/:id",
                 element: <ProjectEditorPage />,
+              },
+              {
+                path: "products",
+                element: <AdminProductsPage />,
+              },
+              {
+                path: "products/new",
+                element: <ProductEditorPage />,
+              },
+              {
+                path: "products/order",
+                element: <ProductOrderPage />,
+              },
+              {
+                path: "products/:id",
+                element: <ProductEditorPage />,
               },
               {
                 path: "articles",

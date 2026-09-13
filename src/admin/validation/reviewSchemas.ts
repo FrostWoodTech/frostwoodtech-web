@@ -1,11 +1,6 @@
 import { z } from "zod";
 
-/**
- * Mirrors the hand-rolled checks in the API's `Services/ReviewService.cs`. No
- * editable sort order field — a new review is appended to the end
- * server-side, and order only ever changes by dragging rows in the admin
- * list.
- */
+/** Mirrors `Services/ReviewService.cs`. */
 
 const optionalText = z.string().trim().optional();
 

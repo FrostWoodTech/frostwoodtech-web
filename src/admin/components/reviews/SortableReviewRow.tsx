@@ -1,6 +1,13 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Archive, GripVertical, Globe, Pencil, Star, Trash2 } from "lucide-react";
+import {
+  Archive,
+  GripVertical,
+  Globe,
+  Pencil,
+  Star,
+  Trash2,
+} from "lucide-react";
 import type { AdminReview } from "@/admin/types";
 import { formatDate } from "@/admin/utils/format";
 import { Badge, IconButton, TD, TR } from "@/admin/components/ui";
@@ -13,7 +20,7 @@ interface SortableReviewRowProps {
   readonly onDelete: (review: AdminReview) => void;
 }
 
-/** One draggable row — only the grip handle starts a drag, so the other actions stay ordinary clicks. */
+/** Only the grip handle starts a drag, so the other actions stay normal clicks. */
 export default function SortableReviewRow({
   review,
   isTogglingPublished,
@@ -21,8 +28,14 @@ export default function SortableReviewRow({
   onEdit,
   onDelete,
 }: SortableReviewRowProps) {
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
-    useSortable({ id: review.id });
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: review.id });
 
   return (
     <TR
@@ -91,7 +104,11 @@ export default function SortableReviewRow({
             }
             onClick={() => onTogglePublished(review)}
             disabled={isTogglingPublished}
-            className={review.isPublished ? "text-primary-500 hover:text-primary-400" : ""}
+            className={
+              review.isPublished
+                ? "text-primary-500 hover:text-primary-400"
+                : ""
+            }
           />
           <IconButton
             icon={<Pencil className="h-4 w-4" />}

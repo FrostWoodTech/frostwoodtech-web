@@ -10,7 +10,6 @@ interface ModalProps {
   readonly title: string;
   readonly description?: string;
   readonly children: React.ReactNode;
-  /** Rendered right-aligned under a divider — usually the action buttons. */
   readonly footer?: React.ReactNode;
   readonly size?: ModalSize;
 }
@@ -23,11 +22,7 @@ const SIZE_CLASSES: Record<ModalSize, string> = {
   xl: "max-w-4xl",
 };
 
-/**
- * The admin panel's dialog primitive. Rendered through `AdminPortal` so it
- * escapes the layout's stacking and overflow contexts while keeping the
- * admin theme attached to the portalled subtree.
- */
+/** Rendered through `AdminPortal` so the admin theme follows the portal. */
 export default function Modal({
   open,
   onClose,
@@ -41,7 +36,7 @@ export default function Modal({
   const titleId = useId();
   const descriptionId = useId();
 
-  // Ref avoids re-running the setup effect below when callers pass a fresh inline onClose.
+  // Ref so an inline onClose doesn't re-run the effect below.
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -71,15 +66,13 @@ export default function Modal({
 
   if (!open) return null;
 
-  // The backdrop is tinted with the darkest brand stop rather than a surface
-  // token: every surface value is pale under the light theme, so none of them
-  // dim the page behind the dialog.
+  // Backdrop uses the darkest brand stop; surface tokens are too pale to dim the page.
   return (
     <AdminPortal>
       <div
         className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary-950/30 backdrop-blur-md"
         onMouseDown={(event) => {
-          // Only dismiss if the press started on the backdrop, not a drag-select ending outside the panel.
+          // Ignore drag-selects that end outside the panel.
           if (event.target === event.currentTarget) onClose();
         }}
       >

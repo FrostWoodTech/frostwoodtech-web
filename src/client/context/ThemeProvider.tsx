@@ -14,7 +14,7 @@ function readStoredTheme(): Theme | null {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
     return stored === "light" || stored === "dark" ? stored : null;
   } catch {
-    // Storage is unavailable in private mode; treat it as "no preference".
+    // Storage can be unavailable (private mode).
     return null;
   }
 }
@@ -23,15 +23,11 @@ function persistTheme(theme: Theme) {
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   } catch {
-    // The choice just won't survive a reload.
+    // Not persisted; the choice lasts until reload.
   }
 }
 
-/**
- * The pre-paint script in index.html has already resolved and applied a
- * theme, so read that back instead of resolving it a second time — this
- * keeps React's first render identical to what is already on screen.
- */
+/** Reads the theme already applied by index.html's pre-paint script, so the first render matches. */
 function readAppliedTheme(): Theme {
   return document.documentElement.getAttribute("data-theme") === "dark"
     ? "dark"
@@ -58,7 +54,7 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
     });
   }, []);
 
-  // Follow the OS preference, but only for visitors who never picked one.
+  // Follow the OS preference only for visitors who never picked a theme.
   useEffect(() => {
     const query = window.matchMedia("(prefers-color-scheme: dark)");
 

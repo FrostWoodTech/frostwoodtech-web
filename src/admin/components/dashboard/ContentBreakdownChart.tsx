@@ -20,13 +20,7 @@ interface ContentBreakdownChartProps {
   readonly onTabChange: (value: string) => void;
 }
 
-/**
- * A horizontal bar chart comparing counts across content types — replaces a
- * grid of identical stat tiles with an actual magnitude comparison. One hue
- * (the brand green) rather than a color per row: these are ranked counts of
- * the same kind of thing, not distinct series that need telling apart, so a
- * legend/categorical palette would be answering a question nobody's asking.
- */
+/** Horizontal bars comparing counts per content type, in a single hue. */
 export default function ContentBreakdownChart({
   items,
   tabs,

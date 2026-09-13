@@ -6,7 +6,6 @@ interface TextLinkProps {
   readonly className?: string;
 }
 
-/** Inline navigation link, styled to the admin accent. */
 export default function TextLink({
   to,
   children,

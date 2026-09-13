@@ -3,14 +3,7 @@ interface StickyBarProps {
   readonly className?: string;
 }
 
-/**
- * Pinned action bar at the bottom of the long editor forms, so Save stays
- * reachable without scrolling to the end of a 500-line form.
- *
- * The negative margins cancel the main region's padding so the bar spans the
- * full content width; they must stay in step with `AdminLayout`'s `<main>`
- * padding.
- */
+/** Sticky Save bar for long forms. Its negative margins must match `AdminLayout`'s `<main>` padding. */
 export default function StickyBar({
   children,
   className = "",

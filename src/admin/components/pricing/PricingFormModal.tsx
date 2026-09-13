@@ -35,9 +35,8 @@ import {
 } from "@/admin/components/ui";
 
 interface PricingFormModalProps {
-  /** `null` opens the dialog in create mode. */
+  /** `null` means create mode. */
   readonly plan: AdminPricingPlan | null;
-  /** Fills the service dropdown; loaded once by `PricingPage`. */
   readonly services: readonly AdminService[];
   readonly onClose: () => void;
   readonly onSaved: () => void;
@@ -61,7 +60,6 @@ const BLANK_VALUES: PricingPlanFormValues = {
   description: "",
   priceType: "starting_from",
   priceAmount: undefined,
-  // USD is the base every display rate converts from, and the seeded default.
   currency: "USD",
   deliveryText: "",
   ctaLabel: "",
@@ -90,7 +88,6 @@ function toFormValues(plan: AdminPricingPlan | null): PricingPlanFormValues {
     isPublished: plan.isPublished,
     isPopular: plan.isPopular,
     featured: plan.featured,
-    // Already ordered by the API; the array index becomes `sortOrder` on save.
     features: plan.features.map((feature) => ({
       id: feature.id,
       text: feature.text,
@@ -99,25 +96,20 @@ function toFormValues(plan: AdminPricingPlan | null): PricingPlanFormValues {
   };
 }
 
-/** `""` is how an untouched optional field reaches us; the API wants it gone. */
+/** Untouched optional fields are `""`; the API wants them omitted. */
 function blank(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 }
 
-/** A blank number field must arrive as `undefined`, not `NaN` or `0`. */
+/** Blank means `undefined`, never `NaN` or `0`. */
 function toOptionalNumber(raw: unknown): number | undefined {
   if (raw === "" || raw === null || raw === undefined) return undefined;
   const parsed = Number(raw);
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
-/**
- * Features live behind their own endpoints and need a saved plan id, so they
- * are reconciled after the plan itself is written: drop what the form no
- * longer has, then write every remaining row with its index as `sortOrder`
- * (which is why the dedicated features-reorder endpoint is not needed here).
- */
+/** Syncs features after the plan is saved: delete removed rows, then write the rest with index as `sortOrder`. */
 interface SyncFeaturesDeps {
   readonly addFeature: ReturnType<
     typeof useAddPricingPlanFeature
@@ -161,10 +153,7 @@ async function syncFeatures(
   }
 }
 
-/**
- * Mounted only while the dialog is open, and keyed on the plan by
- * `PricingPage`, so the form state starts fresh for every row.
- */
+/** Mounted only while open and keyed per row by the page, so form state starts fresh. */
 export default function PricingFormModal({
   plan,
   services,
@@ -213,7 +202,7 @@ export default function PricingFormModal({
   }));
 
   async function onSubmit(values: PricingPlanFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so any omitted field resets to default.
+    // Built explicitly: PUT replaces the whole record, so no field may be omitted.
     const body: PricingPlanWriteRequest = {
       serviceId:
         values.kind === "service" ? blank(values.serviceId) : undefined,
@@ -221,8 +210,7 @@ export default function PricingFormModal({
       tagline: blank(values.tagline),
       priceAmount:
         values.priceType === "custom" ? undefined : values.priceAmount,
-      // Every plan is authored in USD, the fixed base every display rate
-      // converts from — there's no per-plan currency picker any more.
+      // Plans are always authored in USD.
       currency: "USD",
       priceType: values.priceType,
       deliveryText: blank(values.deliveryText),
@@ -250,7 +238,7 @@ export default function PricingFormModal({
       onSaved();
       onClose();
     } catch (error) {
-      // Dialog stays open so a half-applied feature sync can be retried, not lost.
+      // Keep the dialog open so a partial feature sync can be retried.
       toast.error(toErrorMessage(error));
     }
   }

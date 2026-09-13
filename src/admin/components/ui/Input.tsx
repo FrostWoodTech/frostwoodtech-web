@@ -12,10 +12,10 @@ import type { AdminFieldSize } from "./types";
 interface InputProps extends React.ComponentPropsWithoutRef<"input"> {
   readonly label: string;
   readonly error?: string;
-  /** Supporting text under the field, shown only when there is no error. */
+  /** Shown only when there is no error. */
   readonly hint?: string;
   readonly containerClassName?: string;
-  /** `sm` matches the filter toolbars; `md` is the form default. */
+  /** `sm` for filter toolbars, `md` for forms. */
   readonly fieldSize?: AdminFieldSize;
 }
 

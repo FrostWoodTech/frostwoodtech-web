@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
 import IconTile from "@/client/components/ui/IconTile";
 import type { Service } from "@/client/types";
@@ -8,8 +8,6 @@ interface ServiceCardProps {
 }
 
 export default function ServiceCard({ service }: ServiceCardProps) {
-  const Icon = service.icon;
-
   return (
     <Link
       to={service.href}
@@ -22,9 +20,9 @@ export default function ServiceCard({ service }: ServiceCardProps) {
             alt={service.iconAltText ?? ""}
             className="h-5 w-5 object-contain"
           />
-        ) : Icon ? (
-          <Icon size={20} aria-hidden="true" />
-        ) : null}
+        ) : (
+          <Layers size={20} aria-hidden="true" />
+        )}
       </IconTile>
 
       <h3 className="font-display text-[21px] font-medium tracking-[-0.018em] text-text-primary">

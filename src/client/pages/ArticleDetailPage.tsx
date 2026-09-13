@@ -69,7 +69,6 @@ export default function ArticleDetailPage() {
           </span>
         </nav>
 
-        {/* Article header */}
         <header className="mx-auto mt-11 max-w-3xl text-center">
           <div className="flex flex-wrap items-center justify-center gap-3 text-[13px] text-text-muted">
             <Badge>{post.category}</Badge>
@@ -104,7 +103,6 @@ export default function ArticleDetailPage() {
           </div>
         </header>
 
-        {/* Cover */}
         {post.imagePlaceholder && (
           <div className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-[22px] border border-hair fw-media shadow-card">
             <img
@@ -115,7 +113,6 @@ export default function ArticleDetailPage() {
           </div>
         )}
 
-        {/* Body */}
         <article className="mx-auto mt-16 max-w-3xl">
           {post.contentMarkdown ? (
             <div data-color-mode={theme} className="fw-prose">
@@ -129,7 +126,6 @@ export default function ArticleDetailPage() {
               {post.excerpt}
             </p>
           )}
-
         </article>
 
         <div className="mt-20">

@@ -1,7 +1,7 @@
 import { ChevronDown, Search } from "lucide-react";
-import { PROJECT_CATEGORIES } from "@/client/data/projects";
 
 interface WorkFiltersProps {
+  readonly categories: readonly string[];
   readonly searchQuery: string;
   readonly onSearchChange: (query: string) => void;
   readonly selectedCategories: readonly string[];
@@ -12,6 +12,7 @@ interface WorkFiltersProps {
 }
 
 export default function WorkFilters({
+  categories,
   searchQuery,
   onSearchChange,
   selectedCategories,
@@ -24,7 +25,6 @@ export default function WorkFilters({
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-card-br bg-card p-4 shadow-card xl:flex-row xl:items-center xl:justify-between">
-      {/* Category pills */}
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
@@ -41,7 +41,7 @@ export default function WorkFilters({
           All work
         </button>
 
-        {PROJECT_CATEGORIES.map((category) => {
+        {categories.map((category) => {
           const isActive = selectedCategories.includes(category);
           return (
             <button

@@ -1,13 +1,6 @@
 import type { SelectOption } from "@/admin/components/ui";
 
-/**
- * Currency names and symbols, read out of the browser rather than a table we maintain.
- * `Intl.supportedValuesOf("currency")` knows every ISO 4217 code (162 of them), and
- * `Intl.DisplayNames` names them — so adding a currency in the admin is a pick, not three
- * fields of typing.
- *
- * Everything here is memoised at module level: the lists are the same for the whole session.
- */
+/** Currency names and symbols from `Intl`, memoised at module level. */
 
 /** Safari gained `supportedValuesOf` in 15.4; the form falls back to free text without it. */
 export const CURRENCY_PICKER_SUPPORTED =
@@ -27,11 +20,7 @@ function supportedCodes(): readonly string[] {
   return codes;
 }
 
-/**
- * The raw symbol Intl gives for a code in one display mode, or null when it has none to give.
- * `formatToParts` rather than `format` because it isolates the symbol from the digits and any
- * locale-specific spacing.
- */
+/** `formatToParts` isolates the symbol from digits and locale spacing. */
 function symbolPart(
   code: string,
   currencyDisplay: "symbol" | "narrowSymbol",
@@ -47,21 +36,13 @@ function symbolPart(
         .find((part) => part.type === "currency")?.value ?? null
     );
   } catch {
-    // Intl rejects anything that isn't a well-formed currency code.
     return null;
   }
 }
 
 let sharedNarrowSymbols: ReadonlySet<string> | null = null;
 
-/**
- * Narrow symbols that more than one currency claims.
- *
- * The narrow form is usually what you want — LKR narrows to "Rs" where its plain symbol is just
- * "LKR". But the dollar family all narrow to a bare "$", which is worse than useless on a page
- * that exists to tell currencies apart. So a narrow symbol is only used when it belongs to
- * exactly one currency; the ¥ and £ families fall out of the same rule.
- */
+/** Narrow symbols shared by several currencies (e.g. "$"); those fall back to the unambiguous symbol. */
 function ambiguousNarrowSymbols(): ReadonlySet<string> {
   if (sharedNarrowSymbols) return sharedNarrowSymbols;
 
@@ -73,7 +54,9 @@ function ambiguousNarrowSymbols(): ReadonlySet<string> {
   }
 
   sharedNarrowSymbols = new Set(
-    [...seen.entries()].filter(([, count]) => count > 1).map(([symbol]) => symbol),
+    [...seen.entries()]
+      .filter(([, count]) => count > 1)
+      .map(([symbol]) => symbol),
   );
 
   return sharedNarrowSymbols;
@@ -88,7 +71,6 @@ export function currencyName(code: string): string {
       type: "currency",
     }).of(normalized);
 
-    // Intl echoes the input back when it knows no name, which is the fallback anyway.
     return name ?? normalized;
   } catch {
     return normalized;
@@ -109,10 +91,7 @@ export function currencySymbol(code: string): string {
 
 let options: readonly SelectOption[] | null = null;
 
-/**
- * Every currency, as `LKR — Sri Lankan Rupee`. `Combobox` filters on the label, so that shape is
- * what makes the picker findable by code and by name alike.
- */
+/** Labels like `LKR — Sri Lankan Rupee`, so the picker filters by code and name. */
 export function currencyCodeOptions(): readonly SelectOption[] {
   if (options) return options;
 

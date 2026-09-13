@@ -9,7 +9,6 @@ const SIZE_CLASSES: Record<"sm" | "md", string> = {
   md: "w-11 h-11 rounded-xl",
 };
 
-/** The tinted square that sits above every service / feature card. */
 export default function IconTile({
   children,
   size = "md",

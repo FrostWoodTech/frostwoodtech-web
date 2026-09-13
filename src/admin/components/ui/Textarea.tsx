@@ -10,16 +10,12 @@ import {
 interface TextareaProps extends React.ComponentPropsWithoutRef<"textarea"> {
   readonly label: string;
   readonly error?: string;
-  /** Supporting text under the field, shown only when there is no error. */
+  /** Shown only when there is no error. */
   readonly hint?: string;
   readonly containerClassName?: string;
 }
 
-/**
- * The multi-line counterpart to `Input`. It takes the shared field classes
- * but sets its own vertical padding rather than using `FIELD_SIZE` — those
- * are fixed heights, which a resizable multi-line control cannot use.
- */
+/** Padding instead of `FIELD_SIZE`'s fixed heights, which a resizable textarea can't use. */
 const TEXTAREA_SIZE = "px-3.5 py-3 resize-y";
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(

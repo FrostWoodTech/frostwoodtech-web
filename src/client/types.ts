@@ -1,7 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import type { IconType } from "react-icons";
 
-// ─── Navigation ──────────────────────────────────────────────
 export interface NavItem {
   readonly label: string;
   readonly href: string;
@@ -19,11 +18,10 @@ export interface BrandInfo {
   readonly tagline: string;
 }
 
-// ─── Hero ────────────────────────────────────────────────────
 export interface HeroData {
   readonly badgeTag: string;
   readonly badgeText: string;
-  /** The headline is split so the two accent phrases can carry gradients. */
+  /** Split so the accent phrases can carry gradients. */
   readonly headlineLead: string;
   readonly headlineIce: string;
   readonly headlineMid: string;
@@ -33,19 +31,6 @@ export interface HeroData {
   readonly primaryCta: CtaConfig;
   readonly secondaryCta: CtaConfig;
   readonly trustLine: string;
-}
-
-export interface BentoCell {
-  readonly id: string;
-  readonly tag?: string;
-  readonly title: string;
-  readonly description: string;
-  readonly icon: LucideIcon;
-  readonly chips?: readonly string[];
-  readonly linkLabel?: string;
-  readonly href?: string;
-  /** Feature cells span two columns and use the raised panel treatment. */
-  readonly feature?: boolean;
 }
 
 export interface Metric {
@@ -77,34 +62,29 @@ export interface CtaConfig {
   readonly href: string;
 }
 
-// ─── Services ────────────────────────────────────────────────
 export interface Service {
   readonly id: string;
   readonly title: string;
   readonly description: string;
-  /** Static, curated services carry a Lucide icon; API-driven ones carry `iconUrl` instead. */
-  readonly icon?: LucideIcon;
   readonly iconUrl?: string;
   readonly iconAltText?: string;
   readonly href: string;
 }
 
-// ─── Projects ────────────────────────────────────────────────
 export interface Project {
   readonly id: string;
   readonly slug: string;
   readonly title: string;
   readonly tagline: string;
   readonly description: string;
-  readonly year: number; // Used for internal sorting, not displayed on Work card
+  readonly year: number;
   readonly index: number;
-  readonly tags: readonly string[]; // Used for Home page featured cards
+  readonly tags: readonly string[];
   readonly categories: readonly string[];
   readonly technologies: readonly string[];
   readonly imagePlaceholder: string;
   readonly href: string;
-  // Case-study fields — only populated when the project came from the API
-  // and only needed by the detail page, so they stay optional here.
+  // Detail-page fields, only present for API projects.
   readonly websiteUrl?: string;
   readonly clientName?: string;
   readonly problem?: string;
@@ -122,6 +102,27 @@ export interface ProjectImage {
   readonly sortOrder: number;
 }
 
+export interface Product {
+  readonly id: string;
+  readonly slug: string;
+  readonly name: string;
+  readonly tagline: string;
+  readonly description: string;
+  readonly priceDetails?: string;
+  readonly productUrl?: string;
+  readonly imagePlaceholder: string;
+  readonly href: string;
+  readonly images: readonly ProductImage[];
+}
+
+export interface ProductImage {
+  readonly id: string;
+  readonly url: string;
+  readonly altText: string;
+  readonly isPrimary: boolean;
+  readonly sortOrder: number;
+}
+
 export interface BlogPost {
   readonly id: string;
   readonly slug: string;
@@ -132,21 +133,7 @@ export interface BlogPost {
   readonly readTime: string;
   readonly imagePlaceholder: string;
   readonly href: string;
-  // Detail-page-only field, populated when the post came from the API.
   readonly contentMarkdown?: string;
-}
-
-// ─── Reviews ─────────────────────────────────────────────────
-export interface Review {
-  readonly id: string;
-  readonly name: string;
-  readonly country: string;
-  readonly countryCode: string;
-  readonly position?: string;
-  readonly rating: number;
-  readonly reviewText: string;
-  readonly createdAt: string;
-  readonly isFeatured?: boolean;
 }
 
 export type ReviewSort = "latest" | "rating" | "country";
@@ -160,7 +147,7 @@ export interface SubmitReviewPayload {
   readonly reviewText: string;
 }
 
-// ─── API DTOs (public surface) ──────────────────────────────
+// Public API DTOs
 export type Site = "agency" | "personal";
 
 export interface PagedResult<T> {
@@ -170,12 +157,26 @@ export interface PagedResult<T> {
   readonly total: number;
 }
 
+/** `Enums/TechCategory.cs` */
+export type TechCategory =
+  | "frontend"
+  | "backend"
+  | "language"
+  | "database"
+  | "tool_or_platform"
+  | "cloud_devops"
+  | "ai_ml_dl"
+  | "agentic_ai"
+  | "design"
+  | "other";
+
+/** `DTOs/Public/TagResponse.cs` */
 export interface ApiTag {
   readonly id: string;
   readonly name: string;
   readonly slug: string;
   readonly isTechnology: boolean;
-  readonly technologyCategory?: string;
+  readonly technologyCategory?: TechCategory;
 }
 
 export interface ApiProjectImage {
@@ -211,6 +212,35 @@ export interface ApiProject {
   readonly images: readonly ApiProjectImage[];
 }
 
+/** `DTOs/Public/ProductImageResponse.cs` — same shape as `ApiProjectImage`. */
+export interface ApiProductImage {
+  readonly id: string;
+  readonly objectKey: string;
+  readonly url: string;
+  readonly altText: string;
+  readonly width: number;
+  readonly height: number;
+  readonly isPrimary: boolean;
+  readonly sortOrder: number;
+}
+
+/** `DTOs/Public/ProductResponse.cs` */
+export interface ApiProduct {
+  readonly id: string;
+  readonly slug: string;
+  readonly name: string;
+  readonly tagline: string;
+  readonly description: string;
+  readonly priceDetails?: string;
+  readonly productUrl?: string;
+  readonly publishedAt?: string;
+  readonly seoTitle?: string;
+  readonly seoDescription?: string;
+  readonly featured: boolean;
+  readonly sortOrder: number;
+  readonly images: readonly ApiProductImage[];
+}
+
 export interface ApiArticle {
   readonly id: string;
   readonly title: string;
@@ -225,7 +255,7 @@ export interface ApiArticle {
   readonly tags: readonly ApiTag[];
 }
 
-/** `DTOs/Public/ServiceProjectResponse.cs` — a case-study card on a service page. */
+/** `DTOs/Public/ServiceProjectResponse.cs` */
 export interface ApiServiceProject {
   readonly id: string;
   readonly slug: string;
@@ -244,11 +274,7 @@ export interface ApiFaq {
   readonly sortOrder: number;
 }
 
-/**
- * `DTOs/Public/ServiceResponse.cs`. `projects`/`faqs` are only populated on
- * `GET /public/services/{slug}` — the list endpoint's cards render neither,
- * so they come back undefined there.
- */
+/** `DTOs/Public/ServiceResponse.cs`. `projects`/`faqs` are only populated by the by-slug endpoint. */
 export interface ApiService {
   readonly id: string;
   readonly slug: string;
@@ -279,6 +305,7 @@ export interface ApiService {
   readonly sortOrder: number;
 }
 
+/** `DTOs/Public/ReviewResponse.cs` */
 export interface ApiReview {
   readonly id: string;
   readonly name: string;
@@ -288,7 +315,69 @@ export interface ApiReview {
   readonly rating: number;
   readonly reviewText: string;
   readonly createdAt: string;
-  readonly isFeatured?: boolean;
+}
+
+/** `Enums/PriceType.cs` */
+export type PriceType =
+  "fixed" | "starting_from" | "hourly" | "monthly" | "custom";
+
+/** `DTOs/Public/PricingPlanFeatureResponse.cs` */
+export interface ApiPricingPlanFeature {
+  readonly id: string;
+  readonly text: string;
+  readonly isIncluded: boolean;
+  readonly sortOrder: number;
+}
+
+/** `DTOs/Public/PricingPlanResponse.cs`. No `serviceId` = combo pack; no `priceAmount` = "Contact us". */
+export interface ApiPricingPlan {
+  readonly id: string;
+  readonly serviceId?: string;
+  readonly name: string;
+  readonly tagline?: string;
+  readonly priceAmount?: number;
+  readonly currency: string;
+  readonly priceType: PriceType;
+  readonly deliveryText?: string;
+  readonly description: string;
+  readonly isPopular: boolean;
+  readonly ctaLabel?: string;
+  readonly ctaUrl?: string;
+  readonly featured: boolean;
+  readonly sortOrder: number;
+  readonly features: readonly ApiPricingPlanFeature[];
+}
+
+/** `DTOs/Public/HomeResponse.cs` — featured slices for one site. */
+export interface ApiHome {
+  readonly featuredProjects: readonly ApiProject[];
+  readonly featuredArticles: readonly ApiArticle[];
+  readonly featuredServices: readonly ApiService[];
+  readonly featuredPricingPlans: readonly ApiPricingPlan[];
+  readonly faqs: readonly ApiFaq[];
+  readonly featuredReviews: readonly ApiReview[];
+}
+
+/** `Enums/ContactBudgetRange.cs` */
+export type ContactBudgetRange =
+  | "under_one_k"
+  | "one_to_five_k"
+  | "five_to_fifteen_k"
+  | "over_fifteen_k"
+  | "not_sure";
+
+/** `DTOs/Public/CreateContactSubmissionRequest.cs`. `website` is a honeypot and must stay empty. */
+export interface SubmitContactPayload {
+  readonly name: string;
+  readonly email: string;
+  readonly phone?: string;
+  readonly company?: string;
+  readonly subject?: string;
+  readonly message: string;
+  readonly serviceId?: string;
+  readonly budgetRange?: ContactBudgetRange;
+  readonly site: Site;
+  readonly website?: string;
 }
 
 export type ApiErrorCode =
@@ -301,85 +390,13 @@ export interface ApiProblem {
   readonly code?: ApiErrorCode;
 }
 
-export interface ServiceOffering {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly icon: LucideIcon;
-  readonly features: readonly string[];
-}
-
-export interface ServiceIncluded {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly icon: LucideIcon;
-}
-
-export interface ServiceDetail {
-  readonly slug: string;
-  readonly title: string;
-  readonly deck: string;
-  readonly stats: readonly Metric[];
-  readonly included: readonly ServiceIncluded[];
-  readonly stack: readonly string[];
-  /** Ids from PRICING_TIERS — the detail page reuses the real tiers rather
-   *  than inventing a second, per-service price list. */
-  readonly relevantTiers: readonly string[];
-}
-
 export interface FAQ {
   readonly id: string;
   readonly question: string;
   readonly answer: string;
 }
 
-// ─── Technologies ────────────────────────────────────────────
-export interface Technology {
-  readonly name: string;
-  readonly icon: string;
-}
-
-export interface TechnologyCategoryData {
-  readonly category: string;
-  readonly items: readonly Technology[];
-}
-
-// ─── Pricing ─────────────────────────────────────────────────
-export interface PricingTier {
-  readonly id: string;
-  readonly name: string;
-  /**
-   * Authored in USD, converted at display time — see `formatMoney`. A number rather than a
-   * pre-formatted string precisely so it can be shown in the visitor's own currency.
-   */
-  readonly priceUsd: number;
-  readonly priceLabel: string;
-  readonly description: string;
-  readonly features: readonly string[];
-  readonly isPopular: boolean;
-  readonly ctaLabel: string;
-  readonly ctaHref: string;
-}
-
-export interface ComparisonRow {
-  readonly id: string;
-  readonly feature: string;
-  /** One entry per tier, in PRICING_TIERS order. `true` renders a tick,
-   *  `false` an em dash, a string renders verbatim. */
-  readonly values: readonly (string | boolean)[];
-}
-
-export interface AddOn {
-  readonly id: string;
-  /** Authored in USD, converted at display time — same as `PricingTier.priceUsd`. */
-  readonly priceUsd: number;
-  readonly unit?: string;
-  readonly title: string;
-  readonly description: string;
-}
-
-/** `DTOs/Public/CurrencyResponse.cs` — one selectable display currency and its admin-typed rate. */
+/** `DTOs/Public/CurrencyResponse.cs` */
 export interface ApiCurrency {
   readonly code: string;
   readonly name: string;
@@ -388,7 +405,6 @@ export interface ApiCurrency {
   readonly rateFromUsd: number;
 }
 
-// ─── About ───────────────────────────────────────────────────
 export interface AboutHeroData {
   readonly badge: string;
   readonly title: string;
@@ -431,7 +447,6 @@ export interface CoreValue {
   readonly icon: LucideIcon;
 }
 
-// ─── Contact ─────────────────────────────────────────────────
 export interface ContactData {
   readonly badge: string;
   readonly title: string;
@@ -440,22 +455,27 @@ export interface ContactData {
   readonly phone: string;
   readonly location: string;
   readonly availability: string;
-  readonly serviceTypes: readonly string[];
   readonly formFields: readonly FormFieldConfig[];
 }
 
+export interface SelectOption {
+  readonly value: string;
+  readonly label: string;
+}
+
 export interface FormFieldConfig {
-  readonly id: string;
+  /** Matches a `SubmitContactPayload` key. */
+  readonly id:
+    "name" | "email" | "phone" | "company" | "budgetRange" | "message";
   readonly label: string;
   readonly type: "text" | "email" | "tel" | "textarea" | "select";
   readonly placeholder: string;
   readonly required: boolean;
   readonly halfWidth?: boolean;
   /** Required when `type` is "select". */
-  readonly options?: readonly string[];
+  readonly options?: readonly SelectOption[];
 }
 
-// ─── Footer ──────────────────────────────────────────────────
 export interface FooterLink {
   readonly label: string;
   readonly href: string;
@@ -475,7 +495,6 @@ export interface FooterData {
   readonly legalLinks: readonly FooterLink[];
 }
 
-// ─── Shared UI ───────────────────────────────────────────────
 export interface SectionHeaderConfig {
   readonly badge?: string;
   readonly title: string;

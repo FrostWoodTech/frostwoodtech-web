@@ -5,7 +5,6 @@ interface CheckboxProps extends Omit<
   "type"
 > {
   readonly label: string;
-  /** Explanatory line under the label. */
   readonly hint?: string;
   readonly error?: string;
   readonly containerClassName?: string;

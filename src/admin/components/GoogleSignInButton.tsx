@@ -59,15 +59,10 @@ function loadGoogleScript(): Promise<void> {
 
 interface GoogleSignInButtonProps {
   readonly onError?: (message: string) => void;
-  /** "Sign in with Google" on the login page, "Sign up with Google" on register. */
   readonly text?: "signin_with" | "signup_with";
 }
 
-/**
- * Renders nothing when `VITE_GOOGLE_CLIENT_ID` is unset, which it is until a
- * real Google OAuth Client ID is provisioned — no client ID exists anywhere
- * in this repo yet.
- */
+/** Renders nothing when `VITE_GOOGLE_CLIENT_ID` is unset. */
 export default function GoogleSignInButton({
   onError,
   text = "signin_with",
@@ -99,10 +94,7 @@ export default function GoogleSignInButton({
           shape: "rectangular",
           text,
           logo_alignment: "left",
-          // Google's button can't take a percentage width, so match the
-          // container's actual pixel width — the same one the form fields
-          // stretch to fill — instead of a fixed size that could clip or
-          // float short of the fields either side of it.
+          // Google's button needs a pixel width, so match the container.
           width: containerRef.current.offsetWidth,
         });
         setIsReady(true);

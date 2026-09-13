@@ -1,14 +1,6 @@
 import { z } from "zod";
 
-/**
- * Mirrors the hand-rolled checks in the API's `Services/TagService.cs`,
- * including its wording, so client and server messages stay consistent.
- *
- * The conditional rule is the interesting part: a technology tag *must*
- * carry a category, and a plain category tag must carry none. The form
- * only ever shows the category field when the checkbox is on, so the
- * "must be null" half is satisfied by construction.
- */
+/** Mirrors `Services/TagService.cs` checks and wording. A technology tag needs a category; a category tag has none. */
 
 const optionalText = z.string().trim().optional();
 

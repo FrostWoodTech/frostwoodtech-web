@@ -14,11 +14,7 @@ import type {
 } from "@/admin/types";
 import { httpClient } from "@/admin/services/httpClient";
 
-/**
- * Creates an `email_verification_required` account and emails a verification
- * link. Deliberately returns no token — verification then super admin
- * approval are both required before sign-in works.
- */
+/** Returns no token: email verification and super admin approval come first. */
 export async function register(payload: RegisterRequest): Promise<AdminUser> {
   const { data } = await httpClient.post<AdminUser>(
     "/admin/auth/register",
@@ -28,7 +24,7 @@ export async function register(payload: RegisterRequest): Promise<AdminUser> {
   return data;
 }
 
-/** Moves a password account from `email_verification_required` to `pending`. Never issues a sign-in token. */
+/** Moves the account to `pending`; issues no token. */
 export async function verifyEmail(
   payload: VerifyEmailRequest,
 ): Promise<AdminUser> {
@@ -40,7 +36,7 @@ export async function verifyEmail(
   return data;
 }
 
-/** Always resolves to the same generic message, whatever the email resolves to. Answers 202. */
+/** Always a generic message (no account enumeration). */
 export async function resendVerification(
   payload: ResendVerificationRequest,
 ): Promise<ResendVerificationResponse> {
@@ -72,12 +68,12 @@ export async function googleSignIn(
   return data;
 }
 
-/** Revokes the refresh-token cookie server-side and clears it. Answers 204. Best-effort on logout. */
+/** Revokes and clears the refresh-token cookie. */
 export async function logout(): Promise<void> {
   await httpClient.post("/admin/auth/logout", {}, { skipAuth: true });
 }
 
-/** Note: this returns the user object flat, unlike login/register. */
+/** Returns the user flat, unlike login/register. */
 export async function getMe(signal?: AbortSignal): Promise<AdminUser> {
   const { data } = await httpClient.get<AdminUser>("/admin/auth/me", {
     signal,
@@ -85,14 +81,13 @@ export async function getMe(signal?: AbortSignal): Promise<AdminUser> {
   return data;
 }
 
-/** Answers 204 with an empty body. */
 export async function changePassword(
   payload: ChangePasswordRequest,
 ): Promise<void> {
   await httpClient.post("/admin/auth/change-password", payload);
 }
 
-/** Always resolves to the same generic message, whatever the email resolves to. Answers 200. */
+/** Always a generic message (no account enumeration). */
 export async function forgotPassword(
   payload: ForgotPasswordRequest,
 ): Promise<ForgotPasswordResponse> {
@@ -104,10 +99,7 @@ export async function forgotPassword(
   return data;
 }
 
-/**
- * Redeems a password-reset or account-setup token. Never issues a sign-in
- * token, and revokes all of the user's existing refresh tokens server-side.
- */
+/** Redeems a reset or setup token. Issues no token and revokes existing sessions. */
 export async function setPassword(
   payload: SetPasswordRequest,
 ): Promise<AdminUser> {

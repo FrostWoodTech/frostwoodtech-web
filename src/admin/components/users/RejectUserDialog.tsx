@@ -9,7 +9,7 @@ interface RejectUserDialogProps {
   readonly loading?: boolean;
 }
 
-/** A reason is required by the API, so this replaces `ConfirmDialog` for rejection. */
+/** Rejection needs a reason, so this is used instead of `ConfirmDialog`. */
 export default function RejectUserDialog({
   target,
   onConfirm,

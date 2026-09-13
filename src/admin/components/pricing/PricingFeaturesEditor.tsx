@@ -20,12 +20,8 @@ const ROW_STATE_CLASSES = {
 } as const;
 
 /**
- * The bullet list shown on a pricing card. Features are a sub-resource on the
- * API — they need a saved plan id — so this edits a plain local array and the
- * modal diffs it against the server's copy once the plan itself is saved.
- *
- * Order is the array order; `sortOrder` is assigned from the index on save,
- * which keeps the numbering dense however many rows come and go.
+ * Edits features as a local array; the modal syncs them to the API after the plan is saved.
+ * Array order becomes `sortOrder`.
  */
 export default function PricingFeaturesEditor({
   value,

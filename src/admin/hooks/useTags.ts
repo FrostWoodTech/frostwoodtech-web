@@ -12,7 +12,7 @@ export function useTags(params: GetTagsParams) {
   });
 }
 
-/** The fixed `TechCategory` list — effectively static, so it's fetched once and kept. */
+/** Static list, fetched once. */
 export function useTechCategories() {
   return useQuery({
     queryKey: techCategoryKeys.all,

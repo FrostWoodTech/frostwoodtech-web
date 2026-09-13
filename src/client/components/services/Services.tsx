@@ -1,11 +1,18 @@
 import Eyebrow from "@/client/components/ui/Eyebrow";
-import BentoCard from "./BentoCard";
-import { BENTO_CELLS, SERVICES_HEADER } from "@/client/data/services";
+import ServiceCard from "./ServiceCard";
+import { SERVICES_HEADER } from "@/client/data/services";
+import { mapApiServiceToService } from "@/client/lib/mappers";
+import type { ApiService } from "@/client/types";
 
-export default function Services() {
+interface ServicesProps {
+  readonly services: readonly ApiService[];
+}
+
+export default function Services({ services }: ServicesProps) {
+  if (services.length === 0) return null;
+
   return (
     <section className="mx-auto max-w-7xl px-4 py-26 sm:px-6 lg:px-8">
-      {/* Asymmetric header: title left, supporting line right. */}
       <div className="mb-11 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
           {SERVICES_HEADER.badge && (
@@ -23,9 +30,12 @@ export default function Services() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4.5 md:grid-cols-3">
-        {BENTO_CELLS.map((cell) => (
-          <BentoCard key={cell.id} cell={cell} />
+      <div className="grid grid-cols-1 gap-4.5 md:grid-cols-2 lg:grid-cols-3">
+        {services.map((service) => (
+          <ServiceCard
+            key={service.id}
+            service={mapApiServiceToService(service)}
+          />
         ))}
       </div>
     </section>

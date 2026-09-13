@@ -3,8 +3,7 @@ import type { LucideIcon } from "lucide-react";
 
 type StatCardTone = "brand" | "info" | "success" | "warning";
 
-/* Written out per tone rather than interpolated: Tailwind scans for whole
-   class names, so `bg-${tone}-50` would never be generated. */
+/* Full class names, not interpolated — Tailwind only generates classes it can find verbatim. */
 const TONE_CLASSES: Record<StatCardTone, string> = {
   brand:
     "bg-primary-50 border-primary-100 text-primary-600 group-hover:bg-primary-100",
@@ -23,7 +22,6 @@ interface StatCardProps {
   readonly tone?: StatCardTone;
 }
 
-/** A dashboard tile summarizing one content type's count, linking to its list page. */
 export default function StatCard({
   label,
   value,
@@ -43,8 +41,6 @@ export default function StatCard({
       </span>
 
       <div className="min-w-0">
-        {/* `tabular-nums` keeps the row of tiles from jittering as counts
-            load in and change width. */}
         <p className="admin-display text-2xl leading-none tabular-nums text-text-primary">
           {value ?? "—"}
         </p>

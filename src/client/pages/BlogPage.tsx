@@ -13,7 +13,19 @@ export default function BlogPage() {
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const { data: posts = [], isLoading, isError, error } = useArticles();
+  const {
+    data: posts = [],
+    isLoading,
+    isError,
+    error,
+  } = useArticles({
+    pageSize: 100,
+  });
+
+  const categories = useMemo(
+    () => [...new Set(posts.map((post) => post.category))].sort(),
+    [posts],
+  );
 
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
@@ -50,6 +62,7 @@ export default function BlogPage() {
 
         <div className="flex flex-col gap-5">
           <BlogFilters
+            categories={categories}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             selectedCategory={selectedCategory}

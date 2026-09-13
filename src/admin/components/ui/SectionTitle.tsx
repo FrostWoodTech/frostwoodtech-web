@@ -4,7 +4,6 @@ interface SectionTitleProps {
   readonly className?: string;
 }
 
-/** Heading for a section inside a page — one step below `PageHeader`. */
 export default function SectionTitle({
   children,
   description,

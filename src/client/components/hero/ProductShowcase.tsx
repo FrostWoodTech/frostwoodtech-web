@@ -26,16 +26,11 @@ const STATS = [
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"] as const;
 
-/**
- * A mock of our own product, shown under the hero. Uses the `mock-*` tokens
- * so it can carry its own light/dark look independent of the surrounding
- * page theme. All figures are sample data.
- */
+/** Product mock under the hero, styled with `mock-*` tokens. All figures are sample data. */
 export default function ProductShowcase() {
   return (
     <div className="rounded-3xl border-2 border-hair-strong bg-card p-3 shadow-panel">
       <div className="overflow-hidden rounded-2xl border border-mock-line bg-mock-bg">
-        {/* Browser chrome */}
         <div className="flex items-center gap-3.5 border-b border-mock-line px-5 py-3.5">
           <div className="flex gap-1.5" aria-hidden="true">
             <span className="h-2.5 w-2.5 rounded-full bg-mac-close" />
@@ -51,7 +46,6 @@ export default function ProductShowcase() {
         </div>
 
         <div className="flex">
-          {/* Sidebar */}
           <div className="hidden w-52 shrink-0 flex-col gap-1.5 border-r border-mock-line p-4 md:flex">
             <div className="flex items-center gap-2.5 rounded-[9px] border border-mock-forest/25 bg-mock-forest/15 px-3 py-2.5">
               <LayoutGrid
@@ -91,7 +85,6 @@ export default function ProductShowcase() {
             </div>
           </div>
 
-          {/* Main panel */}
           <div className="min-w-0 flex-1 px-5 pt-6 pb-7 sm:px-7">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>

@@ -13,18 +13,20 @@ import {
 } from "@/admin/utils/format";
 import { Badge, Button, Modal, Select, Textarea } from "@/admin/components/ui";
 
-const STATUS_OPTIONS: readonly { value: ContactSubmissionStatus; label: string }[] =
-  ["new", "read", "replied", "archived", "spam"].map((value) => ({
-    value: value as ContactSubmissionStatus,
-    label: contactStatusLabel(value as ContactSubmissionStatus),
-  }));
+const STATUS_OPTIONS: readonly {
+  value: ContactSubmissionStatus;
+  label: string;
+}[] = ["new", "read", "replied", "archived", "spam"].map((value) => ({
+  value: value as ContactSubmissionStatus,
+  label: contactStatusLabel(value as ContactSubmissionStatus),
+}));
 
 interface ContactSubmissionDetailModalProps {
   readonly submission: AdminContactSubmission | null;
   readonly onClose: () => void;
 }
 
-/** View + triage a single enquiry: status and internal notes only — nothing here can rewrite what the visitor sent. */
+/** View and triage an enquiry (status and notes only). */
 export default function ContactSubmissionDetailModal({
   submission,
   onClose,
@@ -38,9 +40,7 @@ export default function ContactSubmissionDetailModal({
   const [adminNotes, setAdminNotes] = useState(submission?.adminNotes ?? "");
   const [lastLoadedId, setLastLoadedId] = useState<string | null>(null);
 
-  // Re-seed local edit state whenever a different submission opens, without a
-  // `useEffect` — Modal unmounts nothing on close, so the fields would
-  // otherwise keep showing the previous row's draft.
+  // Reset draft state when a different submission opens (Modal stays mounted on close).
   if (submission && submission.id !== lastLoadedId) {
     setLastLoadedId(submission.id);
     setStatus(submission.status);
@@ -153,7 +153,13 @@ export default function ContactSubmissionDetailModal({
   );
 }
 
-function Field({ label, value }: { readonly label: string; readonly value?: string }) {
+function Field({
+  label,
+  value,
+}: {
+  readonly label: string;
+  readonly value?: string;
+}) {
   return (
     <div>
       <span className="block text-xs font-semibold tracking-wide text-text-muted uppercase">

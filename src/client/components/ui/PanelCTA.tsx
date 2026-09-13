@@ -13,12 +13,7 @@ interface PanelCTAProps {
   readonly className?: string;
 }
 
-/**
- * The contrast closing band — a deep-forest surface on dark, a light
- * ice/forest tint on light. Its buttons use the `panel-*` tokens (which
- * flip with the theme) rather than the theme-flipping Button variants,
- * since the panel's own contrast needs stay self-consistent either way.
- */
+/** Contrast closing band. Its buttons use `panel-*` tokens, not `Button` variants, to keep contrast right. */
 export default function PanelCTA({
   title,
   description,

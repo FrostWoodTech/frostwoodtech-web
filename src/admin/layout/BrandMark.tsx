@@ -20,16 +20,7 @@ const WORDMARK_SIZE = {
   lg: "text-lg",
 } as const;
 
-/**
- * The CMS brand lockup.
- *
- * The glyph is the FrostWoodTech mark taken from `public/favicon.svg`,
- * redrawn as a single `currentColor` path — the source file carries the old
- * purple brand baked in as literal fills, so it could not be recoloured.
- * The sidebar and the sign-in screen share this rather than each drawing
- * their own; the sidebar previously showed a hardcoded letter "P", left over
- * from an earlier project name.
- */
+/** The favicon mark redrawn as a `currentColor` path so it can be recoloured. */
 export default function BrandMark({
   size = "sm",
   iconOnly = false,

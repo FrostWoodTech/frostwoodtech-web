@@ -28,7 +28,11 @@ import { reviewKeys } from "@/admin/hooks/queryKeys";
 import { COUNTRY_OPTIONS } from "@/admin/utils/countries";
 import { toErrorMessage } from "@/admin/api/ApiError";
 import useToast from "@/admin/context/useToast";
-import type { AdminReview, PagedResult, ReviewWriteRequest } from "@/admin/types";
+import type {
+  AdminReview,
+  PagedResult,
+  ReviewWriteRequest,
+} from "@/admin/types";
 import {
   Button,
   Card,
@@ -123,16 +127,7 @@ export default function ReviewsPage() {
     }),
   );
 
-  /**
-   * Sends the whole page renumbered densely from the dropped order rather
-   * than just the two swapped rows, so the numbering stays contiguous
-   * however it started. Reviews aren't split per site, so this always
-   * applies (unlike FAQs/articles). Writes the reordered rows into the
-   * query cache immediately (before the request resolves) so dnd-kit's
-   * already-reordered drop position sticks instead of snapping back while
-   * the request is in flight, and rolls back to the pre-drag snapshot on
-   * failure.
-   */
+  /** Renumbers the whole page and writes it to the cache optimistically; rolls back on failure. */
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -328,7 +323,6 @@ export default function ReviewsPage() {
         onChange={(next) => setPage(next)}
       />
 
-      {/* Keyed so switching rows remounts the form with fresh defaults. */}
       {isFormOpen && (
         <ReviewFormModal
           key={editing?.id ?? "new"}

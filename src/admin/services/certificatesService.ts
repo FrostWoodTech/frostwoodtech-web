@@ -13,7 +13,6 @@ export interface GetCertificatesParams {
   readonly pageSize?: number;
 }
 
-/** Ordered by `sortOrder` — certificates share one global order. */
 export async function getCertificates(
   { search, isPublished, page, pageSize }: GetCertificatesParams = {},
   signal?: AbortSignal,
@@ -38,7 +37,7 @@ export async function createCertificate(
   return data;
 }
 
-/** Full replacement — `body` must carry every field, not just the changed ones. */
+/** Full replacement — send every field. */
 export async function updateCertificate(
   id: string,
   body: CertificateWriteRequest,
@@ -54,7 +53,6 @@ export async function deleteCertificate(id: string): Promise<void> {
   await httpClient.delete(`/admin/certificates/${id}`);
 }
 
-/** Bulk sort-order update — certificates share one global order. Answers 204. */
 export async function reorderCertificates(
   body: CertificateReorderRequest,
 ): Promise<void> {

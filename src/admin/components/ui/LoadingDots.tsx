@@ -3,7 +3,6 @@ interface LoadingDotsProps {
   readonly label?: string;
 }
 
-/** Three bouncing dots — an inline "still loading" cue for small async fields. */
 export default function LoadingDots({
   className = "",
   label = "Loading",

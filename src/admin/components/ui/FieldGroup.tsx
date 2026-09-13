@@ -5,10 +5,6 @@ interface FieldGroupProps {
   readonly className?: string;
 }
 
-/**
- * A bordered cluster of related fields, used inside the editor forms and by
- * the repeatable-row editors (service features, pricing features, images).
- */
 export default function FieldGroup({
   title,
   description,

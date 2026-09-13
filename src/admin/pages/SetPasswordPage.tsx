@@ -25,9 +25,7 @@ export default function SetPasswordPage() {
   const navigate = useNavigate();
   const toast = useToast();
   const setPassword = useSetPassword();
-  // Captured once: `searchParams` itself keeps returning the original value
-  // even after the URL is cleared below, but closing over a stable local
-  // avoids re-reading a mutated router object at submit time.
+  // Captured once, since the token is cleared from the URL below.
   const [initialToken] = useState(() => searchParams.get("token"));
   const [state, setState] = useState<PageState>(
     initialToken ? "form" : "error",
@@ -37,8 +35,7 @@ export default function SetPasswordPage() {
   );
 
   useEffect(() => {
-    // Clear the token from the address bar as soon as it's read, so it
-    // doesn't linger in browser history or get captured by analytics.
+    // Remove the token from the address bar so it doesn't linger in history.
     if (searchParams.get("token")) {
       window.history.replaceState(null, "", window.location.pathname);
     }

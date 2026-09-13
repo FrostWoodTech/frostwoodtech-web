@@ -19,15 +19,10 @@
       content="#121a18"
     />
 
-    <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!--
-      Resolve the theme before first paint, otherwise a dark-mode visitor
-      gets a white flash while the bundle loads. Kept inline and blocking on
-      purpose; ThemeProvider takes over once React mounts.
-    -->
+    <!-- Blocking pre-paint theme script (avoids a flash); ThemeProvider takes over after mount. -->
     <script>
       (function () {
         var root = document.documentElement;
@@ -42,7 +37,7 @@
                 : "light",
           );
         } catch (e) {
-          // Storage can throw in private mode — fall back to the light default.
+          // Storage can throw in private mode.
           root.setAttribute("data-theme", "light");
         }
       })();

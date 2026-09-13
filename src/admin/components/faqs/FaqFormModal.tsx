@@ -6,13 +6,19 @@ import { toErrorMessage } from "@/admin/api/ApiError";
 import useToast from "@/admin/context/useToast";
 import type { AdminFaq, FaqWriteRequest } from "@/admin/types";
 import { faqSchema, type FaqFormValues } from "@/admin/validation/faqSchemas";
-import { Button, Checkbox, Modal, Select, Textarea } from "@/admin/components/ui";
+import {
+  Button,
+  Checkbox,
+  Modal,
+  Select,
+  Textarea,
+} from "@/admin/components/ui";
 
-/** Well above any realistic service count — this picker isn't paged. */
+/** The picker isn't paged, so fetch well above any realistic count. */
 const SERVICE_PAGE_SIZE = 100;
 
 interface FaqFormModalProps {
-  /** `null` opens the dialog in create mode. */
+  /** `null` means create mode. */
   readonly faq: AdminFaq | null;
   readonly onClose: () => void;
   readonly onSaved: () => void;
@@ -40,10 +46,7 @@ function toFormValues(faq: AdminFaq | null): FaqFormValues {
   };
 }
 
-/**
- * Mounted only while the dialog is open, and keyed on the FAQ by `FaqsPage`,
- * so the form state starts fresh for every row instead of being reset.
- */
+/** Mounted only while open and keyed per row by the page, so form state starts fresh. */
 export default function FaqFormModal({
   faq,
   onClose,
@@ -75,7 +78,7 @@ export default function FaqFormModal({
   });
 
   async function onSubmit(values: FaqFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so any omitted field resets to default.
+    // Built explicitly: PUT replaces the whole record, so no field may be omitted.
     const body: FaqWriteRequest = {
       serviceId: values.serviceId ? values.serviceId : undefined,
       question: values.question.trim(),
@@ -121,7 +124,8 @@ export default function FaqFormModal({
             {...register("serviceId")}
           />
           <p className="mt-2 text-xs text-text-muted">
-            A service&rsquo;s own FAQs render only on that service&rsquo;s page, not the shared list.
+            A service&rsquo;s own FAQs render only on that service&rsquo;s page,
+            not the shared list.
           </p>
         </div>
 

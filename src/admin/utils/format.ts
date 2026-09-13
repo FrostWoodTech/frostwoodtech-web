@@ -37,7 +37,6 @@ export function initialsOf(
   return (initials || email?.[0] || "?").toUpperCase();
 }
 
-/** The API omits `lastLoginAt` entirely when the user has never signed in. */
 export function formatDate(value?: string): string {
   if (!value) return "—";
   const parsed = new Date(value);
@@ -48,11 +47,7 @@ export function formatDate(value?: string): string {
   });
 }
 
-
-/**
- * Preview only — the API generates the real slug with `SlugGenerator.Generate`
- * whenever the field is left blank, and its output is authoritative.
- */
+/** Preview only — the API's generated slug is authoritative. */
 export function slugify(value: string): string {
   return value
     .toLowerCase()
@@ -73,11 +68,7 @@ export function priceTypeLabel(priceType: PriceType): string {
   return PRICE_TYPE_LABELS[priceType] ?? priceType;
 }
 
-/**
- * How a plan's price reads in the admin table. The API omits `priceAmount`
- * entirely for a `custom` plan, which is exactly the "talk to us" case, so an
- * absent amount is a value here rather than a gap.
- */
+/** No `priceAmount` means a custom "Contact us" price. */
 export function formatPrice(plan: {
   readonly priceAmount?: number;
   readonly currency: string;
@@ -103,8 +94,9 @@ export function formatPrice(plan: {
   }
 }
 
-/** Delivery is free text only — there's no separate numeric days field. */
-export function formatDelivery(plan: { readonly deliveryText?: string }): string {
+export function formatDelivery(plan: {
+  readonly deliveryText?: string;
+}): string {
   return plan.deliveryText ?? "—";
 }
 

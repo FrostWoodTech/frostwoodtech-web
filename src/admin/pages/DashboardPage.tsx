@@ -25,7 +25,7 @@ import { useContactSubmissions } from "@/admin/hooks/useContactSubmissions";
 import ContentBreakdownChart from "@/admin/components/dashboard/ContentBreakdownChart";
 import { SectionTitle, StatCard } from "@/admin/components/ui";
 
-/** A single-row fetch just to read `total` — the list itself is unused here. */
+/** Fetches one row just to read `total`. */
 const COUNT_ONLY = { page: 1, pageSize: 1 };
 
 type StatusFilter = "" | "published" | "draft";
@@ -47,26 +47,18 @@ export default function DashboardPage() {
   const [status, setStatus] = useState<StatusFilter>("");
   const isPublished = toIsPublished(status);
 
-  // Scoped to the agency site: projects/articles/services/FAQs can also show
-  // on the personal site, but this breakdown is specifically "what's live on
-  // FrostWoodTech" — pricing has no `site` param since it's agency-only by
-  // design, and tags aren't site- or publish-scoped at all, so both sit
-  // outside the filter.
+  // Counts are for the agency site; pricing and tags have no site scope.
   const projects = useProjects({ site: "agency", isPublished, ...COUNT_ONLY });
   const articles = useArticles({ site: "agency", isPublished, ...COUNT_ONLY });
   const services = useServices({ site: "agency", isPublished, ...COUNT_ONLY });
   const tags = useTags(COUNT_ONLY);
   const pricingPlans = usePricingPlans({ isPublished, ...COUNT_ONLY });
   const faqs = useFaqs({ site: "agency", isPublished, ...COUNT_ONLY });
-  // Reviews are shared across both sites (not site-scoped), so only the
-  // status filter applies here, same as pricing/tags.
   const reviews = useReviews({ isPublished, ...COUNT_ONLY });
-  // Currencies have no published/draft concept — always the raw total.
   const currencies = useCurrencies(COUNT_ONLY);
 
   const isSuperAdmin = user?.role === "super_admin";
-  // `GET /admin/users` is super-admin-only server-side — a regular admin
-  // must never fire this request, not just hide the result.
+  // Super-admin-only endpoint: a regular admin must not send this request at all.
   const pendingApprovals = useUsers(
     { status: "pending", ...COUNT_ONLY },
     isSuperAdmin,
@@ -150,14 +142,6 @@ export default function DashboardPage() {
 
   return (
     <div>
-      {/* Account status, email, and sign-in details now live in the topbar's
-          account button (click it to open) — this stays a plain greeting.
-          Set in Fraunces (the client site's display serif) at a normal
-          weight/tracking rather than the shared `admin-display` utility's
-          bold+tight treatment — that combination was tried on this exact
-          heading before and reads as a dense, low-contrast block at this
-          size (see the comment on `admin-display` in index.css), so this
-          stays a one-off rather than reverting that utility everywhere. */}
       <h1
         className="mb-6 text-3xl leading-tight text-text-primary md:text-4xl"
         style={{ fontFamily: "var(--font-display)" }}

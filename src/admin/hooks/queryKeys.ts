@@ -1,5 +1,6 @@
 import type { GetArticlesParams } from "@/admin/services/articlesService";
 import type { GetProjectsParams } from "@/admin/services/projectsService";
+import type { GetProductsParams } from "@/admin/services/productsService";
 import type { GetServicesParams } from "@/admin/services/servicesService";
 import type { GetPricingPlansParams } from "@/admin/services/pricingService";
 import type { GetTagsParams } from "@/admin/services/tagsService";
@@ -33,6 +34,14 @@ export const projectKeys = {
   list: (params: GetProjectsParams) =>
     [...projectKeys.lists(), params] as const,
   detail: (id: string) => [...projectKeys.all, "detail", id] as const,
+};
+
+export const productKeys = {
+  all: ["products"] as const,
+  lists: () => [...productKeys.all, "list"] as const,
+  list: (params: GetProductsParams) =>
+    [...productKeys.lists(), params] as const,
+  detail: (id: string) => [...productKeys.all, "detail", id] as const,
 };
 
 export const serviceKeys = {

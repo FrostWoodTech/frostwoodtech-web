@@ -59,8 +59,7 @@ export default function FaqsPage() {
   const [searchInput, setSearchInput] = useSearchParamState<string>("q", "");
   const search = useDebounce(searchInput);
 
-  // Encoded as "1"/"0" strings so the default (agency only) leaves the URL
-  // clean — `useSearchParamState` omits a param once it matches its default.
+  // "1"/"0" strings so the default (agency only) keeps the URL clean.
   const [agencyParam, setAgencyParam] = useSearchParamState<string>(
     "agency",
     "1",
@@ -79,8 +78,7 @@ export default function FaqsPage() {
         ? "agency"
         : "personal"
       : null;
-  // Both and neither both mean "don't filter by site" to the API — the
-  // "match nothing" case is handled by not querying at all, below.
+  // Both or neither = no site filter; "neither" skips the query entirely below.
   const querySite = activeSite ?? undefined;
 
   const [pageParam, setPageParam] = useSearchParamState<string>("page", "1");
@@ -94,8 +92,7 @@ export default function FaqsPage() {
   const [editing, setEditing] = useState<AdminFaq | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminFaq | null>(null);
 
-  // "" = every scope (today's behaviour), a magic string = global only,
-  // anything else = that service's own FAQs.
+  // "" = every scope, sentinel = general only, otherwise a service id.
   const [scopeParam, setScopeParam] = useSearchParamState<string>(
     "scope",
     SCOPE_ALL,
@@ -121,20 +118,25 @@ export default function FaqsPage() {
     isFetching: isFetchingQuery,
     error: queryError,
   } = useFaqs(
-    { search, site: querySite, serviceId, globalOnly, page, pageSize: PAGE_SIZE },
+    {
+      search,
+      site: querySite,
+      serviceId,
+      globalOnly,
+      page,
+      pageSize: PAGE_SIZE,
+    },
     !noneChecked,
   );
   const deleteFaqMutation = useDeleteFaq();
   const reorderFaqsMutation = useReorderFaqs();
 
-  // With no site selected there is nothing to fetch — the query above stays
-  // disabled, so `isLoadingQuery`/`isFetchingQuery` never resolve on their own.
+  // With no site selected the query is disabled, so its loading flags never settle.
   const isLoading = !noneChecked && isLoadingQuery;
   const isFetching = !noneChecked && isFetchingQuery;
   const error = queryError ? toErrorMessage(queryError) : null;
 
-  // Already ordered by sortOrder server-side — FAQs share one order across
-  // both sites, so there's no per-site re-sort to do here.
+  // Already ordered by sortOrder server-side (one order for both sites).
   const rows = noneChecked ? [] : (result?.items ?? []);
 
   const sensors = useSensors(
@@ -143,14 +145,7 @@ export default function FaqsPage() {
     }),
   );
 
-  /**
-   * Sends the whole page renumbered densely from the dropped order rather
-   * than just the two swapped rows, so the numbering stays contiguous
-   * however it started. Writes the reordered rows into the query cache
-   * immediately (before the request resolves) so dnd-kit's already-reordered
-   * drop position sticks instead of snapping back while the request is in
-   * flight, and rolls back to the pre-drag snapshot on failure.
-   */
+  /** Renumbers the whole page and writes it to the cache optimistically; rolls back on failure. */
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -174,15 +169,17 @@ export default function FaqsPage() {
       page,
       pageSize: PAGE_SIZE,
     });
-    const previous =
-      queryClient.getQueryData<PagedResult<AdminFaq>>(queryKey);
+    const previous = queryClient.getQueryData<PagedResult<AdminFaq>>(queryKey);
 
     queryClient.setQueryData<PagedResult<AdminFaq> | undefined>(
       queryKey,
       (old) =>
         old && {
           ...old,
-          items: next.map((faq, at) => ({ ...faq, sortOrder: items[at].sortOrder })),
+          items: next.map((faq, at) => ({
+            ...faq,
+            sortOrder: items[at].sortOrder,
+          })),
         },
     );
 
@@ -356,7 +353,6 @@ export default function FaqsPage() {
         onChange={(next) => setPage(next)}
       />
 
-      {/* Keyed so switching rows remounts the form with fresh defaults. */}
       {isFormOpen && (
         <FaqFormModal
           key={editing?.id ?? "new"}

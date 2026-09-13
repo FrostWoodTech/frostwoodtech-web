@@ -31,7 +31,6 @@ export default function ReviewsPage() {
     return total / reviews.length;
   }, [reviews]);
 
-  // Lead with a genuine top-rated review rather than a hardcoded quote.
   const featured = useMemo(
     () => reviews.find((review) => review.rating === 5) ?? null,
     [reviews],

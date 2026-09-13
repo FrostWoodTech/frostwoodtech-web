@@ -42,11 +42,7 @@ const TABS: readonly { id: TabId; label: string }[] = [
   { id: "seo", label: "SEO & publish" },
 ];
 
-/**
- * Which fields live under which tab, so a tab can flag that it is hiding an
- * error. Every panel stays mounted, so validation still fires regardless of
- * which tab is showing — this only drives the dot.
- */
+/** Fields per tab, used only to show an error dot on a tab. */
 const TAB_FIELDS: Record<TabId, readonly (keyof ServiceFormValues)[]> = {
   details: ["name", "slug", "shortDescription"],
   "page-content": [
@@ -156,22 +152,23 @@ function toImageValue(
   altText?: string,
 ): ServiceImageValue | null {
   return objectKey && url
-    ? { objectKey, url, width: width ?? 0, height: height ?? 0, altText: altText ?? "" }
+    ? {
+        objectKey,
+        url,
+        width: width ?? 0,
+        height: height ?? 0,
+        altText: altText ?? "",
+      }
     : null;
 }
 
-/** `""` is how an untouched optional field reaches us; the API wants it gone. */
+/** Untouched optional fields are `""`; the API wants them omitted. */
 function blank(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 }
 
-/**
- * Serves both `/admin/services/new` and `/admin/services/:id`. A service now
- * carries a full page's worth of content plus three image slots and a
- * project picker — too much for the modal it used to live in, so it gets its
- * own route with tabbed panels, the same shape `ProjectEditorPage` uses.
- */
+/** Serves both `/admin/services/new` and `/admin/services/:id`. */
 export default function ServiceEditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -202,7 +199,7 @@ export default function ServiceEditorPage() {
     );
   }
 
-  // Keyed so navigating to a different service remounts the form instead of reusing stale defaults.
+  // Keyed so switching services remounts the form with fresh defaults.
   return (
     <ServiceForm
       key={service?.id ?? "new"}
@@ -213,7 +210,7 @@ export default function ServiceEditorPage() {
 }
 
 interface ServiceFormProps {
-  /** `null` puts the form in create mode. */
+  /** `null` means create mode. */
   readonly service: AdminService | null;
   readonly onDone: () => void;
 }
@@ -246,7 +243,13 @@ function ServiceForm({ service, onDone }: ServiceFormProps) {
   const name = useWatch({ control, name: "name" });
   const icon = useWatch({
     control,
-    name: ["iconObjectKey", "iconUrl", "iconWidth", "iconHeight", "iconAltText"],
+    name: [
+      "iconObjectKey",
+      "iconUrl",
+      "iconWidth",
+      "iconHeight",
+      "iconAltText",
+    ],
   });
   const heroImage = useWatch({
     control,
@@ -273,7 +276,9 @@ function ServiceForm({ service, onDone }: ServiceFormProps) {
     prefix: "icon" | "heroImage" | "depthImage",
     next: ServiceImageValue | null,
   ) {
-    setValue(`${prefix}ObjectKey`, next?.objectKey ?? "", { shouldDirty: true });
+    setValue(`${prefix}ObjectKey`, next?.objectKey ?? "", {
+      shouldDirty: true,
+    });
     setValue(`${prefix}Url`, next?.url ?? "", { shouldDirty: true });
     setValue(`${prefix}Width`, next?.width, { shouldDirty: true });
     setValue(`${prefix}Height`, next?.height, { shouldDirty: true });
@@ -289,9 +294,7 @@ function ServiceForm({ service, onDone }: ServiceFormProps) {
   }, [errors]);
 
   async function onSubmit(values: ServiceFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so
-    // any omitted field would reset to default. Show/featured/sort carry
-    // forward from the loaded service — they're edited from Reorder & Visibility.
+    // Built explicitly: PUT replaces the whole record. Show/featured/sort carry over from the loaded service.
     const body: ServiceWriteRequest = {
       name: values.name.trim(),
       slug: blank(values.slug),
@@ -368,7 +371,7 @@ function ServiceForm({ service, onDone }: ServiceFormProps) {
         }
       />
 
-      {/* Panels are hidden, never unmounted, so an error on another tab still blocks submit and shows its dot. */}
+      {/* Panels are hidden, not unmounted, so errors on other tabs still block submit. */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div
           role="tablist"

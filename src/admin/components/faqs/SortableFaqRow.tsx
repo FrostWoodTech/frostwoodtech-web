@@ -11,14 +11,20 @@ interface SortableFaqRowProps {
   readonly onDelete: (faq: AdminFaq) => void;
 }
 
-/** One draggable row — only the grip handle starts a drag, so Edit/Delete stay ordinary clicks. */
+/** Only the grip handle starts a drag, so Edit/Delete stay normal clicks. */
 export default function SortableFaqRow({
   faq,
   onEdit,
   onDelete,
 }: SortableFaqRowProps) {
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
-    useSortable({ id: faq.id });
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: faq.id });
 
   return (
     <TR

@@ -7,7 +7,6 @@ import ProductShowcase from "./ProductShowcase";
 export default function Hero() {
   return (
     <section className="relative overflow-hidden">
-      {/* Ambient light — the aurora behind the headline. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-85 left-1/2 h-225 w-[1500px] -translate-x-1/2 fw-amb-1"

@@ -1,17 +1,10 @@
 import { z } from "zod";
 
-/**
- * These mirror the hand-rolled checks in the API's `Services/UserService.cs`,
- * including its wording, so client and server messages stay consistent.
- */
+/** Mirrors `Services/UserService.cs` checks and wording. */
 
 const MINIMUM_PASSWORD_LENGTH = 8;
 
-/**
- * The API's `LooksLikeEmail` is deliberately loose: exactly one `@`, not the
- * first or last character, no spaces. Matching it avoids rejecting addresses
- * the server would happily accept.
- */
+/** Matches the API's deliberately loose `LooksLikeEmail`: one inner `@`, no spaces. */
 const email = z
   .string()
   .trim()

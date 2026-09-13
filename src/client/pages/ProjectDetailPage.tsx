@@ -82,7 +82,6 @@ export default function ProjectDetailPage() {
           </span>
         </nav>
 
-        {/* Hero */}
         <div className="mx-auto mt-9 max-w-4xl text-center">
           <div className="flex flex-wrap justify-center gap-2">
             {project.categories.map((category) => (
@@ -99,7 +98,6 @@ export default function ProjectDetailPage() {
           </p>
         </div>
 
-        {/* Hero media */}
         {gallery[0] && (
           <div className="mt-13 overflow-hidden rounded-3xl border border-hair fw-media shadow-card">
             <img
@@ -110,7 +108,6 @@ export default function ProjectDetailPage() {
           </div>
         )}
 
-        {/* Body + sidebar */}
         <div className="mt-19 grid grid-cols-1 gap-15 lg:grid-cols-3">
           <div className="flex flex-col gap-11 lg:col-span-2">
             {project.description && (
@@ -135,7 +132,6 @@ export default function ProjectDetailPage() {
             ))}
           </div>
 
-          {/* Facts */}
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <div className="flex flex-col gap-5 rounded-[18px] border border-card-br bg-card p-7 shadow-card">
               {project.clientName && (
@@ -192,7 +188,6 @@ export default function ProjectDetailPage() {
           </aside>
         </div>
 
-        {/* Gallery */}
         {gallery.length > 1 && (
           <div className="mt-20 grid grid-cols-1 gap-5 sm:grid-cols-2">
             {gallery.slice(1).map((image) => (

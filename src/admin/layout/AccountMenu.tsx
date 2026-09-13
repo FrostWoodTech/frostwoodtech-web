@@ -8,11 +8,6 @@ import {
   statusLabel,
 } from "@/admin/utils/format";
 
-/**
- * The account avatar in the topbar — click to see role/status and sign-in
- * details. "View site" / "Sign out" are separate buttons next to it, not
- * folded in here.
- */
 export default function AccountMenu() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);

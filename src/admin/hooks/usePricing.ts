@@ -60,11 +60,7 @@ export function useSetPricingPlanPublished() {
   });
 }
 
-/**
- * No `invalidateQueries` here — the caller writes the reordered rows straight
- * into the cache as an optimistic update, and a successful reorder leaves
- * that cache exactly matching the server, so there's nothing left to refetch.
- */
+/** No invalidation: the caller's optimistic cache write already matches the server. */
 export function useReorderPricingPlans() {
   return useMutation({
     mutationFn: (body: PricingReorderRequest) =>

@@ -9,7 +9,7 @@ import type { AdminProject } from "@/admin/types";
 
 interface ProjectPickerProps {
   readonly label: string;
-  /** The full set of selected ids — this replaces the service's case studies outright. */
+  /** Replaces the service's linked projects outright. */
   readonly value: readonly string[];
   readonly onChange: (ids: string[]) => void;
   readonly hint?: string;
@@ -17,14 +17,10 @@ interface ProjectPickerProps {
   readonly containerClassName?: string;
 }
 
-/** The API's page-size cap. A service picking from more than this would need its own paging. */
+/** The API's page-size cap; more projects would need paging. */
 const PROJECT_PAGE_SIZE = 100;
 
-/**
- * Multi-select for a service's linked case studies — same chips-plus-"add"-select shape as
- * `TagPicker`, backed by projects instead of tags. Drafts are included (an editor may want to
- * link one before it's published), and each option shows its year for disambiguation.
- */
+/** Multi-select for a service's projects, like `TagPicker`. Drafts are included. */
 export default function ProjectPicker({
   label,
   value,
@@ -44,7 +40,7 @@ export default function ProjectPicker({
   );
   const loadError = queryError ? toErrorMessage(queryError) : null;
 
-  // Chips follow `value`'s order; an id with no matching project is hidden but kept in the form value.
+  // Unknown ids are hidden but kept in the form value.
   const selected = useMemo(
     () =>
       value
@@ -106,7 +102,7 @@ export default function ProjectPicker({
             </ul>
           )}
 
-          {/* Resets to the placeholder after each pick — reads as an "add" action, not a selection. */}
+          {/* Resets after each pick, acting as an "add" control. */}
           <Select
             label="Add a project"
             placeholder={

@@ -11,14 +11,20 @@ interface SortableCertificateRowProps {
   readonly onDelete: (certificate: AdminCertificate) => void;
 }
 
-/** One draggable row — only the grip handle starts a drag, so Edit/Delete stay ordinary clicks. */
+/** Only the grip handle starts a drag, so Edit/Delete stay normal clicks. */
 export default function SortableCertificateRow({
   certificate,
   onEdit,
   onDelete,
 }: SortableCertificateRowProps) {
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
-    useSortable({ id: certificate.id });
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: certificate.id });
 
   return (
     <TR

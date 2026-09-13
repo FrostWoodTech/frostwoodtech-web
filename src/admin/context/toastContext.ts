@@ -14,7 +14,7 @@ export interface ToastContextValue {
   readonly success: (message: string) => void;
   readonly error: (message: string) => void;
   readonly info: (message: string) => void;
-  /** Sticks around (no auto-dismiss) until `dismiss(id)` is called — pair with a spinner-style action. */
+  /** No auto-dismiss; call `dismiss(id)` when done. */
   readonly loading: (message: string) => number;
 }
 

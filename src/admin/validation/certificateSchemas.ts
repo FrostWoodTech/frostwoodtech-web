@@ -1,16 +1,11 @@
 import { z } from "zod";
 
-/**
- * Mirrors the checks in the API's `Services/CertificateService.cs`.
- * Certificates are personal-site only — no `showOnX`/`featuredOnX` pair, just
- * `featured`, and no editable `sortOrder` — a new certificate is appended to
- * the end server-side, and order only ever changes by dragging rows.
- */
+/** Mirrors `Services/CertificateService.cs`. */
 
 export const certificateSchema = z.object({
   name: z.string().trim().min(1, "Name is required."),
   issuedBy: z.string().trim().min(1, "Issued by is required."),
-  /** Native `<input type="date">` value — already `YYYY-MM-DD`. */
+  /** `YYYY-MM-DD` from `<input type="date">`. */
   issuedDate: z.string().min(1, "Issue date is required."),
   marks: z.string().trim().optional(),
 

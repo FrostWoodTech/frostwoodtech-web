@@ -1,14 +1,7 @@
 import { z } from "zod";
 import { extractMarkdownImages } from "@/admin/utils/markdownImages";
 
-/**
- * `showOnAgency`/`featuredOnAgency`/`showOnPersonal`/`featuredOnPersonal` are
- * part of the shape (the API's `ArticleWriteRequest` needs all four on every
- * save) but aren't editable through this form anymore — they're carried
- * through from the loaded article untouched. Reorder & Visibility is what
- * changes them, and it enforces "featured requires shown" itself, so this
- * schema doesn't need to.
- */
+/** The show/featured flags are carried through unchanged; the reorder screen edits and validates them. */
 
 const optionalText = z.string().trim().optional();
 
@@ -17,7 +10,6 @@ export const articleSchema = z
     title: z.string().trim().min(1, "Title is required."),
     excerpt: z.string().trim().min(1, "Excerpt is required."),
     slug: optionalText,
-    /** Stores the image's public url, picked from the images used in the body. */
     coverImageKey: z
       .string()
       .trim()
@@ -31,9 +23,7 @@ export const articleSchema = z
     tagIds: z.array(z.string()),
   })
   .superRefine((values, ctx) => {
-    // The cover has to be one of the article's own images: the API stores the
-    // url verbatim and never resolves it, so a cover pointing at something the
-    // body doesn't carry is how a dead image reaches the public site.
+    // The API stores the cover verbatim, so it must be an image the body actually contains.
     if (
       values.coverImageKey &&
       !extractMarkdownImages(values.contentMarkdown).includes(

@@ -16,7 +16,6 @@ export default function Process() {
       </div>
 
       <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {/* The connecting thread, desktop only. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute top-6.5 right-15 left-15 hidden h-px bg-linear-to-r from-primary-400 to-accent-400 opacity-40 lg:block"

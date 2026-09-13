@@ -1,6 +1,12 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
-import { FIELD_BASE, FIELD_ERROR, FIELD_LABEL, FIELD_SIZE, FIELD_STATE } from "./fieldClasses";
+import {
+  FIELD_BASE,
+  FIELD_ERROR,
+  FIELD_LABEL,
+  FIELD_SIZE,
+  FIELD_STATE,
+} from "./fieldClasses";
 import type { SelectOption } from "./Select";
 import type { AdminFieldSize } from "./types";
 
@@ -14,20 +20,14 @@ interface ComboboxProps {
   readonly error?: string;
   readonly required?: boolean;
   readonly disabled?: boolean;
-  /** Adds a leading "clear" row (value `""`, labelled `placeholder`) — for an optional filter, not a required form field. */
+  /** Adds a leading "clear" row (value `""`) for optional filters. */
   readonly allowClear?: boolean;
   readonly containerClassName?: string;
-  /** `sm` matches the filter toolbars; `md` is the form default. */
+  /** `sm` for filter toolbars, `md` for forms. */
   readonly fieldSize?: AdminFieldSize;
 }
 
-/**
- * A searchable dropdown for long option lists (country pickers, ~250 items)
- * where a native `<select>`'s unstyled, unfilterable popup stops being
- * usable. Built on the same field tokens as `Select`/`Input` rather than a
- * new dependency — no headless-UI/combobox library exists in this repo yet,
- * and this is the only caller.
- */
+/** Searchable dropdown for long option lists (e.g. countries) where a native `<select>` isn't usable. */
 export default function Combobox({
   label,
   options,
@@ -70,10 +70,14 @@ export default function Combobox({
       : matches;
   }, [options, query, allowClear, placeholder]);
 
-  /** Opening always starts from a clean search with the current selection highlighted. */
   function openDropdown() {
     setQuery("");
-    setHighlighted(Math.max(0, options.findIndex((o) => o.value === value)));
+    setHighlighted(
+      Math.max(
+        0,
+        options.findIndex((o) => o.value === value),
+      ),
+    );
     setOpen(true);
   }
 
@@ -189,7 +193,11 @@ export default function Combobox({
                 </li>
               ) : (
                 filtered.map((option, index) => (
-                  <li key={option.value} role="option" aria-selected={option.value === value}>
+                  <li
+                    key={option.value}
+                    role="option"
+                    aria-selected={option.value === value}
+                  >
                     <button
                       type="button"
                       onMouseDown={(event) => event.preventDefault()}

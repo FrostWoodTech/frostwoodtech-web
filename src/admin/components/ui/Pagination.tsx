@@ -8,13 +8,7 @@ interface PaginationProps {
   readonly className?: string;
 }
 
-/**
- * Previous/next pager for the list pages.
- *
- * Owns the "only render when there is more than one page" check, so callers
- * do not each repeat the guard — one of them had it wrong and showed a
- * disabled pager on single-page results.
- */
+/** Renders nothing for a single page, so callers needn't guard. */
 export default function Pagination({
   page,
   totalPages,

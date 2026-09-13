@@ -9,18 +9,16 @@ import { httpClient } from "@/admin/services/httpClient";
 
 export interface GetFaqsParams {
   readonly search?: string;
-  /** Omit for every FAQ regardless of site; the API filters server-side otherwise. */
   readonly site?: Site;
-  /** Only FAQs scoped to this service. Wins over `globalOnly` if both are sent. */
+  /** Wins over `globalOnly`. */
   readonly serviceId?: string;
-  /** Only FAQs with no service — the shared list both public sites render. */
+  /** Only FAQs with no service. */
   readonly globalOnly?: boolean;
   readonly isPublished?: boolean;
   readonly page?: number;
   readonly pageSize?: number;
 }
 
-/** Ordered by `sortOrder`, within whichever scope was requested. */
 export async function getFaqs(
   {
     search,
@@ -34,7 +32,15 @@ export async function getFaqs(
   signal?: AbortSignal,
 ): Promise<PagedResult<AdminFaq>> {
   const { data } = await httpClient.get<PagedResult<AdminFaq>>("/admin/faqs", {
-    params: { search, site, serviceId, globalOnly, isPublished, page, pageSize },
+    params: {
+      search,
+      site,
+      serviceId,
+      globalOnly,
+      isPublished,
+      page,
+      pageSize,
+    },
     signal,
   });
   return data;
@@ -45,7 +51,7 @@ export async function createFaq(body: FaqWriteRequest): Promise<AdminFaq> {
   return data;
 }
 
-/** Full replacement — `body` must carry every field, not just the changed ones. */
+/** Full replacement — send every field. */
 export async function updateFaq(
   id: string,
   body: FaqWriteRequest,
@@ -58,7 +64,6 @@ export async function deleteFaq(id: string): Promise<void> {
   await httpClient.delete(`/admin/faqs/${id}`);
 }
 
-/** Bulk sort-order update — FAQs share one order across both sites. Answers 204. */
 export async function reorderFaqs(body: FaqReorderRequest): Promise<void> {
   await httpClient.post("/admin/faqs/reorder", body);
 }

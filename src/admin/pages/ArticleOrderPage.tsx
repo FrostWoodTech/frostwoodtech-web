@@ -22,11 +22,20 @@ import {
 import { articleKeys } from "@/admin/hooks/queryKeys";
 import { toErrorMessage } from "@/admin/api/ApiError";
 import useToast from "@/admin/context/useToast";
-import type { AdminArticle, ArticleWriteRequest, PagedResult, Site } from "@/admin/types";
-import { BackLink, Card, DataTableShell, PageHeader } from "@/admin/components/ui";
+import type {
+  AdminArticle,
+  ArticleWriteRequest,
+  PagedResult,
+  Site,
+} from "@/admin/types";
+import {
+  BackLink,
+  Card,
+  DataTableShell,
+  PageHeader,
+} from "@/admin/components/ui";
 
-// Well above any realistic article count so a column never needs pagination
-// to reorder — this screen is for arranging, not browsing.
+// High enough that a column never needs pagination.
 const COLUMN_PAGE_SIZE = 100;
 
 /** PUT is a full replacement, so a toggle from this screen still has to send every field. */
@@ -47,7 +56,9 @@ function toWriteRequest(article: AdminArticle): ArticleWriteRequest {
 }
 
 function sortOrderFor(article: AdminArticle, site: Site): number {
-  return site === "agency" ? article.agencySortOrder : article.personalSortOrder;
+  return site === "agency"
+    ? article.agencySortOrder
+    : article.personalSortOrder;
 }
 
 interface SiteColumnProps {
@@ -55,20 +66,13 @@ interface SiteColumnProps {
   readonly title: string;
 }
 
-/**
- * One site's drag-sortable list, with its own query and its own `DndContext`
- * so dragging one column never touches the other's cache entry.
- */
+/** One site's sortable column, with its own query and `DndContext`. */
 function SiteColumn({ site, title }: SiteColumnProps) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
-  // Only published articles can be dragged, featured, shown or hidden here —
-  // a draft has nothing to arrange on a public site yet. Publishing itself
-  // stays on the editor page; once it happens the article shows up here —
-  // `includeHidden` is what makes that true even before it's been shown on
-  // this particular site, since this is the screen that turns showing on.
+  // Published only; `includeHidden` so articles not yet shown on this site can be turned on here.
   const queryParams = {
     site,
     isPublished: true,
@@ -84,8 +88,7 @@ function SiteColumn({ site, title }: SiteColumnProps) {
   const updateArticleMutation = useUpdateArticle();
 
   const error = queryError ? toErrorMessage(queryError) : null;
-  // The admin list is ordered by most-recently-updated, not this site's sort
-  // order, so the column re-sorts client side.
+  // The API list isn't in this site's sort order, so re-sort client side.
   const rows = [...(result?.items ?? [])].sort(
     (a, b) => sortOrderFor(a, site) - sortOrderFor(b, site),
   );
@@ -95,12 +98,7 @@ function SiteColumn({ site, title }: SiteColumnProps) {
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
-  /**
-   * Optimistically writes the dropped order into this column's cache entry
-   * before the request resolves, so the row stays put instead of snapping
-   * back while the request is in flight — same pattern as the FAQ/Review
-   * reorder screens. Rolls back on failure.
-   */
+  /** Writes the new order to the cache optimistically; rolls back on failure. */
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -110,10 +108,14 @@ function SiteColumn({ site, title }: SiteColumnProps) {
     if (fromIndex === -1 || toIndex === -1) return;
 
     const next = arrayMove([...rows], fromIndex, toIndex);
-    const items = next.map((article, at) => ({ id: article.id, sortOrder: at }));
+    const items = next.map((article, at) => ({
+      id: article.id,
+      sortOrder: at,
+    }));
 
     const queryKey = articleKeys.list(queryParams);
-    const previous = queryClient.getQueryData<PagedResult<AdminArticle>>(queryKey);
+    const previous =
+      queryClient.getQueryData<PagedResult<AdminArticle>>(queryKey);
 
     queryClient.setQueryData<PagedResult<AdminArticle> | undefined>(
       queryKey,
@@ -137,17 +139,11 @@ function SiteColumn({ site, title }: SiteColumnProps) {
     }
   }
 
-  /**
-   * Both site columns' queries return the same underlying published articles
-   * once `includeHidden` is in play, so a toggle has to patch every cached
-   * list — not just this column's — or the other column (and this one, once
-   * `updateArticleMutation`'s own `invalidateQueries` kicks in a moment
-   * later) would briefly re-render with the pre-toggle value before the
-   * background refetch lands. Writing the patch into every matching cache
-   * entry immediately is what keeps the flip from visibly reverting and
-   * re-applying itself.
-   */
-  function patchArticleInCaches(articleId: string, patch: Partial<AdminArticle>) {
+  /** Patches every cached list (both columns hold the same articles) so a toggle doesn't flicker back before the refetch. */
+  function patchArticleInCaches(
+    articleId: string,
+    patch: Partial<AdminArticle>,
+  ) {
     queryClient.setQueriesData<PagedResult<AdminArticle>>(
       { queryKey: articleKeys.lists() },
       (old) =>
@@ -167,9 +163,11 @@ function SiteColumn({ site, title }: SiteColumnProps) {
         ? { featuredOnAgency: !article.featuredOnAgency }
         : { featuredOnPersonal: !article.featuredOnPersonal };
 
-    const previousLists = queryClient.getQueriesData<PagedResult<AdminArticle>>({
-      queryKey: articleKeys.lists(),
-    });
+    const previousLists = queryClient.getQueriesData<PagedResult<AdminArticle>>(
+      {
+        queryKey: articleKeys.lists(),
+      },
+    );
     patchArticleInCaches(article.id, patch);
 
     try {
@@ -179,7 +177,9 @@ function SiteColumn({ site, title }: SiteColumnProps) {
       });
       toast.success("Featured updated.");
     } catch (cause) {
-      previousLists.forEach(([key, data]) => queryClient.setQueryData(key, data));
+      previousLists.forEach(([key, data]) =>
+        queryClient.setQueryData(key, data),
+      );
       toast.error(toErrorMessage(cause));
     } finally {
       setTogglingId(null);
@@ -192,17 +192,23 @@ function SiteColumn({ site, title }: SiteColumnProps) {
       targetSite === "agency"
         ? {
             showOnAgency: !article.showOnAgency,
-            // Turning "show" off also turns "featured" off — can't be featured while hidden.
-            featuredOnAgency: article.showOnAgency ? false : article.featuredOnAgency,
+            // Hiding also un-features.
+            featuredOnAgency: article.showOnAgency
+              ? false
+              : article.featuredOnAgency,
           }
         : {
             showOnPersonal: !article.showOnPersonal,
-            featuredOnPersonal: article.showOnPersonal ? false : article.featuredOnPersonal,
+            featuredOnPersonal: article.showOnPersonal
+              ? false
+              : article.featuredOnPersonal,
           };
 
-    const previousLists = queryClient.getQueriesData<PagedResult<AdminArticle>>({
-      queryKey: articleKeys.lists(),
-    });
+    const previousLists = queryClient.getQueriesData<PagedResult<AdminArticle>>(
+      {
+        queryKey: articleKeys.lists(),
+      },
+    );
     patchArticleInCaches(article.id, patch);
 
     try {
@@ -212,7 +218,9 @@ function SiteColumn({ site, title }: SiteColumnProps) {
       });
       toast.success("Visibility updated.");
     } catch (cause) {
-      previousLists.forEach(([key, data]) => queryClient.setQueryData(key, data));
+      previousLists.forEach(([key, data]) =>
+        queryClient.setQueryData(key, data),
+      );
       toast.error(toErrorMessage(cause));
     } finally {
       setTogglingId(null);
@@ -225,18 +233,12 @@ function SiteColumn({ site, title }: SiteColumnProps) {
         <h2 className="text-sm font-semibold text-text-primary">{title}</h2>
         {atCap && (
           <p className="mt-1 text-xs text-text-muted">
-            Showing the first {COLUMN_PAGE_SIZE} published articles on this site.
+            Showing the first {COLUMN_PAGE_SIZE} published articles on this
+            site.
           </p>
         )}
       </div>
-      {/*
-        `isFetching` deliberately isn't wired to the spinner here: every
-        toggle on this page (show/feature) invalidates the list and triggers
-        a background refetch, and swapping the whole column out for a
-        spinner on every click is the exact flicker that was already fixed
-        for drag-and-drop elsewhere. The initial load still shows it via
-        `isLoading`.
-      */}
+      {/* Spinner on initial load only — every toggle refetches, and `isFetching` would flicker. */}
       <DataTableShell
         error={error}
         isLoading={isLoading}
@@ -258,7 +260,9 @@ function SiteColumn({ site, title }: SiteColumnProps) {
                 key={article.id}
                 article={article}
                 site={site}
-                isTogglingShow={togglingId === article.id && updateArticleMutation.isPending}
+                isTogglingShow={
+                  togglingId === article.id && updateArticleMutation.isPending
+                }
                 isTogglingFeatured={
                   togglingId === article.id && updateArticleMutation.isPending
                 }
@@ -273,12 +277,7 @@ function SiteColumn({ site, title }: SiteColumnProps) {
   );
 }
 
-/**
- * Dedicated reorder + visibility screen: an article carries two independent
- * sort orders plus a show/featured pair per site, so a single in-table drag
- * list isn't enough — each site gets its own drag-sortable column, side by
- * side, with the show/feature controls that used to live on the editor form.
- */
+/** Reorder and show/feature articles per site — one sortable column per site. */
 export default function ArticleOrderPage() {
   return (
     <div>

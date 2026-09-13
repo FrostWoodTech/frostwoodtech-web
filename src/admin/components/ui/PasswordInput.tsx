@@ -7,14 +7,7 @@ type PasswordInputProps = Omit<
   "type"
 >;
 
-/**
- * `Input` with `type="password"` plus a show/hide toggle.
- *
- * Some browsers render their own reveal icon on password fields and some
- * don't (Edge's legacy `::-ms-reveal` is suppressed globally in index.css),
- * so every password field in the CMS uses this instead of a bare `Input` to
- * keep the control consistent across browsers.
- */
+/** Password `Input` with a show/hide toggle; use it for every password field (native reveal icons are hidden). */
 const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   function PasswordInput({ className = "", ...props }, ref) {
     const [visible, setVisible] = useState(false);
