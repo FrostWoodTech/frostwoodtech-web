@@ -145,7 +145,7 @@ export default function CertificatesPage() {
 
     try {
       await deleteCertificateMutation.mutateAsync(deleteTarget.id);
-      toast.success("Certificate deleted.");
+      toast.success("Certificate moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -204,6 +204,7 @@ export default function CertificatesPage() {
               <TH className="w-10 sr-only">Reorder</TH>
               <TH>Name</TH>
               <TH>Issued by</TH>
+              <TH>Category</TH>
               <TH>Date</TH>
               <TH>Featured</TH>
               <TH>Status</TH>
@@ -252,8 +253,13 @@ export default function CertificatesPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete certificate"
-        message={deleteTarget ? `Delete “${deleteTarget.name}”?` : ""}
+        title="Move certificate to trash"
+        confirmLabel="Move to trash"
+        message={
+          deleteTarget
+            ? `Move “${deleteTarget.name}” to the trash? You can restore it from Trash.`
+            : ""
+        }
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
         loading={deleteCertificateMutation.isPending}

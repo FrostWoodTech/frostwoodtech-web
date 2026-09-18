@@ -103,7 +103,7 @@ export default function ServicesPage() {
 
     try {
       await deleteServiceMutation.mutateAsync(deleteTarget.id);
-      toast.success("Service deleted.");
+      toast.success("Service moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -323,10 +323,11 @@ export default function ServicesPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete service"
+        title="Move service to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete “${deleteTarget.name}”? It disappears from the public services endpoints.`
+            ? `Move “${deleteTarget.name}” to the trash? It disappears from the public services endpoints until restored.`
             : ""
         }
         onConfirm={confirmDelete}

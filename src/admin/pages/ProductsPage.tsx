@@ -150,7 +150,7 @@ export default function ProductsPage() {
 
     try {
       await deleteProductMutation.mutateAsync(deleteTarget.id);
-      toast.success("Product deleted.");
+      toast.success("Product moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -344,10 +344,11 @@ export default function ProductsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete product"
+        title="Move product to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete “${deleteTarget.name}”? It disappears from both public sites straight away.`
+            ? `Move “${deleteTarget.name}” to the trash? It disappears from both public sites straight away; restore it from Trash any time.`
             : ""
         }
         onConfirm={confirmDelete}

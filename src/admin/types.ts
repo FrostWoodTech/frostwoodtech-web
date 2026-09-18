@@ -139,6 +139,17 @@ export interface PagedResult<T> {
   readonly total: number;
 }
 
+/** `DTOs/Admin/TrashedItemResponse.cs` — shared by every trash list. */
+export interface TrashedItem {
+  readonly id: string;
+  /** The row's display name (title, name, question, …). */
+  readonly label: string;
+  /** Absent on rows deleted before the trash feature shipped. */
+  readonly deletedAt?: string;
+  readonly deletedBy?: string;
+  readonly deletedByEmail?: string;
+}
+
 /** Stable `code` member on the API's RFC 7807 problem responses. */
 export type ApiErrorCode =
   | "validation_failed"
@@ -692,11 +703,15 @@ export interface ReviewReorderRequest {
   readonly items: readonly ReorderItem[];
 }
 
+/** `Enums/CertificateCategory.cs` */
+export type CertificateCategory = "course" | "exam";
+
 /** `DTOs/Admin/AdminCertificateResponse.cs` — personal-site only. `width`/`height` are absent for PDFs. */
 export interface AdminCertificate {
   readonly id: string;
   readonly name: string;
   readonly issuedBy: string;
+  readonly category: CertificateCategory;
   /** Date-only, `YYYY-MM-DD`. */
   readonly issuedDate: string;
   readonly marks?: string;
@@ -718,6 +733,8 @@ export interface AdminCertificate {
 export interface CertificateWriteRequest {
   readonly name: string;
   readonly issuedBy: string;
+  /** Required — the API rejects an omitted category rather than defaulting it. */
+  readonly category: CertificateCategory;
   readonly issuedDate: string;
   readonly marks?: string;
   readonly objectKey: string;

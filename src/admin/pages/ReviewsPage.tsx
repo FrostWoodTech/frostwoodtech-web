@@ -204,7 +204,7 @@ export default function ReviewsPage() {
 
     try {
       await deleteReviewMutation.mutateAsync(deleteTarget.id);
-      toast.success("Review deleted.");
+      toast.success("Review moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -334,10 +334,11 @@ export default function ReviewsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete review"
+        title="Move review to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete the review from “${deleteTarget.name}”? It disappears from both public sites straight away.`
+            ? `Move the review from “${deleteTarget.name}” to the trash? It disappears from both public sites straight away; restore it from Trash any time.`
             : ""
         }
         onConfirm={confirmDelete}

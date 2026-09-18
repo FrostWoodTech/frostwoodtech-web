@@ -1,4 +1,5 @@
 import type {
+  CertificateCategory,
   ContactBudgetRange,
   ContactSubmissionStatus,
   PriceType,
@@ -122,4 +123,15 @@ const CONTACT_BUDGET_RANGE_LABELS: Record<ContactBudgetRange, string> = {
 
 export function contactBudgetRangeLabel(range: ContactBudgetRange): string {
   return CONTACT_BUDGET_RANGE_LABELS[range] ?? range;
+}
+
+const CERTIFICATE_CATEGORY_LABELS: Record<CertificateCategory, string> = {
+  course: "Course",
+  exam: "Exam",
+};
+
+export function certificateCategoryLabel(
+  category: CertificateCategory,
+): string {
+  return CERTIFICATE_CATEGORY_LABELS[category] ?? category;
 }

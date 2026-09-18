@@ -10,6 +10,10 @@ import type { GetReviewsParams } from "@/admin/services/reviewsService";
 import type { GetCertificatesParams } from "@/admin/services/certificatesService";
 import type { GetContactSubmissionsParams } from "@/admin/services/contactSubmissionsService";
 import type { GetCurrenciesParams } from "@/admin/services/currenciesService";
+import type {
+  GetTrashParams,
+  TrashEntityId,
+} from "@/admin/services/trashService";
 
 export const authKeys = {
   all: ["auth"] as const,
@@ -108,4 +112,11 @@ export const contactSubmissionKeys = {
   list: (params: GetContactSubmissionsParams) =>
     [...contactSubmissionKeys.lists(), params] as const,
   detail: (id: string) => [...contactSubmissionKeys.all, "detail", id] as const,
+};
+
+export const trashKeys = {
+  all: ["trash"] as const,
+  lists: (entity: TrashEntityId) => [...trashKeys.all, entity, "list"] as const,
+  list: (entity: TrashEntityId, params: GetTrashParams) =>
+    [...trashKeys.lists(entity), params] as const,
 };

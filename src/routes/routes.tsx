@@ -47,6 +47,7 @@ import CertificatesPage from "@/admin/pages/CertificatesPage";
 import ReviewsPage from "@/admin/pages/ReviewsPage";
 import ContactSubmissionsPage from "@/admin/pages/ContactSubmissionsPage";
 import CurrenciesPage from "@/admin/pages/CurrenciesPage";
+import TrashPage from "@/admin/pages/TrashPage";
 
 export const router = createBrowserRouter([
   {
@@ -256,6 +257,10 @@ export const router = createBrowserRouter([
               {
                 path: "currencies",
                 element: <CurrenciesPage />,
+              },
+              {
+                path: "trash",
+                element: <TrashPage />,
               },
               {
                 path: "change-password",

@@ -117,7 +117,7 @@ export default function ContactSubmissionsPage() {
 
     try {
       await deleteMutation.mutateAsync(deleteTarget.id);
-      toast.success("Submission deleted.");
+      toast.success("Submission moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -266,10 +266,11 @@ export default function ContactSubmissionsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete submission"
+        title="Move submission to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete the enquiry from ${deleteTarget.name} (${deleteTarget.email})?`
+            ? `Move the enquiry from ${deleteTarget.name} (${deleteTarget.email}) to the trash? You can restore it from Trash.`
             : ""
         }
         onConfirm={confirmDelete}

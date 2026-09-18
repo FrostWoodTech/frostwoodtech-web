@@ -126,7 +126,7 @@ export default function TagsPage() {
 
     try {
       await deleteTagMutation.mutateAsync(deleteTarget.id);
-      toast.success("Tag deleted.");
+      toast.success("Tag moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       // Surfaces the API's `tag_in_use` message.
@@ -284,10 +284,11 @@ export default function TagsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete tag"
+        title="Move tag to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete “${deleteTarget.name}”? Projects and articles still using it must drop it first.`
+            ? `Move “${deleteTarget.name}” to the trash? Projects and articles still using it must drop it first.`
             : ""
         }
         onConfirm={confirmDelete}

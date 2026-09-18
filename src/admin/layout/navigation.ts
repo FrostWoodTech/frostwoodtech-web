@@ -11,6 +11,7 @@ import {
   Newspaper,
   Package,
   Tags,
+  Trash2,
   UserCheck,
   Users,
   Wrench,
@@ -91,6 +92,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         icon: Mail,
         end: false,
       },
+      { to: "/admin/trash", label: "Trash", icon: Trash2, end: false },
     ],
   },
   {
@@ -122,6 +124,7 @@ export const ROUTE_LABELS: Readonly<Record<string, string>> = {
   certificates: "Certificates",
   reviews: "Reviews",
   "contact-submissions": "Contact",
+  trash: "Trash",
   "change-password": "Change password",
   new: "New",
 };

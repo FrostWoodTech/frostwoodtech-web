@@ -150,7 +150,7 @@ export default function ProjectsPage() {
 
     try {
       await deleteProjectMutation.mutateAsync(deleteTarget.id);
-      toast.success("Project deleted.");
+      toast.success("Project moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -354,10 +354,11 @@ export default function ProjectsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete project"
+        title="Move project to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete “${deleteTarget.title}”? It disappears from both public sites straight away.`
+            ? `Move “${deleteTarget.title}” to the trash? It disappears from both public sites straight away; restore it from Trash any time.`
             : ""
         }
         onConfirm={confirmDelete}

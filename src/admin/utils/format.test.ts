@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { PriceType, UserStatus } from "@/admin/types";
 import {
+  certificateCategoryLabel,
   contactBudgetRangeLabel,
   contactStatusLabel,
   formatDate,
@@ -107,6 +108,8 @@ describe("labels", () => {
     expect(priceTypeLabel("starting_from")).toBe("Starting from");
     expect(contactStatusLabel("spam")).toBe("Spam");
     expect(contactBudgetRangeLabel("one_to_five_k")).toBe("$1k–$5k");
+    expect(certificateCategoryLabel("course")).toBe("Course");
+    expect(certificateCategoryLabel("exam")).toBe("Exam");
   });
 
   it("falls back to the raw value for one the API added later", () => {

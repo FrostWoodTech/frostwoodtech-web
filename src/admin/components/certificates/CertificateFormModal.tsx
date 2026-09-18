@@ -8,14 +8,21 @@ import {
 import { toErrorMessage } from "@/admin/api/ApiError";
 import useToast from "@/admin/context/useToast";
 import type { AdminCertificate, CertificateWriteRequest } from "@/admin/types";
+import { certificateCategoryLabel } from "@/admin/utils/format";
 import {
+  CERTIFICATE_CATEGORIES,
   certificateSchema,
   type CertificateFormValues,
 } from "@/admin/validation/certificateSchemas";
 import CertificateFileField, {
   type CertificateFileValue,
 } from "@/admin/components/certificates/CertificateFileField";
-import { Button, Checkbox, Input, Modal } from "@/admin/components/ui";
+import { Button, Checkbox, Input, Modal, Select } from "@/admin/components/ui";
+
+const CATEGORY_OPTIONS = CERTIFICATE_CATEGORIES.map((value) => ({
+  value,
+  label: certificateCategoryLabel(value),
+}));
 
 interface CertificateFormModalProps {
   /** `null` means create mode. */
@@ -27,6 +34,7 @@ interface CertificateFormModalProps {
 const BLANK_VALUES: CertificateFormValues = {
   name: "",
   issuedBy: "",
+  category: "course",
   issuedDate: "",
   marks: "",
   objectKey: "",
@@ -47,6 +55,7 @@ function toFormValues(
   return {
     name: certificate.name,
     issuedBy: certificate.issuedBy,
+    category: certificate.category,
     issuedDate: certificate.issuedDate,
     marks: certificate.marks ?? "",
     objectKey: certificate.objectKey,
@@ -133,6 +142,7 @@ export default function CertificateFormModal({
     const body: CertificateWriteRequest = {
       name: values.name.trim(),
       issuedBy: values.issuedBy.trim(),
+      category: values.category,
       issuedDate: values.issuedDate,
       marks: values.marks ? values.marks.trim() : undefined,
       objectKey: values.objectKey,
@@ -202,6 +212,14 @@ export default function CertificateFormModal({
           required
           error={errors.issuedBy?.message}
           {...register("issuedBy")}
+        />
+
+        <Select
+          label="Category"
+          required
+          options={CATEGORY_OPTIONS}
+          error={errors.category?.message}
+          {...register("category")}
         />
 
         <div className="grid grid-cols-2 gap-4">

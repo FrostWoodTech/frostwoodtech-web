@@ -2,7 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Pencil, Trash2 } from "lucide-react";
 import type { AdminCertificate } from "@/admin/types";
-import { formatDate } from "@/admin/utils/format";
+import { certificateCategoryLabel, formatDate } from "@/admin/utils/format";
 import { Badge, IconButton, TD, TR } from "@/admin/components/ui";
 
 interface SortableCertificateRowProps {
@@ -52,6 +52,11 @@ export default function SortableCertificateRow({
         </span>
       </TD>
       <TD>{certificate.issuedBy}</TD>
+      <TD>
+        <Badge tone={certificate.category === "exam" ? "info" : "brand"}>
+          {certificateCategoryLabel(certificate.category)}
+        </Badge>
+      </TD>
       <TD variant="nowrap">{certificate.issuedDate}</TD>
       <TD>
         <Badge tone={certificate.featured ? "brand" : "neutral"}>

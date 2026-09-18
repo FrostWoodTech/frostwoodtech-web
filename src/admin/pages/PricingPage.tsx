@@ -163,7 +163,7 @@ export default function PricingPage() {
 
     try {
       await deletePricingPlanMutation.mutateAsync(deleteTarget.id);
-      toast.success("Pricing plan deleted.");
+      toast.success("Pricing plan moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -372,10 +372,11 @@ export default function PricingPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete pricing plan"
+        title="Move pricing plan to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete “${deleteTarget.name}”? Its features go with it, and the plan disappears from the public pricing endpoints.`
+            ? `Move “${deleteTarget.name}” to the trash? It disappears from the public pricing endpoints until restored.`
             : ""
         }
         onConfirm={confirmDelete}

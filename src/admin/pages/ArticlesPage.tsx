@@ -119,7 +119,7 @@ export default function ArticlesPage() {
 
     try {
       await deleteArticleMutation.mutateAsync(deleteTarget.id);
-      toast.success("Article deleted.");
+      toast.success("Article moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -290,10 +290,11 @@ export default function ArticlesPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete article"
+        title="Move article to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete “${deleteTarget.title}”? It disappears from both public sites straight away.`
+            ? `Move “${deleteTarget.title}” to the trash? It disappears from both public sites straight away; restore it from Trash any time.`
             : ""
         }
         onConfirm={confirmDelete}

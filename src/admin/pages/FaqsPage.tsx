@@ -211,7 +211,7 @@ export default function FaqsPage() {
 
     try {
       await deleteFaqMutation.mutateAsync(deleteTarget.id);
-      toast.success("FAQ deleted.");
+      toast.success("FAQ moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
@@ -364,8 +364,13 @@ export default function FaqsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete FAQ"
-        message={deleteTarget ? `Delete “${deleteTarget.question}”?` : ""}
+        title="Move FAQ to trash"
+        confirmLabel="Move to trash"
+        message={
+          deleteTarget
+            ? `Move “${deleteTarget.question}” to the trash? You can restore it from Trash.`
+            : ""
+        }
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
         loading={deleteFaqMutation.isPending}

@@ -111,7 +111,7 @@ export default function CurrenciesPage() {
 
     try {
       await deleteCurrencyMutation.mutateAsync(deleteTarget.id);
-      toast.success("Currency deleted.");
+      toast.success("Currency moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       // Surfaces the API's `currency_in_use` message.
@@ -295,10 +295,11 @@ export default function CurrenciesPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete currency"
+        title="Move currency to trash"
+        confirmLabel="Move to trash"
         message={
           deleteTarget
-            ? `Delete ${deleteTarget.code}? Pricing plans still priced in it must move to another currency first.`
+            ? `Move ${deleteTarget.code} to the trash? Pricing plans still priced in it must move to another currency first.`
             : ""
         }
         onConfirm={confirmDelete}
