@@ -1,16 +1,7 @@
 import { useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft } from "lucide-react";
-import Button from "@/admin/components/ui/Button";
-import Spinner from "@/client/components/ui/Spinner";
-import Alert from "@/admin/components/ui/Alert";
-import Card from "@/admin/components/ui/Card";
-import Checkbox from "@/admin/components/ui/Checkbox";
-import Input from "@/admin/components/ui/Input";
-import TagPicker from "@/admin/components/ui/TagPicker";
-import Textarea from "@/admin/components/ui/Textarea";
 import ProjectImagesEditor from "@/admin/components/projects/ProjectImagesEditor";
 import { usePersistedForm } from "@/shared/hooks/usePersistedForm";
 import {
@@ -26,6 +17,18 @@ import {
   projectSchema,
   type ProjectFormValues,
 } from "@/admin/validation/projectSchemas";
+import {
+  Alert,
+  BackLink,
+  Button,
+  Checkbox,
+  Input,
+  MarkdownField,
+  PageHeader,
+  Spinner,
+  TagPicker,
+  Textarea,
+} from "@/admin/components/ui";
 
 type TabId = "details" | "case-study" | "gallery" | "visibility";
 
@@ -36,11 +39,7 @@ const TABS: readonly { id: TabId; label: string }[] = [
   { id: "visibility", label: "Visibility & SEO" },
 ];
 
-/**
- * Which fields live under which tab, so a tab can flag that it is hiding an
- * error. Every panel stays mounted, so validation fires regardless of which
- * tab is showing — this only drives the dot.
- */
+/** Fields per tab, used only to show an error dot on a tab. */
 const TAB_FIELDS: Record<TabId, readonly (keyof ProjectFormValues)[]> = {
   details: [
     "title",
@@ -54,23 +53,13 @@ const TAB_FIELDS: Record<TabId, readonly (keyof ProjectFormValues)[]> = {
   ],
   "case-study": ["problem", "solution", "whatWeDelivered", "proof"],
   gallery: [],
-  visibility: [
-    "isPublished",
-    "showOnAgency",
-    "featuredOnAgency",
-    "agencySortOrder",
-    "showOnPersonal",
-    "featuredOnPersonal",
-    "personalSortOrder",
-    "seoTitle",
-    "seoDescription",
-  ],
+  visibility: ["isPublished", "seoTitle", "seoDescription"],
 };
 
 const TAB_BASE =
   "relative px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer";
 
-/** Built fresh per mount so a new project defaults to this year, not load time. */
+/** A function so the default year is computed per mount. */
 function blankValues(): ProjectFormValues {
   return {
     title: "",
@@ -89,19 +78,13 @@ function blankValues(): ProjectFormValues {
     seoDescription: "",
     showOnAgency: false,
     featuredOnAgency: false,
-    agencySortOrder: 0,
     showOnPersonal: false,
     featuredOnPersonal: false,
-    personalSortOrder: 0,
     tagIds: [],
   };
 }
 
-/**
- * The response carries whole tags while the request wants bare ids, so the
- * relation is flattened on the way into the form. Absent optional strings
- * become `""` — that is the shape an untouched field has in the form.
- */
+/** Flattens tags to ids and absent optional strings to `""`. */
 function toFormValues(project: AdminProject | null): ProjectFormValues {
   if (!project) return blankValues();
 
@@ -122,28 +105,25 @@ function toFormValues(project: AdminProject | null): ProjectFormValues {
     seoDescription: project.seoDescription ?? "",
     showOnAgency: project.showOnAgency,
     featuredOnAgency: project.featuredOnAgency,
-    agencySortOrder: project.agencySortOrder,
     showOnPersonal: project.showOnPersonal,
     featuredOnPersonal: project.featuredOnPersonal,
-    personalSortOrder: project.personalSortOrder,
     tagIds: project.tags.map((tag) => tag.id),
   };
 }
 
-/** `""` is how an untouched optional field reaches us; the API wants it gone. */
+/** Untouched optional fields are `""`; the API wants them omitted. */
 function blank(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 }
 
-/**
- * Serves both `/admin/projects/new` and `/admin/projects/:id`. A project has
- * far more fields than the other content types, so it gets its own route with
- * tabbed panels rather than the modal the smaller entities use.
- */
+/** Serves both `/admin/projects/new` and `/admin/projects/:id`. */
 export default function ProjectEditorPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  // After a create, navigation state opens the Gallery tab.
+  const location = useLocation();
+  const initialTab = (location.state as { openTab?: TabId } | null)?.openTab;
 
   const {
     data: project,
@@ -171,24 +151,27 @@ export default function ProjectEditorPage() {
     );
   }
 
-  // Keyed so navigating to a different project remounts the form instead of reusing stale defaults.
+  // Keyed so switching projects remounts the form with fresh defaults.
   return (
     <ProjectForm
       key={project?.id ?? "new"}
       project={project ?? null}
+      initialTab={project ? initialTab : undefined}
       onDone={() => navigate("/admin/projects")}
     />
   );
 }
 
 interface ProjectFormProps {
-  /** `null` puts the form in create mode. */
+  /** `null` means create mode. */
   readonly project: AdminProject | null;
+  readonly initialTab?: TabId;
   readonly onDone: () => void;
 }
 
-function ProjectForm({ project, onDone }: ProjectFormProps) {
-  const [tab, setTab] = useState<TabId>("details");
+function ProjectForm({ project, initialTab, onDone }: ProjectFormProps) {
+  const navigate = useNavigate();
+  const [tab, setTab] = useState<TabId>(initialTab ?? "details");
   const toast = useToast();
   const createProjectMutation = useCreateProject();
   const updateProjectMutation = useUpdateProject();
@@ -211,10 +194,7 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
     },
   );
 
-  // "Featured" requires "show" on the same site, so each checkbox is disabled until its partner is on.
   const title = useWatch({ control, name: "title" });
-  const showOnAgency = useWatch({ control, name: "showOnAgency" });
-  const showOnPersonal = useWatch({ control, name: "showOnPersonal" });
 
   const tabsWithErrors = useMemo(() => {
     const flagged = new Set<TabId>();
@@ -225,7 +205,7 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
   }, [errors]);
 
   async function onSubmit(values: ProjectFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so any omitted field would wipe out.
+    // Built explicitly: PUT replaces the whole record, so no field may be omitted.
     const body: ProjectWriteRequest = {
       title: values.title.trim(),
       slug: blank(values.slug),
@@ -241,13 +221,11 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
       isPublished: values.isPublished,
       seoTitle: blank(values.seoTitle),
       seoDescription: blank(values.seoDescription),
+      // Edited on the reorder screen; carried through unchanged.
       showOnAgency: values.showOnAgency,
-      // Re-enforced here since a disabled checkbox keeps its last submitted value.
-      featuredOnAgency: values.showOnAgency && values.featuredOnAgency,
-      agencySortOrder: values.agencySortOrder,
+      featuredOnAgency: values.featuredOnAgency,
       showOnPersonal: values.showOnPersonal,
-      featuredOnPersonal: values.showOnPersonal && values.featuredOnPersonal,
-      personalSortOrder: values.personalSortOrder,
+      featuredOnPersonal: values.featuredOnPersonal,
       tagIds: values.tagIds,
     };
 
@@ -255,12 +233,17 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
       if (project) {
         await updateProjectMutation.mutateAsync({ id: project.id, body });
         toast.success("Project updated.");
+        clearPersisted();
+        onDone();
       } else {
-        await createProjectMutation.mutateAsync(body);
-        toast.success("Project created.");
+        const created = await createProjectMutation.mutateAsync(body);
+        toast.success("Project created — add gallery images below.");
+        clearPersisted();
+        // Images need an id, so go straight to the Gallery tab.
+        navigate(`/admin/projects/${created.id}`, {
+          state: { openTab: "gallery" },
+        });
       }
-      clearPersisted();
-      onDone();
     } catch (error) {
       if (error instanceof ApiError && error.code === "slug_taken") {
         setTab("details");
@@ -275,26 +258,18 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
 
   return (
     <div className="max-w-3xl">
-      <Link
-        to="/admin/projects"
-        className="inline-flex items-center gap-2 mb-6 text-sm text-text-muted hover:text-text-primary transition-colors duration-200"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Projects
-      </Link>
+      <BackLink to="/admin/projects">Projects</BackLink>
 
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-text-primary mb-1">
-          {project ? "Edit project" : "New project"}
-        </h1>
-        <p className="text-sm text-text-muted">
-          {project
+      <PageHeader
+        title={project ? "Edit project" : "New project"}
+        description={
+          project
             ? "Every field is sent on save — the API replaces the whole project."
-            : "Long-form case study copy. Markdown is fine in the description fields."}
-        </p>
-      </div>
+            : "Long-form case study copy. Markdown is fine in the description fields."
+        }
+      />
 
-      {/* Panels are hidden, never unmounted, so an error on another tab still blocks submit and shows its dot. */}
+      {/* Panels are hidden, not unmounted, so errors on other tabs still block submit. */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div
           role="tablist"
@@ -325,7 +300,7 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
           ))}
         </div>
 
-        <Card className={tab === "details" ? "space-y-5" : "hidden"}>
+        <div className={tab === "details" ? "space-y-5" : "hidden"}>
           <Input
             label="Title"
             required
@@ -379,12 +354,19 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
             {...register("shortDescription")}
           />
 
-          <Textarea
-            label="Description (markdown)"
-            required
-            rows={10}
-            error={errors.description?.message}
-            {...register("description")}
+          <Controller
+            control={control}
+            name="description"
+            render={({ field }) => (
+              <MarkdownField
+                label="Description"
+                required
+                height={320}
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.description?.message}
+              />
+            )}
           />
 
           <Controller
@@ -400,44 +382,67 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
               />
             )}
           />
-        </Card>
+        </div>
 
-        <Card className={tab === "case-study" ? "space-y-5" : "hidden"}>
+        <div className={tab === "case-study" ? "space-y-5" : "hidden"}>
           <p className="text-sm text-text-muted">
-            All four are optional and rendered as markdown on the public case
-            study page.
+            All four are optional and rendered on the public case study page.
           </p>
 
-          <Textarea
-            label="Problem"
-            rows={5}
-            error={errors.problem?.message}
-            {...register("problem")}
+          <Controller
+            control={control}
+            name="problem"
+            render={({ field }) => (
+              <MarkdownField
+                label="Problem"
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                error={errors.problem?.message}
+              />
+            )}
           />
 
-          <Textarea
-            label="Solution"
-            rows={5}
-            error={errors.solution?.message}
-            {...register("solution")}
+          <Controller
+            control={control}
+            name="solution"
+            render={({ field }) => (
+              <MarkdownField
+                label="Solution"
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                error={errors.solution?.message}
+              />
+            )}
           />
 
-          <Textarea
-            label="What we delivered"
-            rows={5}
-            error={errors.whatWeDelivered?.message}
-            {...register("whatWeDelivered")}
+          <Controller
+            control={control}
+            name="whatWeDelivered"
+            render={({ field }) => (
+              <MarkdownField
+                label="What we delivered"
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                error={errors.whatWeDelivered?.message}
+              />
+            )}
           />
 
-          <Textarea
-            label="Proof"
-            rows={5}
-            error={errors.proof?.message}
-            {...register("proof")}
+          <Controller
+            control={control}
+            name="proof"
+            render={({ field }) => (
+              <MarkdownField
+                label="Proof"
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                error={errors.proof?.message}
+              />
+            )}
           />
-        </Card>
+        </div>
 
-        <Card className={tab === "gallery" ? "space-y-5" : "hidden"}>
+        <div className={tab === "gallery" ? "space-y-5" : "hidden"}>
           {project ? (
             <ProjectImagesEditor
               projectId={project.id}
@@ -449,65 +454,14 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
               Save the project first — images hang off a saved project.
             </p>
           )}
-        </Card>
+        </div>
 
-        <Card className={tab === "visibility" ? "space-y-5" : "hidden"}>
+        <div className={tab === "visibility" ? "space-y-5" : "hidden"}>
           <Checkbox
             label="Published"
-            hint="Drafts stay off both public sites regardless of the visibility flags below."
+            hint="Drafts stay off both public sites. Once published, use Reorder & Visibility to show it on a site."
             {...register("isPublished")}
           />
-
-          <fieldset className="rounded-lg border border-border-subtle p-4 space-y-4">
-            <legend className="px-2 text-[10px] font-semibold tracking-widest uppercase text-text-muted">
-              Agency site
-            </legend>
-
-            <Checkbox label="Show on agency" {...register("showOnAgency")} />
-
-            <Checkbox
-              label="Featured on agency"
-              disabled={!showOnAgency}
-              error={errors.featuredOnAgency?.message}
-              {...register("featuredOnAgency")}
-            />
-
-            <Input
-              label="Sort order"
-              type="number"
-              step={1}
-              containerClassName="w-32"
-              error={errors.agencySortOrder?.message}
-              {...register("agencySortOrder", { valueAsNumber: true })}
-            />
-          </fieldset>
-
-          <fieldset className="rounded-lg border border-border-subtle p-4 space-y-4">
-            <legend className="px-2 text-[10px] font-semibold tracking-widest uppercase text-text-muted">
-              Personal site
-            </legend>
-
-            <Checkbox
-              label="Show on personal"
-              {...register("showOnPersonal")}
-            />
-
-            <Checkbox
-              label="Featured on personal"
-              disabled={!showOnPersonal}
-              error={errors.featuredOnPersonal?.message}
-              {...register("featuredOnPersonal")}
-            />
-
-            <Input
-              label="Sort order"
-              type="number"
-              step={1}
-              containerClassName="w-32"
-              error={errors.personalSortOrder?.message}
-              {...register("personalSortOrder", { valueAsNumber: true })}
-            />
-          </fieldset>
 
           <Input
             label="SEO title"
@@ -523,7 +477,7 @@ function ProjectForm({ project, onDone }: ProjectFormProps) {
             error={errors.seoDescription?.message}
             {...register("seoDescription")}
           />
-        </Card>
+        </div>
 
         <div className="sticky bottom-0 mt-6 -mx-6 md:-mx-10 px-6 md:px-10 py-4 bg-surface-950/90 backdrop-blur border-t border-border-subtle">
           {tabsWithErrors.size > 0 && (

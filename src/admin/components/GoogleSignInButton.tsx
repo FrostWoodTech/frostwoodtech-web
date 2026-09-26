@@ -18,7 +18,14 @@ interface GoogleIdentityServices {
       }) => void;
       renderButton: (
         parent: HTMLElement,
-        options: { theme: string; size: string; width?: number },
+        options: {
+          theme: string;
+          size: string;
+          shape?: string;
+          text?: string;
+          logo_alignment?: string;
+          width?: number;
+        },
       ) => void;
     };
   };
@@ -52,15 +59,13 @@ function loadGoogleScript(): Promise<void> {
 
 interface GoogleSignInButtonProps {
   readonly onError?: (message: string) => void;
+  readonly text?: "signin_with" | "signup_with";
 }
 
-/**
- * Renders nothing when `VITE_GOOGLE_CLIENT_ID` is unset, which it is until a
- * real Google OAuth Client ID is provisioned — no client ID exists anywhere
- * in this repo yet.
- */
+/** Renders nothing when `VITE_GOOGLE_CLIENT_ID` is unset. */
 export default function GoogleSignInButton({
   onError,
+  text = "signin_with",
 }: GoogleSignInButtonProps) {
   const { loginWithGoogle } = useAuth();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,7 +91,11 @@ export default function GoogleSignInButton({
         window.google.accounts.id.renderButton(containerRef.current, {
           theme: "outline",
           size: "large",
-          width: 320,
+          shape: "rectangular",
+          text,
+          logo_alignment: "left",
+          // Google's button needs a pixel width, so match the container.
+          width: containerRef.current.offsetWidth,
         });
         setIsReady(true);
       })
@@ -97,7 +106,7 @@ export default function GoogleSignInButton({
     return () => {
       cancelled = true;
     };
-  }, [loginWithGoogle, onError]);
+  }, [loginWithGoogle, onError, text]);
 
   if (!CLIENT_ID) return null;
 

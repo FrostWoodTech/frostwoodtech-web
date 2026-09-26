@@ -1,8 +1,11 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Header from "@/client/components/header/Header";
 import Footer from "@/client/components/footer/Footer";
+import ThemeProvider from "@/client/context/ThemeProvider";
 import ToastProvider from "@/client/context/ToastProvider";
+import CurrencyProvider from "@/client/context/CurrencyProvider";
+import ErrorBoundary from "@/client/components/ErrorBoundary";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,15 +15,25 @@ const queryClient = new QueryClient({
 });
 
 export default function ClientLayout() {
+  const { pathname } = useLocation();
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        <Header />
-        <main className="min-h-screen">
-          <Outlet />
-        </main>
-        <Footer />
-      </ToastProvider>
+      <ThemeProvider>
+        {/* Must be inside the query provider. */}
+        <CurrencyProvider>
+          <ToastProvider>
+            <Header />
+            <main className="min-h-screen">
+              {/* Keyed by path so leaving a crashed page resets the boundary. */}
+              <ErrorBoundary key={pathname}>
+                <Outlet />
+              </ErrorBoundary>
+            </main>
+            <Footer />
+          </ToastProvider>
+        </CurrencyProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

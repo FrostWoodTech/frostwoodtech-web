@@ -1,0 +1,179 @@
+import { useRef, useState } from "react";
+import { ImagePlus, Star } from "lucide-react";
+import { uploadImage } from "@/admin/services/mediaService";
+import { useMediaConfig } from "@/admin/hooks/useMedia";
+import { toErrorMessage } from "@/admin/api/ApiError";
+import useToast from "@/admin/context/useToast";
+import {
+  altTextFromFileName,
+  extractMarkdownImages,
+  imageMarkdown,
+  resolveMediaDisplayUrl,
+} from "@/admin/utils/markdownImages";
+import { Button, Spinner } from "@/admin/components/ui";
+
+interface ArticleCoverPickerProps {
+  readonly markdown: string;
+  /** A `media://` token or legacy URL; `""` when unset. */
+  readonly coverUrl: string;
+  /** Required by the API for article uploads. */
+  readonly slug: string;
+  readonly onInsert: (snippet: string) => void;
+  readonly onSelectCover: (reference: string) => void;
+  readonly error?: string;
+}
+
+/** Uploads are appended to the body, and the cover is picked from the body's images so it never points at a missing file. */
+export default function ArticleCoverPicker({
+  markdown,
+  coverUrl,
+  slug,
+  onInsert,
+  onSelectCover,
+  error,
+}: ArticleCoverPickerProps) {
+  const toast = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const { data: mediaConfig } = useMediaConfig();
+
+  const images = extractMarkdownImages(markdown);
+  const coverIsStale = coverUrl !== "" && !images.includes(coverUrl);
+
+  async function handleFileChosen(file: File) {
+    if (!slug) {
+      toast.error("Add a title first — the upload folder is named after it.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const altText = altTextFromFileName(file.name);
+      const reference = await uploadImage({ target: "articles", slug }, file);
+
+      onInsert(imageMarkdown(reference, altText));
+      // Default the cover to the first upload.
+      if (!coverUrl) onSelectCover(reference);
+      toast.success("Image uploaded and added to the content.");
+    } catch (cause) {
+      toast.error(toErrorMessage(cause));
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
+            Images & cover
+          </p>
+          <p className="mt-1 text-xs text-text-muted">
+            Uploads are added to the content as markdown. Pick one as the cover
+            — an article can't be saved without it.
+          </p>
+        </div>
+
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          loading={isUploading}
+          onClick={() => fileInputRef.current?.click()}
+          icon={<ImagePlus className="h-4 w-4" />}
+          iconPosition="left"
+        >
+          {isUploading ? "Uploading…" : "Upload image"}
+        </Button>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) handleFileChosen(file);
+          }}
+        />
+      </div>
+
+      {isUploading && (
+        <p className="flex items-center gap-2 text-xs text-text-muted">
+          <Spinner className="h-3.5 w-3.5" label="Uploading" />
+          Uploading to storage…
+        </p>
+      )}
+
+      {images.length === 0 ? (
+        <p className="rounded-lg border border-dashed border-border-default px-4 py-6 text-center text-sm text-text-muted">
+          No images in this article yet. Upload one to use as the cover.
+        </p>
+      ) : (
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {images.map((reference) => {
+            const isCover = reference === coverUrl;
+            const displayUrl = resolveMediaDisplayUrl(
+              reference,
+              mediaConfig?.publicBaseUrl,
+            );
+
+            return (
+              <li key={reference}>
+                <button
+                  type="button"
+                  onClick={() => onSelectCover(reference)}
+                  aria-pressed={isCover}
+                  className={`group relative block w-full overflow-hidden rounded-lg border transition-colors duration-200 cursor-pointer ${
+                    isCover
+                      ? "border-primary-500 ring-1 ring-primary-500"
+                      : "border-border-subtle hover:border-border-default"
+                  }`}
+                >
+                  {displayUrl ? (
+                    <img
+                      src={displayUrl}
+                      alt=""
+                      className="h-24 w-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-24 w-full items-center justify-center bg-surface-800">
+                      <Spinner className="h-4 w-4" label="Loading" />
+                    </div>
+                  )}
+
+                  <span
+                    className={`flex items-center justify-center gap-1 px-2 py-1.5 text-[11px] font-medium ${
+                      isCover
+                        ? "bg-primary-600 text-surface-950"
+                        : "bg-surface-900 text-text-muted group-hover:text-text-primary"
+                    }`}
+                  >
+                    <Star
+                      className="h-3 w-3"
+                      aria-hidden="true"
+                      fill={isCover ? "currentColor" : "none"}
+                    />
+                    {isCover ? "Cover" : "Set as cover"}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {coverIsStale && (
+        <p className="text-xs text-danger-400">
+          The chosen cover is no longer in the content. Pick one of the images
+          above.
+        </p>
+      )}
+
+      {error && <p className="text-xs text-danger-400">{error}</p>}
+    </div>
+  );
+}

@@ -1,8 +1,6 @@
 import { useState } from "react";
-import Button from "@/admin/components/ui/Button";
-import Modal from "@/admin/components/ui/Modal";
-import Textarea from "@/admin/components/ui/Textarea";
 import type { AdminUser } from "@/admin/types";
+import { Button, Modal, Textarea } from "@/admin/components/ui";
 
 interface RejectUserDialogProps {
   readonly target: AdminUser | null;
@@ -11,7 +9,7 @@ interface RejectUserDialogProps {
   readonly loading?: boolean;
 }
 
-/** A reason is required by the API, so this replaces `ConfirmDialog` for rejection. */
+/** Rejection needs a reason, so this is used instead of `ConfirmDialog`. */
 export default function RejectUserDialog({
   target,
   onConfirm,

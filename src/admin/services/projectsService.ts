@@ -11,27 +11,34 @@ import type {
 import { httpClient } from "@/admin/services/httpClient";
 
 export interface GetProjectsParams {
-  /** Optional on the admin surface, unlike the public one which demands it. */
   readonly site?: Site;
-  /** Omit for both; `true` for published only, `false` for drafts only. */
+  /** Omit for both; `false` for drafts only. */
   readonly isPublished?: boolean;
-  /** Case-insensitive match against the title. */
   readonly search?: string;
+  /** Skip the show-on-site filter (used by the reorder screen). */
+  readonly includeHidden?: boolean;
   readonly page?: number;
   readonly pageSize?: number;
 }
 
-/**
- * Ordered by the requested site's sort order when `site` is given, otherwise by
- * the API's default ordering.
- */
+/** Ordered by the site's sort order when `site` is given. */
 export async function getProjects(
-  { site, isPublished, search, page, pageSize }: GetProjectsParams = {},
+  {
+    site,
+    isPublished,
+    search,
+    includeHidden,
+    page,
+    pageSize,
+  }: GetProjectsParams = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<AdminProject>> {
   const { data } = await httpClient.get<PagedResult<AdminProject>>(
     "/admin/projects",
-    { params: { site, isPublished, search, page, pageSize }, signal },
+    {
+      params: { site, isPublished, search, includeHidden, page, pageSize },
+      signal,
+    },
   );
   return data;
 }
@@ -40,24 +47,20 @@ export async function getProject(
   id: string,
   signal?: AbortSignal,
 ): Promise<AdminProject> {
-  const { data } = await httpClient.get<AdminProject>(
-    `/admin/projects/${id}`,
-    { signal },
-  );
+  const { data } = await httpClient.get<AdminProject>(`/admin/projects/${id}`, {
+    signal,
+  });
   return data;
 }
 
 export async function createProject(
   body: ProjectWriteRequest,
 ): Promise<AdminProject> {
-  const { data } = await httpClient.post<AdminProject>(
-    "/admin/projects",
-    body,
-  );
+  const { data } = await httpClient.post<AdminProject>("/admin/projects", body);
   return data;
 }
 
-/** Full replacement — `body` must carry every field, not just the changed ones. */
+/** Full replacement — send every field. */
 export async function updateProject(
   id: string,
   body: ProjectWriteRequest,
@@ -69,15 +72,11 @@ export async function updateProject(
   return data;
 }
 
-/** Soft delete. The API answers 204 with no body. */
+/** Soft delete. */
 export async function deleteProject(id: string): Promise<void> {
   await httpClient.delete(`/admin/projects/${id}`);
 }
 
-/**
- * Flips the draft flag on its own, so the list can take a project live without
- * resubmitting the whole form. Answers with the updated project.
- */
 export async function setProjectPublished(
   id: string,
   isPublished: boolean,
@@ -89,10 +88,7 @@ export async function setProjectPublished(
   return data;
 }
 
-/**
- * Bulk sort-order update. Sort order is kept per site, so `site` is required —
- * there is no site-agnostic ordering to renumber. Answers 204.
- */
+/** Sort order is per site, so `site` is required. */
 export async function reorderProjects(body: ReorderRequest): Promise<void> {
   await httpClient.post("/admin/projects/reorder", body);
 }
@@ -108,7 +104,7 @@ export async function addProjectImage(
   return data;
 }
 
-/** Full replacement — `body` must carry every field, not just the changed ones. */
+/** Full replacement — send every field. */
 export async function updateProjectImage(
   projectId: string,
   imageId: string,
@@ -128,7 +124,7 @@ export async function deleteProjectImage(
   await httpClient.delete(`/admin/projects/${projectId}/images/${imageId}`);
 }
 
-/** A single global order — images have no per-site sort column. */
+/** Images have one global order, not per site. */
 export async function reorderProjectImages(
   projectId: string,
   body: ImageReorderRequest,

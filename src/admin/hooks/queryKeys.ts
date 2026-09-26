@@ -1,34 +1,58 @@
 import type { GetArticlesParams } from "@/admin/services/articlesService";
 import type { GetProjectsParams } from "@/admin/services/projectsService";
+import type { GetProductsParams } from "@/admin/services/productsService";
 import type { GetServicesParams } from "@/admin/services/servicesService";
 import type { GetPricingPlansParams } from "@/admin/services/pricingService";
 import type { GetTagsParams } from "@/admin/services/tagsService";
 import type { GetUsersParams } from "@/admin/services/usersService";
 import type { GetFaqsParams } from "@/admin/services/faqsService";
 import type { GetReviewsParams } from "@/admin/services/reviewsService";
+import type { GetCertificatesParams } from "@/admin/services/certificatesService";
+import type { GetContactSubmissionsParams } from "@/admin/services/contactSubmissionsService";
+import type { GetCurrenciesParams } from "@/admin/services/currenciesService";
+import type {
+  GetTrashParams,
+  TrashEntityId,
+} from "@/admin/services/trashService";
 
 export const authKeys = {
   all: ["auth"] as const,
   me: () => [...authKeys.all, "me"] as const,
 };
 
+export const mediaKeys = {
+  config: ["media", "config"] as const,
+};
+
 export const articleKeys = {
   all: ["articles"] as const,
   lists: () => [...articleKeys.all, "list"] as const,
-  list: (params: GetArticlesParams) => [...articleKeys.lists(), params] as const,
+  list: (params: GetArticlesParams) =>
+    [...articleKeys.lists(), params] as const,
+  detail: (id: string) => [...articleKeys.all, "detail", id] as const,
 };
 
 export const projectKeys = {
   all: ["projects"] as const,
   lists: () => [...projectKeys.all, "list"] as const,
-  list: (params: GetProjectsParams) => [...projectKeys.lists(), params] as const,
+  list: (params: GetProjectsParams) =>
+    [...projectKeys.lists(), params] as const,
   detail: (id: string) => [...projectKeys.all, "detail", id] as const,
+};
+
+export const productKeys = {
+  all: ["products"] as const,
+  lists: () => [...productKeys.all, "list"] as const,
+  list: (params: GetProductsParams) =>
+    [...productKeys.lists(), params] as const,
+  detail: (id: string) => [...productKeys.all, "detail", id] as const,
 };
 
 export const serviceKeys = {
   all: ["services"] as const,
   lists: () => [...serviceKeys.all, "list"] as const,
-  list: (params: GetServicesParams) => [...serviceKeys.lists(), params] as const,
+  list: (params: GetServicesParams) =>
+    [...serviceKeys.lists(), params] as const,
   detail: (id: string) => [...serviceKeys.all, "detail", id] as const,
 };
 
@@ -44,6 +68,10 @@ export const tagKeys = {
   all: ["tags"] as const,
   lists: () => [...tagKeys.all, "list"] as const,
   list: (params: GetTagsParams) => [...tagKeys.lists(), params] as const,
+};
+
+export const techCategoryKeys = {
+  all: ["techCategories"] as const,
 };
 
 export const userKeys = {
@@ -62,4 +90,33 @@ export const reviewKeys = {
   all: ["reviews"] as const,
   lists: () => [...reviewKeys.all, "list"] as const,
   list: (params: GetReviewsParams) => [...reviewKeys.lists(), params] as const,
+};
+
+export const certificateKeys = {
+  all: ["certificates"] as const,
+  lists: () => [...certificateKeys.all, "list"] as const,
+  list: (params: GetCertificatesParams) =>
+    [...certificateKeys.lists(), params] as const,
+};
+
+export const currencyKeys = {
+  all: ["currencies"] as const,
+  lists: () => [...currencyKeys.all, "list"] as const,
+  list: (params: GetCurrenciesParams) =>
+    [...currencyKeys.lists(), params] as const,
+};
+
+export const contactSubmissionKeys = {
+  all: ["contactSubmissions"] as const,
+  lists: () => [...contactSubmissionKeys.all, "list"] as const,
+  list: (params: GetContactSubmissionsParams) =>
+    [...contactSubmissionKeys.lists(), params] as const,
+  detail: (id: string) => [...contactSubmissionKeys.all, "detail", id] as const,
+};
+
+export const trashKeys = {
+  all: ["trash"] as const,
+  lists: (entity: TrashEntityId) => [...trashKeys.all, entity, "list"] as const,
+  list: (entity: TrashEntityId, params: GetTrashParams) =>
+    [...trashKeys.lists(entity), params] as const,
 };

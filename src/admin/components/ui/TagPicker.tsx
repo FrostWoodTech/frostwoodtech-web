@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 import { X } from "lucide-react";
-import Spinner from "@/client/components/ui/Spinner";
-import Select from "@/admin/components/ui/Select";
+import Spinner from "./Spinner";
+import { FIELD_LABEL } from "./fieldClasses";
+import Select from "./Select";
 import { useTags } from "@/admin/hooks/useTags";
 import { toErrorMessage } from "@/admin/api/ApiError";
 import type { AdminTag } from "@/admin/types";
 
 interface TagPickerProps {
   readonly label: string;
-  /** The full set of selected ids — this replaces the article's tags outright. */
+  /** Replaces the tags outright. */
   readonly value: readonly string[];
   readonly onChange: (ids: string[]) => void;
   readonly hint?: string;
@@ -16,19 +17,10 @@ interface TagPickerProps {
   readonly containerClassName?: string;
 }
 
-/**
- * The tag list is small and shared by every article, so it is fetched once per
- * mount rather than searched server-side. `pageSize` sits at the API's cap of
- * 100; beyond that the picker would need its own paging.
- */
+/** The API's page-size cap; tags are fetched once, not searched server-side. */
 const TAG_PAGE_SIZE = 100;
 
-/**
- * Multi-select built from the existing primitives: selected tags are removable
- * chips and the `<select>` below offers only what is left. React Hook Form
- * drives it through `Controller`, since the value is an array rather than a
- * DOM field.
- */
+/** Removable chips plus a select of the remaining tags. Use via react-hook-form `Controller`. */
 export default function TagPicker({
   label,
   value,
@@ -42,10 +34,13 @@ export default function TagPicker({
     isPending: isLoading,
     error: queryError,
   } = useTags({ pageSize: TAG_PAGE_SIZE });
-  const tags: readonly AdminTag[] = useMemo(() => result?.items ?? [], [result]);
+  const tags: readonly AdminTag[] = useMemo(
+    () => result?.items ?? [],
+    [result],
+  );
   const loadError = queryError ? toErrorMessage(queryError) : null;
 
-  // Chips follow `value`'s order; an id with no matching tag is hidden but kept in the form value.
+  // Unknown ids are hidden but kept in the form value.
   const selected = useMemo(
     () =>
       value
@@ -75,9 +70,7 @@ export default function TagPicker({
 
   return (
     <div className={containerClassName}>
-      <span className="block text-[10px] font-semibold tracking-widest uppercase text-text-muted mb-2">
-        {label}
-      </span>
+      <span className={FIELD_LABEL}>{label}</span>
 
       {isLoading ? (
         <div className="flex items-center gap-3 py-3 text-sm text-text-muted">
@@ -90,13 +83,13 @@ export default function TagPicker({
             <ul className="flex flex-wrap gap-2 mb-3">
               {selected.map((tag) => (
                 <li key={tag.id}>
-                  <span className="inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1 text-xs font-medium tracking-wide uppercase rounded-md bg-primary-600/10 text-primary-400 border border-primary-600/20">
+                  <span className="inline-flex items-center gap-1 pl-3 pr-1.5 py-1 text-[11px] font-semibold tracking-tight rounded-full bg-primary-50 text-primary-700 border border-primary-200">
                     {tag.name}
                     <button
                       type="button"
                       onClick={() => remove(tag.id)}
                       aria-label={`Remove ${tag.name}`}
-                      className="rounded p-0.5 hover:bg-primary-600/20 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary-500"
+                      className="rounded-full p-0.5 hover:bg-primary-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary-500"
                     >
                       <X className="h-3 w-3" aria-hidden="true" />
                     </button>
@@ -106,7 +99,7 @@ export default function TagPicker({
             </ul>
           )}
 
-          {/* Resets to the placeholder after each pick — reads as an "add" action, not a selection. */}
+          {/* Resets after each pick, acting as an "add" control. */}
           <Select
             label="Add a tag"
             placeholder={

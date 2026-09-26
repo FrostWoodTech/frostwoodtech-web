@@ -9,6 +9,10 @@ import BlogPage from "@/client/pages/BlogPage";
 import ArticleDetailPage from "@/client/pages/ArticleDetailPage";
 import ClientReviewsPage from "@/client/pages/ReviewsPage";
 import ServicesPage from "@/client/pages/ServicesPage";
+import ServiceDetailPage from "@/client/pages/ServiceDetailPage";
+import ClientPricingPage from "@/client/pages/PricingPage";
+import ProductsPage from "@/client/pages/ProductsPage";
+import ProductDetailPage from "@/client/pages/ProductDetailPage";
 import AdminRoot from "@/admin/layout/AdminRoot";
 import RequireAuth from "@/admin/components/RequireAuth";
 import RequireSuperAdmin from "@/admin/components/RequireSuperAdmin";
@@ -17,18 +21,33 @@ import AdminLayout from "@/admin/layout/AdminLayout";
 import AuthLayout from "@/admin/layout/AuthLayout";
 import LoginPage from "@/admin/pages/LoginPage";
 import RegisterPage from "@/admin/pages/RegisterPage";
+import VerifyEmailPage from "@/admin/pages/VerifyEmailPage";
+import ForgotPasswordPage from "@/admin/pages/ForgotPasswordPage";
+import SetPasswordPage from "@/admin/pages/SetPasswordPage";
 import DashboardPage from "@/admin/pages/DashboardPage";
 import ChangePasswordPage from "@/admin/pages/ChangePasswordPage";
 import UsersPage from "@/admin/pages/UsersPage";
 import PendingApprovalsPage from "@/admin/pages/PendingApprovalsPage";
 import TagsPage from "@/admin/pages/TagsPage";
 import ArticlesPage from "@/admin/pages/ArticlesPage";
+import ArticleEditorPage from "@/admin/pages/ArticleEditorPage";
+import ArticleOrderPage from "@/admin/pages/ArticleOrderPage";
 import AdminServicesPage from "@/admin/pages/ServicesPage";
+import ServiceEditorPage from "@/admin/pages/ServiceEditorPage";
+import ServiceOrderPage from "@/admin/pages/ServiceOrderPage";
 import PricingPage from "@/admin/pages/PricingPage";
 import ProjectsPage from "@/admin/pages/ProjectsPage";
 import ProjectEditorPage from "@/admin/pages/ProjectEditorPage";
+import ProjectOrderPage from "@/admin/pages/ProjectOrderPage";
+import AdminProductsPage from "@/admin/pages/ProductsPage";
+import ProductEditorPage from "@/admin/pages/ProductEditorPage";
+import ProductOrderPage from "@/admin/pages/ProductOrderPage";
 import FaqsPage from "@/admin/pages/FaqsPage";
+import CertificatesPage from "@/admin/pages/CertificatesPage";
 import ReviewsPage from "@/admin/pages/ReviewsPage";
+import ContactSubmissionsPage from "@/admin/pages/ContactSubmissionsPage";
+import CurrenciesPage from "@/admin/pages/CurrenciesPage";
+import TrashPage from "@/admin/pages/TrashPage";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +65,22 @@ export const router = createBrowserRouter([
       {
         path: "services",
         element: <ServicesPage />,
+      },
+      {
+        path: "services/:slug",
+        element: <ServiceDetailPage />,
+      },
+      {
+        path: "pricing",
+        element: <ClientPricingPage />,
+      },
+      {
+        path: "products",
+        element: <ProductsPage />,
+      },
+      {
+        path: "products/:slug",
+        element: <ProductDetailPage />,
       },
       {
         path: "work",
@@ -74,7 +109,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    // The CMS lives outside the marketing layout and owns its own auth state.
+    // The CMS sits outside the marketing layout and has its own auth state.
     path: "/admin",
     element: <AdminRoot />,
     children: [
@@ -92,12 +127,24 @@ export const router = createBrowserRouter([
                 path: "register",
                 element: <RegisterPage />,
               },
+              {
+                path: "verify-email",
+                element: <VerifyEmailPage />,
+              },
+              {
+                path: "forgot-password",
+                element: <ForgotPasswordPage />,
+              },
+              {
+                path: "set-password",
+                element: <SetPasswordPage />,
+              },
             ],
           },
         ],
       },
       {
-        // element: <RequireAuth />,
+        element: <RequireAuth />,
         children: [
           {
             element: <AdminLayout />,
@@ -124,18 +171,48 @@ export const router = createBrowserRouter([
                 element: <ProjectsPage />,
               },
               {
-                // A project has far more fields than the other content types,
-                // so it is edited on its own route rather than in a modal.
                 path: "projects/new",
                 element: <ProjectEditorPage />,
+              },
+              {
+                path: "projects/order",
+                element: <ProjectOrderPage />,
               },
               {
                 path: "projects/:id",
                 element: <ProjectEditorPage />,
               },
               {
+                path: "products",
+                element: <AdminProductsPage />,
+              },
+              {
+                path: "products/new",
+                element: <ProductEditorPage />,
+              },
+              {
+                path: "products/order",
+                element: <ProductOrderPage />,
+              },
+              {
+                path: "products/:id",
+                element: <ProductEditorPage />,
+              },
+              {
                 path: "articles",
                 element: <ArticlesPage />,
+              },
+              {
+                path: "articles/new",
+                element: <ArticleEditorPage />,
+              },
+              {
+                path: "articles/order",
+                element: <ArticleOrderPage />,
+              },
+              {
+                path: "articles/:id",
+                element: <ArticleEditorPage />,
               },
               {
                 path: "tags",
@@ -146,6 +223,18 @@ export const router = createBrowserRouter([
                 element: <AdminServicesPage />,
               },
               {
+                path: "services/new",
+                element: <ServiceEditorPage />,
+              },
+              {
+                path: "services/order",
+                element: <ServiceOrderPage />,
+              },
+              {
+                path: "services/:id",
+                element: <ServiceEditorPage />,
+              },
+              {
                 path: "pricing",
                 element: <PricingPage />,
               },
@@ -154,8 +243,24 @@ export const router = createBrowserRouter([
                 element: <FaqsPage />,
               },
               {
+                path: "certificates",
+                element: <CertificatesPage />,
+              },
+              {
                 path: "reviews",
                 element: <ReviewsPage />,
+              },
+              {
+                path: "contact-submissions",
+                element: <ContactSubmissionsPage />,
+              },
+              {
+                path: "currencies",
+                element: <CurrenciesPage />,
+              },
+              {
+                path: "trash",
+                element: <TrashPage />,
               },
               {
                 path: "change-password",

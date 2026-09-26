@@ -1,9 +1,7 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
-import Button from "@/admin/components/ui/Button";
-import Card from "@/admin/components/ui/Card";
-import Input from "@/admin/components/ui/Input";
+import { Link } from "react-router-dom";
 import GoogleSignInButton from "@/admin/components/GoogleSignInButton";
 import useAuth from "@/admin/context/useAuth";
 import ApiError, { toErrorMessage } from "@/admin/api/ApiError";
@@ -12,11 +10,12 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from "@/admin/validation/authSchemas";
+import { Button, Input, PasswordInput } from "@/admin/components/ui";
 
 export default function RegisterPage() {
   const { register: registerUser } = useAuth();
-  const navigate = useNavigate();
   const toast = useToast();
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
 
   const {
     register,
@@ -37,7 +36,7 @@ export default function RegisterPage() {
   async function onSubmit(values: RegisterFormValues) {
     try {
       await registerUser(values);
-      navigate("/admin", { replace: true });
+      setSubmittedEmail(values.email);
     } catch (error) {
       // A duplicate email belongs on the field, not in the banner.
       if (error instanceof ApiError && error.code === "email_taken") {
@@ -48,13 +47,38 @@ export default function RegisterPage() {
     }
   }
 
+  if (submittedEmail) {
+    return (
+      <>
+        <h2 className="admin-display text-xl leading-snug text-text-primary mb-1">
+          Check your email
+        </h2>
+        <p className="text-sm text-text-secondary">
+          We sent a verification link to <strong>{submittedEmail}</strong>. Once
+          you confirm it, a super admin still has to approve your account before
+          you can sign in.
+        </p>
+
+        <p className="mt-6 text-center text-sm text-text-muted">
+          <Link
+            to="/admin/login"
+            className="font-semibold text-primary-600 underline-offset-4 hover:text-primary-700 hover:underline"
+          >
+            Back to sign in
+          </Link>
+        </p>
+      </>
+    );
+  }
+
   return (
-    <Card>
-      <h2 className="text-lg font-semibold text-text-primary mb-1">
+    <>
+      <h2 className="admin-display text-xl leading-snug text-text-primary mb-1">
         Create an account
       </h2>
-      <p className="text-sm text-text-muted mb-6">
-        A super admin has to approve your account before you can sign in.
+      <p className="text-sm text-text-secondary mb-6">
+        Verify your email, then a super admin has to approve your account before
+        you can sign in.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
@@ -87,9 +111,8 @@ export default function RegisterPage() {
           {...register("email")}
         />
 
-        <Input
+        <PasswordInput
           label="Password"
-          type="password"
           autoComplete="new-password"
           placeholder="At least 8 characters"
           required
@@ -97,9 +120,8 @@ export default function RegisterPage() {
           {...register("password")}
         />
 
-        <Input
+        <PasswordInput
           label="Confirm password"
-          type="password"
           autoComplete="new-password"
           placeholder="Re-enter your password"
           required
@@ -107,22 +129,22 @@ export default function RegisterPage() {
           {...register("confirmPassword")}
         />
 
-        <Button type="submit" loading={isSubmitting} className="w-full">
+        <Button type="submit" loading={isSubmitting} fullWidth>
           {isSubmitting ? "Creating account…" : "Create account"}
         </Button>
       </form>
 
-      <GoogleSignInButton onError={toast.error} />
+      <GoogleSignInButton onError={toast.error} text="signup_with" />
 
       <p className="mt-6 text-center text-sm text-text-muted">
         Already have an account?{" "}
         <Link
           to="/admin/login"
-          className="text-primary-400 hover:text-primary-300 font-medium"
+          className="font-semibold text-primary-600 underline-offset-4 hover:text-primary-700 hover:underline"
         >
           Sign in
         </Link>
       </p>
-    </Card>
+    </>
   );
 }

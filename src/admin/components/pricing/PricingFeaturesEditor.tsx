@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp, Plus, X } from "lucide-react";
-import Button from "@/admin/components/ui/Button";
 import type { PricingFeatureValues } from "@/admin/validation/pricingSchemas";
+import { IconButton, Button } from "@/admin/components/ui";
 
 interface PricingFeaturesEditorProps {
   readonly value: readonly PricingFeatureValues[];
@@ -20,12 +20,8 @@ const ROW_STATE_CLASSES = {
 } as const;
 
 /**
- * The bullet list shown on a pricing card. Features are a sub-resource on the
- * API — they need a saved plan id — so this edits a plain local array and the
- * modal diffs it against the server's copy once the plan itself is saved.
- *
- * Order is the array order; `sortOrder` is assigned from the index on save,
- * which keeps the numbering dense however many rows come and go.
+ * Edits features as a local array; the modal syncs them to the API after the plan is saved.
+ * Array order becomes `sortOrder`.
  */
 export default function PricingFeaturesEditor({
   value,
@@ -58,7 +54,7 @@ export default function PricingFeaturesEditor({
 
   return (
     <div>
-      <p className="block text-[10px] font-semibold tracking-widest uppercase text-text-muted mb-2">
+      <p className="block mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
         Features
       </p>
 
@@ -103,33 +99,25 @@ export default function PricingFeaturesEditor({
                   </label>
 
                   <div className="flex shrink-0 items-center">
-                    <button
-                      type="button"
+                    <IconButton
+                      icon={<ArrowUp className="h-4 w-4" />}
+                      label={`Move feature ${index + 1} up`}
                       onClick={() => move(index, -1)}
                       disabled={disabled || index === 0}
-                      aria-label={`Move feature ${index + 1} up`}
-                      className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-800 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      <ArrowUp className="h-4 w-4" aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
+                    />
+                    <IconButton
+                      icon={<ArrowDown className="h-4 w-4" />}
+                      label={`Move feature ${index + 1} down`}
                       onClick={() => move(index, 1)}
                       disabled={disabled || index === value.length - 1}
-                      aria-label={`Move feature ${index + 1} down`}
-                      className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-800 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      <ArrowDown className="h-4 w-4" aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
+                    />
+                    <IconButton
+                      icon={<X className="h-4 w-4" />}
+                      label={`Remove feature ${index + 1}`}
                       onClick={() => remove(index)}
                       disabled={disabled}
-                      aria-label={`Remove feature ${index + 1}`}
-                      className="p-2 rounded-lg text-text-muted hover:text-danger-400 hover:bg-surface-800 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                    >
-                      <X className="h-4 w-4" aria-hidden="true" />
-                    </button>
+                      tone="danger"
+                    />
                   </div>
                 </div>
 

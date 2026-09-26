@@ -1,14 +1,30 @@
-import type { ApiArticle, ApiProject, BlogPost, Project } from "@/client/types";
+import type {
+  ApiArticle,
+  ApiFaq,
+  ApiProduct,
+  ApiProject,
+  ApiService,
+  BlogPost,
+  FAQ,
+  Product,
+  Project,
+  Service,
+} from "@/client/types";
 
 const FALLBACK_PROJECT_IMAGE = "/images/projects/placeholder.webp";
+const FALLBACK_PRODUCT_IMAGE = "/images/projects/placeholder.webp";
 const FALLBACK_BLOG_IMAGE = "/images/blog/placeholder.webp";
 const WORDS_PER_MINUTE = 200;
 
-export function mapApiProjectToProject(api: ApiProject, index: number): Project {
+export function mapApiProjectToProject(
+  api: ApiProject,
+  index: number,
+): Project {
   const categories = api.tags.filter((t) => !t.isTechnology).map((t) => t.name);
-  const technologies = api.tags.filter((t) => t.isTechnology).map((t) => t.name);
-  const primaryImage =
-    api.images.find((img) => img.isPrimary) ?? api.images[0];
+  const technologies = api.tags
+    .filter((t) => t.isTechnology)
+    .map((t) => t.name);
+  const primaryImage = api.images.find((img) => img.isPrimary) ?? api.images[0];
 
   return {
     id: api.id,
@@ -41,6 +57,31 @@ export function mapApiProjectToProject(api: ApiProject, index: number): Project 
   };
 }
 
+export function mapApiProductToProduct(api: ApiProduct): Product {
+  const primaryImage = api.images.find((img) => img.isPrimary) ?? api.images[0];
+
+  return {
+    id: api.id,
+    slug: api.slug,
+    name: api.name,
+    tagline: api.tagline,
+    description: api.description,
+    priceDetails: api.priceDetails,
+    productUrl: api.productUrl,
+    imagePlaceholder: primaryImage?.url ?? FALLBACK_PRODUCT_IMAGE,
+    href: `/products/${api.slug}`,
+    images: [...api.images]
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((img) => ({
+        id: img.id,
+        url: img.url,
+        altText: img.altText,
+        isPrimary: img.isPrimary,
+        sortOrder: img.sortOrder,
+      })),
+  };
+}
+
 function estimateReadTime(markdown?: string): string {
   if (!markdown) return "1 min read";
   const words = markdown.trim().split(/\s+/).filter(Boolean).length;
@@ -58,12 +99,38 @@ function formatPublishedDate(isoDate: string): string {
   });
 }
 
-// The backend never resolves `coverImageKey` to a public URL on this DTO
-// (unlike `contentMarkdown`'s media:// tokens), so only treat it as usable
-// when it already looks like a real URL.
+// The API doesn't resolve `coverImageKey`, so only a real http(s) URL is usable.
 function resolveCoverImage(coverImageKey?: string): string {
   if (coverImageKey && /^https?:\/\//.test(coverImageKey)) return coverImageKey;
   return FALLBACK_BLOG_IMAGE;
+}
+
+/** Strips common Markdown syntax for plain-text card blurbs (not a full parser). */
+function stripMarkdown(markdown: string): string {
+  return markdown
+    .replace(/`{1,3}[^`]*`{1,3}/g, (match) => match.replace(/`/g, ""))
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^[-*+]\s+/gm, "")
+    .replace(/(\*\*|__|\*|_|~~)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function mapApiServiceToService(api: ApiService): Service {
+  return {
+    id: api.id,
+    title: api.name,
+    description: stripMarkdown(api.shortDescription),
+    iconUrl: api.iconUrl,
+    iconAltText: api.iconAltText,
+    href: `/services/${api.slug}`,
+  };
+}
+
+export function mapApiFaqToFaq(api: ApiFaq): FAQ {
+  return { id: api.id, question: api.question, answer: api.answer };
 }
 
 export function mapApiArticleToBlogPost(api: ApiArticle): BlogPost {
@@ -74,11 +141,10 @@ export function mapApiArticleToBlogPost(api: ApiArticle): BlogPost {
     title: api.title,
     excerpt: api.excerpt,
     category: api.tags[0]?.name ?? "General",
-    date: formatPublishedDate(api.publishedDate),
+    date: formatPublishedDate(api.publishedAt ?? api.updatedAt),
     readTime: estimateReadTime(api.contentMarkdown),
     imagePlaceholder: resolveCoverImage(api.coverImageKey),
     href: `/blog/${slug}`,
     contentMarkdown: api.contentMarkdown,
-    mediumUrl: api.mediumUrl,
   };
 }

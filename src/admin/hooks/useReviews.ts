@@ -43,13 +43,10 @@ export function useDeleteReview() {
   });
 }
 
+/** No invalidation: the caller's optimistic cache write already matches the server. */
 export function useReorderReviews() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: ReviewReorderRequest) =>
       reviewsService.reorderReviews(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: reviewKeys.lists() });
-    },
   });
 }

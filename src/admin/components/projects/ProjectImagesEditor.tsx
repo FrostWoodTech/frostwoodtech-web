@@ -1,19 +1,36 @@
-import { useRef, useState } from "react";
-import axios from "axios";
-import { ArrowDown, ArrowUp, Star, Trash2, Upload } from "lucide-react";
-import Button from "@/admin/components/ui/Button";
-import Spinner from "@/client/components/ui/Spinner";
-import Input from "@/admin/components/ui/Input";
+import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Upload } from "lucide-react";
+import {
+  DndContext,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import {
   useAddProjectImage,
   useDeleteProjectImage,
   useReorderProjectImages,
   useUpdateProjectImage,
 } from "@/admin/hooks/useProjects";
-import { createUploadSignature } from "@/admin/services/mediaService";
+import {
+  createPresignedUpload,
+  uploadToPresignedUrl,
+} from "@/admin/services/mediaService";
 import { toErrorMessage } from "@/admin/api/ApiError";
+import { altTextFromFileName } from "@/admin/utils/markdownImages";
+import { projectKeys } from "@/admin/hooks/queryKeys";
 import useToast from "@/admin/context/useToast";
-import type { ProjectImage } from "@/admin/types";
+import type { AdminProject, ProjectImage } from "@/admin/types";
+import { Button, Input, Modal } from "@/admin/components/ui";
+import SortableProjectImageRow from "@/admin/components/projects/SortableProjectImageRow";
 
 interface ProjectImagesEditorProps {
   readonly projectId: string;
@@ -21,74 +38,96 @@ interface ProjectImagesEditorProps {
   readonly images: readonly ProjectImage[];
 }
 
-interface CloudinaryUploadResponse {
-  readonly public_id: string;
-  readonly secure_url: string;
-  readonly width: number;
-  readonly height: number;
+/** Reads pixel dimensions from the file; the upload response has none. */
+function readImageDimensions(
+  file: File,
+): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new window.Image();
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve({ width: image.naturalWidth, height: image.naturalHeight });
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Could not read image dimensions."));
+    };
+    image.src = objectUrl;
+  });
 }
 
-/**
- * Images hang off a saved project via their own endpoints, so this operates
- * directly against the API rather than through the project form's Save
- * button — an upload can't be deferred into reviewable form state the way a
- * plain field can.
- */
+/** Images have their own endpoints, so changes hit the API directly rather than waiting for the form's Save. */
 export default function ProjectImagesEditor({
   projectId,
   projectSlug,
   images,
 }: ProjectImagesEditorProps) {
   const toast = useToast();
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [busyId, setBusyId] = useState<string | null>(null);
+  // Old and new primary change in one request, so both rows are frozen while it runs.
+  const [primaryUpdateIds, setPrimaryUpdateIds] = useState<readonly string[]>(
+    [],
+  );
+  const [editingAltText, setEditingAltText] = useState<ProjectImage | null>(
+    null,
+  );
+  const [altTextDraft, setAltTextDraft] = useState("");
 
   const addImageMutation = useAddProjectImage();
   const updateImageMutation = useUpdateProjectImage();
   const deleteImageMutation = useDeleteProjectImage();
   const reorderImagesMutation = useReorderProjectImages();
 
-  const rows = [...images].sort((a, b) => a.sortOrder - b.sortOrder);
+  // Local copy so a drop reorders in the same commit as dnd-kit's reset;
+  // reading the query cache lands a render late and the card flashes back.
+  const [rows, setRows] = useState(() =>
+    [...images].sort((a, b) => a.sortOrder - b.sortOrder),
+  );
+  useEffect(() => {
+    setRows([...images].sort((a, b) => a.sortOrder - b.sortOrder));
+  }, [images]);
+
+  const primary = rows.find((image) => image.isPrimary) ?? null;
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
 
   async function handleFileChosen(file: File) {
-    const altText = window.prompt(
-      "Alt text for this image (required for accessibility)",
-    );
-    if (!altText || !altText.trim()) {
+    const altText = altTextFromFileName(file.name);
+    if (!altText) {
       toast.error("An image needs alt text before it can be uploaded.");
+      return;
+    }
+    if (
+      rows.some((row) => row.altText.toLowerCase() === altText.toLowerCase())
+    ) {
+      toast.error(`An image named "${altText}" is already in this gallery.`);
       return;
     }
 
     setIsUploading(true);
+    setUploadProgress(0);
     try {
-      const signature = await createUploadSignature({
-        target: "projects",
-        slug: projectSlug,
-      });
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("api_key", signature.apiKey);
-      formData.append("timestamp", String(signature.timestamp));
-      formData.append("signature", signature.signature);
-      formData.append("folder", signature.folder);
-      if (signature.publicId) formData.append("public_id", signature.publicId);
-
-      // Straight to Cloudinary, not through `httpClient` — the signature above authorizes it, not our bearer token.
-      const { data: uploaded } = await axios.post<CloudinaryUploadResponse>(
-        signature.uploadUrl,
-        formData,
-      );
+      const [presigned, dimensions] = await Promise.all([
+        createPresignedUpload({ target: "projects", slug: projectSlug }),
+        readImageDimensions(file),
+      ]);
+      await uploadToPresignedUrl(presigned.uploadUrl, file, setUploadProgress);
 
       await addImageMutation.mutateAsync({
         projectId,
         body: {
-          cloudinaryId: uploaded.public_id,
-          url: uploaded.secure_url,
-          altText: altText.trim(),
-          width: uploaded.width,
-          height: uploaded.height,
+          objectKey: presigned.objectKey,
+          url: presigned.publicUrl,
+          altText,
+          width: dimensions.width,
+          height: dimensions.height,
           isPrimary: rows.length === 0,
           sortOrder: rows.length,
         },
@@ -98,30 +137,41 @@ export default function ProjectImagesEditor({
       toast.error(toErrorMessage(cause));
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }
 
-  async function handleAltTextChange(image: ProjectImage) {
-    const next = window.prompt("Alt text", image.altText);
-    if (next === null || !next.trim() || next.trim() === image.altText) return;
+  function openAltTextEditor(image: ProjectImage) {
+    setEditingAltText(image);
+    setAltTextDraft(image.altText);
+  }
 
-    setBusyId(image.id);
+  async function saveAltText() {
+    if (!editingAltText) return;
+    const next = altTextDraft.trim();
+    if (!next || next === editingAltText.altText) {
+      setEditingAltText(null);
+      return;
+    }
+
+    setBusyId(editingAltText.id);
     try {
       await updateImageMutation.mutateAsync({
         projectId,
-        imageId: image.id,
+        imageId: editingAltText.id,
         body: {
-          cloudinaryId: image.cloudinaryId,
-          url: image.url,
-          altText: next.trim(),
-          width: image.width,
-          height: image.height,
-          isPrimary: image.isPrimary,
-          sortOrder: image.sortOrder,
+          objectKey: editingAltText.objectKey,
+          url: editingAltText.url,
+          altText: next,
+          width: editingAltText.width,
+          height: editingAltText.height,
+          isPrimary: editingAltText.isPrimary,
+          sortOrder: editingAltText.sortOrder,
         },
       });
       toast.success("Alt text updated.");
+      setEditingAltText(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
     } finally {
@@ -132,13 +182,15 @@ export default function ProjectImagesEditor({
   async function handleMakePrimary(image: ProjectImage) {
     if (image.isPrimary) return;
 
-    setBusyId(image.id);
+    const outgoingId = primary?.id;
+    setPrimaryUpdateIds(outgoingId ? [outgoingId, image.id] : [image.id]);
+    const loadingToastId = toast.loading("Updating primary image…");
     try {
       await updateImageMutation.mutateAsync({
         projectId,
         imageId: image.id,
         body: {
-          cloudinaryId: image.cloudinaryId,
+          objectKey: image.objectKey,
           url: image.url,
           altText: image.altText,
           width: image.width,
@@ -151,7 +203,8 @@ export default function ProjectImagesEditor({
     } catch (cause) {
       toast.error(toErrorMessage(cause));
     } finally {
-      setBusyId(null);
+      toast.dismiss(loadingToastId);
+      setPrimaryUpdateIds([]);
     }
   }
 
@@ -170,48 +223,80 @@ export default function ProjectImagesEditor({
     }
   }
 
-  /** Sends the whole gallery renumbered densely, same recipe as the list pages' reorder. */
-  async function move(index: number, delta: number) {
-    const target = index + delta;
-    if (target < 0 || target >= rows.length) return;
+  /** Reorders locally first (no flicker), then in the cache; rolls both back on failure. */
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-    const next = [...rows];
-    [next[index], next[target]] = [next[target], next[index]];
+    const fromIndex = rows.findIndex((image) => image.id === active.id);
+    const toIndex = rows.findIndex((image) => image.id === over.id);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const previousRows = rows;
+    const reordered = arrayMove([...rows], fromIndex, toIndex).map(
+      (image, at) => ({ ...image, sortOrder: at }),
+    );
+    setRows(reordered);
+
+    const queryKey = projectKeys.detail(projectId);
+    const previousCache = queryClient.getQueryData<AdminProject>(queryKey);
+    queryClient.setQueryData<AdminProject | undefined>(
+      queryKey,
+      (old) => old && { ...old, images: reordered },
+    );
 
     try {
       await reorderImagesMutation.mutateAsync({
         projectId,
         body: {
-          items: next.map((image, at) => ({ id: image.id, sortOrder: at })),
+          items: reordered.map((image) => ({
+            id: image.id,
+            sortOrder: image.sortOrder,
+          })),
         },
       });
       toast.success("Order updated.");
     } catch (cause) {
+      setRows(previousRows);
+      queryClient.setQueryData(queryKey, previousCache);
       toast.error(toErrorMessage(cause));
     }
   }
 
-  const isReordering = reorderImagesMutation.isPending;
-
   return (
     <div className="space-y-5">
       <div>
-        <Input
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          loading={isUploading}
+          onClick={() => fileInputRef.current?.click()}
+          icon={<Upload className="h-4 w-4" />}
+          iconPosition="left"
+        >
+          {isUploading ? "Uploading…" : "Upload image"}
+        </Button>
+
+        <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          label="Upload image"
+          className="hidden"
           disabled={isUploading}
           onChange={(event) => {
             const file = event.target.files?.[0];
             if (file) handleFileChosen(file);
           }}
         />
+
         {isUploading && (
-          <p className="mt-2 flex items-center gap-2 text-xs text-text-muted">
-            <Spinner className="h-3.5 w-3.5" label="Uploading" />
-            Uploading…
-          </p>
+          <div className="mt-2 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-surface-800">
+            <div
+              className="h-full rounded-full bg-primary-500 transition-[width] duration-150"
+              style={{ width: `${uploadProgress}%` }}
+            />
+          </div>
         )}
       </div>
 
@@ -219,89 +304,76 @@ export default function ProjectImagesEditor({
         <p className="text-sm text-text-muted">No images yet.</p>
       ) : (
         <ul className="space-y-3">
-          {rows.map((image, index) => (
-            <li
-              key={image.id}
-              className="flex items-center gap-4 rounded-lg border border-border-subtle p-3"
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={rows.map((image) => image.id)}
+              strategy={verticalListSortingStrategy}
             >
-              <img
-                src={image.url}
-                alt={image.altText}
-                className="h-16 w-16 rounded-md object-cover shrink-0"
-              />
-
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm text-text-primary">
-                  {image.altText}
-                </p>
-                <p className="text-xs text-text-muted">
-                  {image.width}×{image.height}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-1 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => move(index, -1)}
-                  disabled={isReordering || index === 0}
-                  aria-label="Move up"
-                  title="Move up"
-                  className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-800 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  <ArrowUp className="h-4 w-4" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => move(index, 1)}
-                  disabled={isReordering || index === rows.length - 1}
-                  aria-label="Move down"
-                  title="Move down"
-                  className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-800 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  <ArrowDown className="h-4 w-4" aria-hidden="true" />
-                </button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleAltTextChange(image)}
-                  loading={busyId === image.id && updateImageMutation.isPending}
-                >
-                  Alt text
-                </Button>
-
-                <Button
-                  variant={image.isPrimary ? "primary" : "ghost"}
-                  size="sm"
-                  onClick={() => handleMakePrimary(image)}
-                  disabled={image.isPrimary}
-                  icon={<Star className="h-4 w-4" />}
-                  iconPosition="left"
-                >
-                  {image.isPrimary ? "Primary" : "Make primary"}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDelete(image)}
-                  loading={busyId === image.id && deleteImageMutation.isPending}
-                  icon={<Trash2 className="h-4 w-4" />}
-                  iconPosition="left"
-                >
-                  Delete
-                </Button>
-              </div>
-            </li>
-          ))}
+              {rows.map((image) => (
+                <SortableProjectImageRow
+                  key={image.id}
+                  image={image}
+                  busy={
+                    busyId === image.id || primaryUpdateIds.includes(image.id)
+                  }
+                  onEditAltText={openAltTextEditor}
+                  onMakePrimary={handleMakePrimary}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
         </ul>
       )}
 
       <p className="flex items-center gap-2 text-xs text-text-muted">
         <Upload className="h-3.5 w-3.5" aria-hidden="true" />
-        Images upload straight to Cloudinary; the API only stores their
+        Images upload straight to Neon Object Storage; the API only stores their
         metadata.
       </p>
+
+      <Modal
+        open={editingAltText !== null}
+        onClose={() => setEditingAltText(null)}
+        title="Edit alt text"
+        size="sm"
+        footer={
+          <>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setEditingAltText(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={saveAltText}
+              loading={
+                busyId === editingAltText?.id && updateImageMutation.isPending
+              }
+              disabled={
+                !altTextDraft.trim() ||
+                altTextDraft.trim() === editingAltText?.altText
+              }
+            >
+              Save
+            </Button>
+          </>
+        }
+      >
+        <Input
+          label="Alt text"
+          value={altTextDraft}
+          onChange={(event) => setAltTextDraft(event.target.value)}
+          autoFocus
+        />
+      </Modal>
     </div>
   );
 }

@@ -24,7 +24,7 @@ export async function getUsers(
   return data;
 }
 
-/** Super-admin only. Rejects with 409 if `id` is self or the super admin. */
+/** Super-admin only. 409 if `id` is yourself or the super admin. */
 export async function approveUser(id: string): Promise<AdminUser> {
   const { data } = await httpClient.post<AdminUser>(
     `/admin/users/${id}/approve`,
@@ -52,7 +52,7 @@ export async function disableUser(id: string): Promise<AdminUser> {
   return data;
 }
 
-/** Soft delete. The API refuses self-deletion with 409 `cannot_delete_self`. */
+/** Refuses self-deletion with 409 `cannot_delete_self`. */
 export async function deleteUser(id: string): Promise<void> {
   await httpClient.delete(`/admin/users/${id}`);
 }

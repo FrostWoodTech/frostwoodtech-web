@@ -1,10 +1,7 @@
 import axios from "axios";
 import type { ApiProblem } from "@/admin/types";
 
-/**
- * Thrown for any non-2xx API response. The backend's `detail` messages are
- * already user-facing, so callers can surface `message` directly.
- */
+/** Thrown for any non-2xx response. `message` (the API's `detail`) is user-facing. */
 export default class ApiError extends Error {
   readonly status: number;
   readonly code?: string;
@@ -27,13 +24,19 @@ export default class ApiError extends Error {
   }
 }
 
+/** Axios rejects an aborted request with its own CanceledError, not a DOMException. */
+export function isCanceled(error: unknown): boolean {
+  return axios.isCancel(error);
+}
+
 const GENERIC_SERVER_ERROR =
   "Something went wrong on our end. Please try again in a moment.";
 const GENERIC_CONNECTION_ERROR =
   "Could not reach the server. Please check your connection and try again.";
-const GENERIC_REQUEST_ERROR = "That request couldn't be completed. Please try again.";
+const GENERIC_REQUEST_ERROR =
+  "That request couldn't be completed. Please try again.";
 
-/** Network failures and unexpected throws reach the UI as a readable string; technical detail goes to the console. */
+/** A user-safe message; technical detail is logged to the console. */
 export function toErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
     if (error.status === 0) {

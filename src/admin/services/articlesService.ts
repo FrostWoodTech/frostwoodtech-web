@@ -8,39 +8,56 @@ import type {
 import { httpClient } from "@/admin/services/httpClient";
 
 export interface GetArticlesParams {
-  /** Optional on the admin surface, unlike the public one which demands it. */
   readonly site?: Site;
-  /** Omit for both; `true` for published only, `false` for drafts only. */
+  /** Omit for both; `false` for drafts only. */
   readonly isPublished?: boolean;
-  /** Case-insensitive match against the title. */
   readonly search?: string;
+  /** Skip the show-on-site filter (used by the reorder screen). */
+  readonly includeHidden?: boolean;
   readonly page?: number;
   readonly pageSize?: number;
 }
 
-/** Ordered by `publishedDate` descending, then title. */
+/** Ordered by most recently updated, then title. */
 export async function getArticles(
-  { site, isPublished, search, page, pageSize }: GetArticlesParams = {},
+  {
+    site,
+    isPublished,
+    search,
+    includeHidden,
+    page,
+    pageSize,
+  }: GetArticlesParams = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<AdminArticle>> {
   const { data } = await httpClient.get<PagedResult<AdminArticle>>(
     "/admin/articles",
-    { params: { site, isPublished, search, page, pageSize }, signal },
+    {
+      params: { site, isPublished, search, includeHidden, page, pageSize },
+      signal,
+    },
   );
+  return data;
+}
+
+export async function getArticle(
+  id: string,
+  signal?: AbortSignal,
+): Promise<AdminArticle> {
+  const { data } = await httpClient.get<AdminArticle>(`/admin/articles/${id}`, {
+    signal,
+  });
   return data;
 }
 
 export async function createArticle(
   body: ArticleWriteRequest,
 ): Promise<AdminArticle> {
-  const { data } = await httpClient.post<AdminArticle>(
-    "/admin/articles",
-    body,
-  );
+  const { data } = await httpClient.post<AdminArticle>("/admin/articles", body);
   return data;
 }
 
-/** Full replacement — `body` must carry every field, not just the changed ones. */
+/** Full replacement — send every field. */
 export async function updateArticle(
   id: string,
   body: ArticleWriteRequest,
@@ -52,15 +69,12 @@ export async function updateArticle(
   return data;
 }
 
-/** Soft delete. The API answers 204 with no body. */
+/** Soft delete. */
 export async function deleteArticle(id: string): Promise<void> {
   await httpClient.delete(`/admin/articles/${id}`);
 }
 
-/**
- * Bulk sort-order update. Sort order is kept per site, so `site` is required —
- * there is no site-agnostic ordering to renumber. Answers 204.
- */
+/** Sort order is per site, so `site` is required. */
 export async function reorderArticles(body: ReorderRequest): Promise<void> {
   await httpClient.post("/admin/articles/reorder", body);
 }

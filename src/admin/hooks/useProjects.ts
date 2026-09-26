@@ -69,13 +69,10 @@ export function useSetProjectPublished() {
   });
 }
 
+/** No invalidation: the caller's optimistic cache write already matches the server. */
 export function useReorderProjects() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: ReorderRequest) => projectsService.reorderProjects(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: projectKeys.lists() });
-    },
   });
 }
 
@@ -97,7 +94,8 @@ export function useAddProjectImage() {
       projectId: string;
       body: ProjectImageWriteRequest;
     }) => projectsService.addProjectImage(projectId, body),
-    onSuccess: (_data, { projectId }) => invalidateProject(queryClient, projectId),
+    onSuccess: (_data, { projectId }) =>
+      invalidateProject(queryClient, projectId),
   });
 }
 
@@ -113,7 +111,8 @@ export function useUpdateProjectImage() {
       imageId: string;
       body: ProjectImageWriteRequest;
     }) => projectsService.updateProjectImage(projectId, imageId, body),
-    onSuccess: (_data, { projectId }) => invalidateProject(queryClient, projectId),
+    onSuccess: (_data, { projectId }) =>
+      invalidateProject(queryClient, projectId),
   });
 }
 
@@ -127,12 +126,13 @@ export function useDeleteProjectImage() {
       projectId: string;
       imageId: string;
     }) => projectsService.deleteProjectImage(projectId, imageId),
-    onSuccess: (_data, { projectId }) => invalidateProject(queryClient, projectId),
+    onSuccess: (_data, { projectId }) =>
+      invalidateProject(queryClient, projectId),
   });
 }
 
+/** No invalidation: the optimistic write matches the server, and a refetch would jolt dnd-kit. */
 export function useReorderProjectImages() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({
       projectId,
@@ -141,6 +141,5 @@ export function useReorderProjectImages() {
       projectId: string;
       body: ImageReorderRequest;
     }) => projectsService.reorderProjectImages(projectId, body),
-    onSuccess: (_data, { projectId }) => invalidateProject(queryClient, projectId),
   });
 }

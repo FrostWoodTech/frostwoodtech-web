@@ -1,43 +1,86 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  DndContext,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { useSearchParamState } from "@/shared/hooks/useSearchParamState";
-import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from "lucide-react";
-import Badge from "@/client/components/ui/Badge";
-import Button from "@/admin/components/ui/Button";
-import Spinner from "@/client/components/ui/Spinner";
-import Alert from "@/admin/components/ui/Alert";
-import Card from "@/admin/components/ui/Card";
-import ConfirmDialog from "@/admin/components/ui/ConfirmDialog";
-import Input from "@/admin/components/ui/Input";
-import Select from "@/admin/components/ui/Select";
+import { Plus } from "lucide-react";
 import FaqFormModal from "@/admin/components/faqs/FaqFormModal";
+import SortableFaqRow from "@/admin/components/faqs/SortableFaqRow";
 import { useDeleteFaq, useFaqs, useReorderFaqs } from "@/admin/hooks/useFaqs";
+import { useServices } from "@/admin/hooks/useServices";
+import { faqKeys } from "@/admin/hooks/queryKeys";
 import { toErrorMessage } from "@/admin/api/ApiError";
 import useToast from "@/admin/context/useToast";
-import type { AdminFaq, Site } from "@/admin/types";
-import { formatDate } from "@/admin/utils/format";
+import type { AdminFaq, PagedResult, Site } from "@/admin/types";
+import {
+  FIELD_BASE,
+  FIELD_LABEL,
+  FIELD_STATE,
+} from "@/admin/components/ui/fieldClasses";
 import { useDebounce } from "@/shared/hooks/useDebounce";
+import {
+  Button,
+  Card,
+  Checkbox,
+  ConfirmDialog,
+  DataTableShell,
+  Input,
+  PageHeader,
+  Pagination,
+  Select,
+  Toolbar,
+  Table,
+  THead,
+  TH,
+  TBody,
+} from "@/admin/components/ui";
 
 const PAGE_SIZE = 20;
-
-/** `""` means "either site" — the API omits the filter entirely then. */
-type SiteFilter = "" | Site;
-
-const SITE_OPTIONS = [
-  { value: "", label: "All sites" },
-  { value: "agency", label: "Agency" },
-  { value: "personal", label: "Personal" },
-] as const;
-
-/** Sort order is kept per site, so which column applies depends on the filter. */
-function sortOrderFor(faq: AdminFaq, site: Site): number {
-  return site === "agency" ? faq.agencySortOrder : faq.personalSortOrder;
-}
+/** Well above any realistic service count — this filter isn't paged. */
+const SERVICE_PAGE_SIZE = 100;
+/** Sentinel `<select>` values — actual service ids never collide with these. */
+const SCOPE_ALL = "";
+const SCOPE_GLOBAL = "__global__";
 
 export default function FaqsPage() {
   const toast = useToast();
+  const queryClient = useQueryClient();
   const [searchInput, setSearchInput] = useSearchParamState<string>("q", "");
   const search = useDebounce(searchInput);
-  const [site, setSite] = useSearchParamState<SiteFilter>("site", "");
+
+  // "1"/"0" strings so the default (agency only) keeps the URL clean.
+  const [agencyParam, setAgencyParam] = useSearchParamState<string>(
+    "agency",
+    "1",
+  );
+  const [personalParam, setPersonalParam] = useSearchParamState<string>(
+    "personal",
+    "0",
+  );
+  const agencyChecked = agencyParam === "1";
+  const personalChecked = personalParam === "1";
+  const bothChecked = agencyChecked && personalChecked;
+  const noneChecked = !agencyChecked && !personalChecked;
+  const activeSite: Site | null =
+    agencyChecked !== personalChecked
+      ? agencyChecked
+        ? "agency"
+        : "personal"
+      : null;
+  // Both or neither = no site filter; "neither" skips the query entirely below.
+  const querySite = activeSite ?? undefined;
+
   const [pageParam, setPageParam] = useSearchParamState<string>("page", "1");
   const page = Number(pageParam) || 1;
   const setPage = (updater: number | ((prev: number) => number)) => {
@@ -49,52 +92,102 @@ export default function FaqsPage() {
   const [editing, setEditing] = useState<AdminFaq | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminFaq | null>(null);
 
+  // "" = every scope, sentinel = general only, otherwise a service id.
+  const [scopeParam, setScopeParam] = useSearchParamState<string>(
+    "scope",
+    SCOPE_ALL,
+  );
+  const { data: servicesResult } = useServices({ pageSize: SERVICE_PAGE_SIZE });
+  const scopeOptions = [
+    { value: SCOPE_ALL, label: "Every scope" },
+    { value: SCOPE_GLOBAL, label: "Global only" },
+    ...(servicesResult?.items ?? []).map((service) => ({
+      value: service.id,
+      label: service.name,
+    })),
+  ];
+  const serviceId =
+    scopeParam !== SCOPE_ALL && scopeParam !== SCOPE_GLOBAL
+      ? scopeParam
+      : undefined;
+  const globalOnly = scopeParam === SCOPE_GLOBAL;
+
   const {
     data: result,
-    isPending: isLoading,
+    isPending: isLoadingQuery,
+    isFetching: isFetchingQuery,
     error: queryError,
-  } = useFaqs({ search, page, pageSize: PAGE_SIZE });
+  } = useFaqs(
+    {
+      search,
+      site: querySite,
+      serviceId,
+      globalOnly,
+      page,
+      pageSize: PAGE_SIZE,
+    },
+    !noneChecked,
+  );
   const deleteFaqMutation = useDeleteFaq();
   const reorderFaqsMutation = useReorderFaqs();
 
+  // With no site selected the query is disabled, so its loading flags never settle.
+  const isLoading = !noneChecked && isLoadingQuery;
+  const isFetching = !noneChecked && isFetchingQuery;
   const error = queryError ? toErrorMessage(queryError) : null;
 
-  /**
-   * Reordering renumbers the whole visible page, so the rows have to be in the
-   * same order the arrows imply.
-   */
-  const rows = useMemo(() => {
-    const items = result?.items ?? [];
-    if (!site) return items;
-    return [...items].sort(
-      (a, b) => sortOrderFor(a, site) - sortOrderFor(b, site),
+  // Already ordered by sortOrder server-side (one order for both sites).
+  const rows = noneChecked ? [] : (result?.items ?? []);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+  );
+
+  /** Renumbers the whole page and writes it to the cache optimistically; rolls back on failure. */
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const fromIndex = rows.findIndex((faq) => faq.id === active.id);
+    const toIndex = rows.findIndex((faq) => faq.id === over.id);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const next = arrayMove([...rows], fromIndex, toIndex);
+    const items = next.map((faq, at) => ({
+      id: faq.id,
+      // Page 2 continues where page 1 left off, so the offset matters.
+      sortOrder: (page - 1) * PAGE_SIZE + at,
+    }));
+
+    const queryKey = faqKeys.list({
+      search,
+      site: querySite,
+      serviceId,
+      globalOnly,
+      page,
+      pageSize: PAGE_SIZE,
+    });
+    const previous = queryClient.getQueryData<PagedResult<AdminFaq>>(queryKey);
+
+    queryClient.setQueryData<PagedResult<AdminFaq> | undefined>(
+      queryKey,
+      (old) =>
+        old && {
+          ...old,
+          items: next.map((faq, at) => ({
+            ...faq,
+            sortOrder: items[at].sortOrder,
+          })),
+        },
     );
-  }, [result, site]);
-
-  /**
-   * Sends the whole page renumbered densely from the index rather than just the
-   * two swapped rows, so the numbering stays contiguous however it started.
-   */
-  async function move(index: number, delta: number) {
-    if (!site) return;
-
-    const target = index + delta;
-    if (target < 0 || target >= rows.length) return;
-
-    const next = [...rows];
-    [next[index], next[target]] = [next[target], next[index]];
 
     try {
-      await reorderFaqsMutation.mutateAsync({
-        site,
-        items: next.map((faq, at) => ({
-          id: faq.id,
-          // Page 2 continues where page 1 left off, so the offset matters.
-          sortOrder: (page - 1) * PAGE_SIZE + at,
-        })),
-      });
+      await reorderFaqsMutation.mutateAsync({ items });
       toast.success("Order updated.");
     } catch (cause) {
+      queryClient.setQueryData(queryKey, previous);
       toast.error(toErrorMessage(cause));
     }
   }
@@ -118,40 +211,46 @@ export default function FaqsPage() {
 
     try {
       await deleteFaqMutation.mutateAsync(deleteTarget.id);
-      toast.success("FAQ deleted.");
+      toast.success("FAQ moved to trash.");
       setDeleteTarget(null);
     } catch (cause) {
       toast.error(toErrorMessage(cause));
     }
   }
 
-  const total = result?.total ?? 0;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const isReordering = reorderFaqsMutation.isPending;
+  const totalCount = result?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
+  const description = noneChecked
+    ? "Select at least one site to see its FAQs."
+    : bothChecked
+      ? `${totalCount} ${totalCount === 1 ? "question" : "questions"} shown across both sites.`
+      : `${totalCount} ${totalCount === 1 ? "question" : "questions"} shown for ${activeSite === "agency" ? "Agency" : "Personal"}.`;
+
+  const hint = noneChecked
+    ? "Check Agency and/or Personal to see FAQs."
+    : "Drag by the handle to set the order FAQs appear in — the order is shared by both sites.";
 
   return (
-    <div className="max-w-5xl">
-      <div className="flex items-start justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-text-primary mb-1">FAQs</h1>
-          <p className="text-sm text-text-muted">
-            {total} {total === 1 ? "question" : "questions"} shown across both
-            sites.
-          </p>
-        </div>
+    <div>
+      <PageHeader
+        title="FAQs"
+        description={description}
+        actions={
+          <Button
+            size="sm"
+            onClick={openCreate}
+            icon={<Plus className="h-4 w-4" />}
+            iconPosition="left"
+          >
+            New FAQ
+          </Button>
+        }
+      />
 
-        <Button
-          size="sm"
-          onClick={openCreate}
-          icon={<Plus className="h-4 w-4" />}
-          iconPosition="left"
-        >
-          New FAQ
-        </Button>
-      </div>
-
-      <div className="flex items-end gap-3 mb-3">
+      <Toolbar>
         <Input
+          fieldSize="sm"
           label="Search"
           placeholder="Question"
           value={searchInput}
@@ -163,154 +262,97 @@ export default function FaqsPage() {
         />
 
         <Select
-          label="Site"
-          options={SITE_OPTIONS}
-          value={site}
+          fieldSize="sm"
+          label="Scope"
+          options={scopeOptions}
+          value={scopeParam}
           onChange={(event) => {
             setPage(1);
-            setSite(event.target.value as SiteFilter);
+            setScopeParam(event.target.value);
           }}
-          containerClassName="w-40"
+          containerClassName="w-48"
         />
-      </div>
 
-      <p className="text-xs text-text-muted mb-6">
-        {site
-          ? "Use the arrows to set the order FAQs appear in on the selected site."
-          : "Sort order is kept per site — pick a single site to reorder FAQs."}
-      </p>
-
-      {error && <Alert className="mb-6">{error}</Alert>}
-
-      <Card className="p-0 overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-16 text-primary-400">
-            <Spinner className="h-6 w-6" label="Loading FAQs" />
+        <div className="ml-3">
+          <span className={FIELD_LABEL}>Site</span>
+          <div
+            className={`${FIELD_BASE} ${FIELD_STATE.default} flex h-9 items-center gap-4 px-3`}
+          >
+            <Checkbox
+              label="Agency"
+              checked={agencyChecked}
+              onChange={(event) => {
+                setPage(1);
+                setAgencyParam(event.target.checked ? "1" : "0");
+              }}
+            />
+            <Checkbox
+              label="Personal"
+              checked={personalChecked}
+              onChange={(event) => {
+                setPage(1);
+                setPersonalParam(event.target.checked ? "1" : "0");
+              }}
+            />
           </div>
-        ) : rows.length === 0 ? (
-          <p className="py-16 text-center text-sm text-text-muted">
-            No FAQs match this search.
-          </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead>
-                <tr className="border-b border-border-subtle bg-surface-900/40 text-[10px] font-semibold tracking-widest uppercase text-text-muted">
-                  <th className="px-6 py-4">Question</th>
-                  <th className="px-6 py-4">Category</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Updated</th>
-                  <th className="px-6 py-4 sr-only">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-border-subtle/60 last:border-0 hover:bg-surface-800/60 transition-colors duration-150"
-                  >
-                    <td className="px-6 py-4 max-w-sm">
-                      <span className="block text-text-primary font-medium truncate">
-                        {item.question}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-text-secondary">
-                      {item.category ?? "—"}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge variant={item.isPublished ? "subtle" : "outline"}>
-                        {item.isPublished ? "Published" : "Draft"}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 text-text-secondary whitespace-nowrap">
-                      {formatDate(item.updatedAt)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          type="button"
-                          onClick={() => move(index, -1)}
-                          disabled={!site || isReordering || index === 0}
-                          aria-label={`Move “${item.question}” up`}
-                          title={
-                            site
-                              ? "Move up"
-                              : "Pick a single site to reorder FAQs"
-                          }
-                          className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-800 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                        >
-                          <ArrowUp className="h-4 w-4" aria-hidden="true" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => move(index, 1)}
-                          disabled={
-                            !site || isReordering || index === rows.length - 1
-                          }
-                          aria-label={`Move “${item.question}” down`}
-                          title={
-                            site
-                              ? "Move down"
-                              : "Pick a single site to reorder FAQs"
-                          }
-                          className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-800 transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                        >
-                          <ArrowDown className="h-4 w-4" aria-hidden="true" />
-                        </button>
+        </div>
+      </Toolbar>
 
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => openEdit(item)}
-                          icon={<Pencil className="h-4 w-4" />}
-                          iconPosition="left"
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => askDelete(item)}
-                          icon={<Trash2 className="h-4 w-4" />}
-                          iconPosition="left"
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+      <p className="text-xs text-text-muted mb-6">{hint}</p>
+
+      <Card padding="none" className="overflow-hidden">
+        <DataTableShell
+          error={error}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          isEmpty={rows.length === 0}
+          emptyTitle="No FAQs found"
+          emptyDescription={
+            noneChecked
+              ? "Check Agency and/or Personal above to see FAQs."
+              : "No FAQs match this search."
+          }
+        >
+          <Table>
+            <THead>
+              <TH className="w-10 sr-only">Reorder</TH>
+              <TH>Question</TH>
+              <TH>Scope</TH>
+              <TH>Status</TH>
+              <TH>Updated</TH>
+              <TH className="sr-only">Actions</TH>
+            </THead>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={rows.map((faq) => faq.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <TBody>
+                  {rows.map((item) => (
+                    <SortableFaqRow
+                      key={item.id}
+                      faq={item}
+                      onEdit={openEdit}
+                      onDelete={askDelete}
+                    />
+                  ))}
+                </TBody>
+              </SortableContext>
+            </DndContext>
+          </Table>
+        </DataTableShell>
       </Card>
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-6">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page <= 1}
-          >
-            Previous
-          </Button>
-          <span className="text-sm text-text-muted">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page >= totalPages}
-          >
-            Next
-          </Button>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onChange={(next) => setPage(next)}
+      />
 
-      {/* Keyed so switching rows remounts the form with fresh defaults. */}
       {isFormOpen && (
         <FaqFormModal
           key={editing?.id ?? "new"}
@@ -322,9 +364,12 @@ export default function FaqsPage() {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title="Delete FAQ"
+        title="Move FAQ to trash"
+        confirmLabel="Move to trash"
         message={
-          deleteTarget ? `Delete “${deleteTarget.question}”?` : ""
+          deleteTarget
+            ? `Move “${deleteTarget.question}” to the trash? You can restore it from Trash.`
+            : ""
         }
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}

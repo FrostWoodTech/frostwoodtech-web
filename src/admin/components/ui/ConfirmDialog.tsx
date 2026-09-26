@@ -1,5 +1,5 @@
-import Button from "@/admin/components/ui/Button";
-import Modal from "@/admin/components/ui/Modal";
+import Button from "./Button";
+import Modal from "./Modal";
 
 interface ConfirmDialogProps {
   readonly open: boolean;
@@ -9,6 +9,8 @@ interface ConfirmDialogProps {
   readonly onConfirm: () => void;
   readonly onCancel: () => void;
   readonly loading?: boolean;
+  /** Defaults to `danger`; use `default` for non-destructive confirmations. */
+  readonly tone?: "danger" | "default";
 }
 
 /** Replaces `window.confirm` for destructive admin actions. */
@@ -20,6 +22,7 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
   loading = false,
+  tone = "danger",
 }: ConfirmDialogProps) {
   return (
     <Modal
@@ -38,7 +41,7 @@ export default function ConfirmDialog({
             Cancel
           </Button>
           <Button
-            variant="primary"
+            variant={tone === "danger" ? "danger" : "primary"}
             size="sm"
             onClick={onConfirm}
             loading={loading}

@@ -6,7 +6,7 @@ import type {
   FeatureReorderRequest,
   PricingFeatureWriteRequest,
   PricingPlanWriteRequest,
-  ReorderRequest,
+  PricingReorderRequest,
 } from "@/admin/types";
 
 export function usePricingPlans(params: GetPricingPlansParams) {
@@ -31,13 +31,8 @@ export function useCreatePricingPlan() {
 export function useUpdatePricingPlan() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      body,
-    }: {
-      id: string;
-      body: PricingPlanWriteRequest;
-    }) => pricingService.updatePricingPlan(id, body),
+    mutationFn: ({ id, body }: { id: string; body: PricingPlanWriteRequest }) =>
+      pricingService.updatePricingPlan(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: pricingKeys.lists() });
     },
@@ -65,14 +60,11 @@ export function useSetPricingPlanPublished() {
   });
 }
 
+/** No invalidation: the caller's optimistic cache write already matches the server. */
 export function useReorderPricingPlans() {
-  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: ReorderRequest) =>
+    mutationFn: (body: PricingReorderRequest) =>
       pricingService.reorderPricingPlans(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: pricingKeys.lists() });
-    },
   });
 }
 

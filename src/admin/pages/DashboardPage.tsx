@@ -1,14 +1,16 @@
+import { useState } from "react";
 import {
+  Coins,
   CreditCard,
   FolderKanban,
   HelpCircle,
+  Mail,
   Newspaper,
+  Star,
   Tags,
+  UserCheck,
   Wrench,
 } from "lucide-react";
-import Badge from "@/client/components/ui/Badge";
-import Card from "@/admin/components/ui/Card";
-import StatCard from "@/admin/components/ui/StatCard";
 import useAuth from "@/admin/context/useAuth";
 import { useProjects } from "@/admin/hooks/useProjects";
 import { useArticles } from "@/admin/hooks/useArticles";
@@ -16,70 +18,163 @@ import { useServices } from "@/admin/hooks/useServices";
 import { useTags } from "@/admin/hooks/useTags";
 import { usePricingPlans } from "@/admin/hooks/usePricing";
 import { useFaqs } from "@/admin/hooks/useFaqs";
-import { formatDate, roleLabel, statusLabel } from "@/admin/utils/format";
+import { useReviews } from "@/admin/hooks/useReviews";
+import { useCurrencies } from "@/admin/hooks/useCurrencies";
+import { useUsers } from "@/admin/hooks/useUsers";
+import { useContactSubmissions } from "@/admin/hooks/useContactSubmissions";
+import ContentBreakdownChart from "@/admin/components/dashboard/ContentBreakdownChart";
+import { SectionTitle, StatCard } from "@/admin/components/ui";
 
-/** A single-row fetch just to read `total` — the list itself is unused here. */
+/** Fetches one row just to read `total`. */
 const COUNT_ONLY = { page: 1, pageSize: 1 };
+
+type StatusFilter = "" | "published" | "draft";
+
+const STATUS_TABS = [
+  { value: "", label: "All content" },
+  { value: "published", label: "Published" },
+  { value: "draft", label: "Unpublished" },
+] as const;
+
+function toIsPublished(status: StatusFilter): boolean | undefined {
+  if (status === "published") return true;
+  if (status === "draft") return false;
+  return undefined;
+}
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const [status, setStatus] = useState<StatusFilter>("");
+  const isPublished = toIsPublished(status);
 
-  const projects = useProjects(COUNT_ONLY);
-  const articles = useArticles(COUNT_ONLY);
-  const services = useServices(COUNT_ONLY);
+  // Counts are for the agency site; pricing and tags have no site scope.
+  const projects = useProjects({ site: "agency", isPublished, ...COUNT_ONLY });
+  const articles = useArticles({ site: "agency", isPublished, ...COUNT_ONLY });
+  const services = useServices({ site: "agency", isPublished, ...COUNT_ONLY });
   const tags = useTags(COUNT_ONLY);
-  const pricingPlans = usePricingPlans(COUNT_ONLY);
-  const faqs = useFaqs(COUNT_ONLY);
+  const pricingPlans = usePricingPlans({ isPublished, ...COUNT_ONLY });
+  const faqs = useFaqs({ site: "agency", isPublished, ...COUNT_ONLY });
+  const reviews = useReviews({ isPublished, ...COUNT_ONLY });
+  const currencies = useCurrencies(COUNT_ONLY);
+
+  const isSuperAdmin = user?.role === "super_admin";
+  // Super-admin-only endpoint: a regular admin must not send this request at all.
+  const pendingApprovals = useUsers(
+    { status: "pending", ...COUNT_ONLY },
+    isSuperAdmin,
+  );
+  const newContacts = useContactSubmissions({ status: "new", ...COUNT_ONLY });
+
+  const alerts = [
+    ...(isSuperAdmin
+      ? [
+          {
+            label: "Pending approvals",
+            href: "/admin/approvals",
+            icon: UserCheck,
+            value: pendingApprovals.data?.total,
+          },
+        ]
+      : []),
+    {
+      label: "New contact messages",
+      href: "/admin/contact-submissions",
+      icon: Mail,
+      value: newContacts.data?.total,
+    },
+  ].map((alert) => ({
+    ...alert,
+    tone: (alert.value ?? 0) > 0 ? ("warning" as const) : ("success" as const),
+  }));
 
   const stats = [
-    { label: "Projects", href: "/admin/projects", icon: FolderKanban, value: projects.data?.total },
-    { label: "Articles", href: "/admin/articles", icon: Newspaper, value: articles.data?.total },
-    { label: "Services", href: "/admin/services", icon: Wrench, value: services.data?.total },
-    { label: "Tags", href: "/admin/tags", icon: Tags, value: tags.data?.total },
-    { label: "Pricing plans", href: "/admin/pricing", icon: CreditCard, value: pricingPlans.data?.total },
-    { label: "FAQs", href: "/admin/faqs", icon: HelpCircle, value: faqs.data?.total },
+    {
+      label: "Projects",
+      href: "/admin/projects",
+      icon: FolderKanban,
+      value: projects.data?.total,
+    },
+    {
+      label: "Articles",
+      href: "/admin/articles",
+      icon: Newspaper,
+      value: articles.data?.total,
+    },
+    {
+      label: "Services",
+      href: "/admin/services",
+      icon: Wrench,
+      value: services.data?.total,
+    },
+    {
+      label: "Tags",
+      href: "/admin/tags",
+      icon: Tags,
+      value: tags.data?.total,
+    },
+    {
+      label: "Pricing plans",
+      href: "/admin/pricing",
+      icon: CreditCard,
+      value: pricingPlans.data?.total,
+    },
+    {
+      label: "FAQs",
+      href: "/admin/faqs",
+      icon: HelpCircle,
+      value: faqs.data?.total,
+    },
+    {
+      label: "Reviews",
+      href: "/admin/reviews",
+      icon: Star,
+      value: reviews.data?.total,
+    },
+    {
+      label: "Currencies",
+      href: "/admin/currencies",
+      icon: Coins,
+      value: currencies.data?.total,
+    },
   ];
 
   if (!user) return null;
 
-  const details = [
-    { label: "Email", value: user.email },
-    { label: "Member since", value: formatDate(user.createdAt) },
-    { label: "Last sign-in", value: formatDate(user.lastLoginAt) },
-  ];
-
   return (
-    <div className="max-w-3xl">
-      <h1 className="text-2xl font-bold text-text-primary mb-1">
+    <div>
+      <h1
+        className="mb-6 text-3xl leading-tight text-text-primary md:text-4xl"
+        style={{ fontFamily: "var(--font-display)" }}
+      >
         Welcome back, {user.firstName}.
       </h1>
-      <p className="text-sm text-text-muted mb-8">
-        You are signed in to the FrostWoodTech Web CMS.
-      </p>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-        {stats.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
+      <SectionTitle
+        className="mb-2"
+        description="Things that could use a look."
+      >
+        Needs attention
+      </SectionTitle>
+
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {alerts.map((alert) => (
+          <StatCard key={alert.label} {...alert} />
         ))}
       </div>
 
-      <Card>
-        <div className="flex flex-wrap items-center gap-2 mb-6">
-          <Badge variant="subtle">{roleLabel(user.role)}</Badge>
-          <Badge variant="outline">{statusLabel(user.status)}</Badge>
-        </div>
+      <SectionTitle
+        className="mb-2"
+        description="Agency-site counts across every content type. Select one to manage it."
+      >
+        Content
+      </SectionTitle>
 
-        <dl className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {details.map(({ label, value }) => (
-            <div key={label}>
-              <dt className="text-[10px] font-semibold tracking-widest uppercase text-text-muted mb-1">
-                {label}
-              </dt>
-              <dd className="text-sm text-text-primary break-words">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </Card>
+      <ContentBreakdownChart
+        items={stats}
+        tabs={STATUS_TABS}
+        activeTab={status}
+        onTabChange={(value) => setStatus(value as StatusFilter)}
+      />
     </div>
   );
 }

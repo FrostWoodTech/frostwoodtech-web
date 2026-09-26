@@ -1,21 +1,25 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import Button from "@/admin/components/ui/Button";
-import Checkbox from "@/admin/components/ui/Checkbox";
-import Input from "@/admin/components/ui/Input";
-import Modal from "@/admin/components/ui/Modal";
-import Textarea from "@/admin/components/ui/Textarea";
 import { usePersistedForm } from "@/shared/hooks/usePersistedForm";
 import { useCreateReview, useUpdateReview } from "@/admin/hooks/useReviews";
 import { toErrorMessage } from "@/admin/api/ApiError";
 import useToast from "@/admin/context/useToast";
 import type { AdminReview, ReviewWriteRequest } from "@/admin/types";
+import { COUNTRY_OPTIONS, countryNameFor } from "@/admin/utils/countries";
 import {
   reviewSchema,
   type ReviewFormValues,
 } from "@/admin/validation/reviewSchemas";
+import {
+  Button,
+  Checkbox,
+  Combobox,
+  Input,
+  Modal,
+  Textarea,
+} from "@/admin/components/ui";
 
 interface ReviewFormModalProps {
-  /** `null` opens the dialog in create mode — an admin manually adding a testimonial. */
+  /** `null` means create mode. */
   readonly review: AdminReview | null;
   readonly onClose: () => void;
   readonly onSaved: () => void;
@@ -31,7 +35,6 @@ function blankValues(): ReviewFormValues {
     reviewText: "",
     isPublished: false,
     isFeatured: false,
-    sortOrder: 0,
   };
 }
 
@@ -47,20 +50,16 @@ function toFormValues(review: AdminReview | null): ReviewFormValues {
     reviewText: review.reviewText,
     isPublished: review.isPublished,
     isFeatured: review.isFeatured,
-    sortOrder: review.sortOrder,
   };
 }
 
-/** `""` is how an untouched optional field reaches us; the API wants it gone. */
+/** Untouched optional fields are `""`; the API wants them omitted. */
 function blank(value?: string): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
 }
 
-/**
- * Mounted only while the dialog is open, and keyed on the review by
- * `ReviewsPage`, so the form state starts fresh for every row.
- */
+/** Mounted only while open and keyed per row by the page, so form state starts fresh. */
 export default function ReviewFormModal({
   review,
   onClose,
@@ -76,6 +75,8 @@ export default function ReviewFormModal({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     clearPersisted,
     formState: { errors, isSubmitting },
   } = usePersistedForm<ReviewFormValues>(`review-form:${review?.id ?? "new"}`, {
@@ -84,7 +85,7 @@ export default function ReviewFormModal({
   });
 
   async function onSubmit(values: ReviewFormValues) {
-    // Built explicitly rather than spread: PUT replaces the whole record, so any omitted field would wipe out.
+    // Built explicitly: PUT replaces the whole record, so no field may be omitted.
     const body: ReviewWriteRequest = {
       name: values.name.trim(),
       country: values.country.trim(),
@@ -94,7 +95,6 @@ export default function ReviewFormModal({
       reviewText: values.reviewText.trim(),
       isPublished: values.isPublished,
       isFeatured: values.isFeatured,
-      sortOrder: values.sortOrder,
     };
 
     try {
@@ -146,22 +146,21 @@ export default function ReviewFormModal({
         </div>
 
         <div className="flex gap-4">
-          <Input
+          <Combobox
             label="Country"
             required
+            placeholder="Select a country"
+            searchPlaceholder="Search countries…"
+            options={COUNTRY_OPTIONS}
+            value={watch("countryCode")}
+            onChange={(code) => {
+              setValue("countryCode", code, { shouldValidate: true });
+              setValue("country", countryNameFor(code), {
+                shouldValidate: true,
+              });
+            }}
             containerClassName="flex-1"
-            error={errors.country?.message}
-            {...register("country")}
-          />
-
-          <Input
-            label="Country code"
-            required
-            placeholder="US"
-            maxLength={2}
-            containerClassName="w-32"
-            error={errors.countryCode?.message}
-            {...register("countryCode")}
+            error={errors.country?.message ?? errors.countryCode?.message}
           />
 
           <Input
@@ -192,15 +191,6 @@ export default function ReviewFormModal({
         />
 
         <Checkbox label="Featured" {...register("isFeatured")} />
-
-        <Input
-          label="Sort order"
-          type="number"
-          step={1}
-          containerClassName="w-32"
-          error={errors.sortOrder?.message}
-          {...register("sortOrder", { valueAsNumber: true })}
-        />
 
         <div className="flex items-center justify-end gap-3 pt-2">
           <Button

@@ -1,10 +1,7 @@
 import axios from "axios";
 import type { ApiProblem } from "@/client/types";
 
-/**
- * Thrown for any non-2xx API response. The backend's `detail` messages are
- * already user-facing, so callers can surface `message` directly.
- */
+/** Thrown for any non-2xx response. `message` (the API's `detail`) is user-facing. */
 export default class ApiError extends Error {
   readonly status: number;
   readonly code?: string;
@@ -26,14 +23,15 @@ const GENERIC_CONNECTION_ERROR =
 const GENERIC_REQUEST_ERROR =
   "That request couldn't be completed. Please try again.";
 
-/** Network failures and unexpected throws reach the UI as a readable string; technical detail goes to the console. */
+/** A user-safe message; technical detail is logged to the console. */
 export function toErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
     if (error.status === 0) {
       console.error("Network error:", error);
       return GENERIC_CONNECTION_ERROR;
     }
-    if (error.status === 404) return "We couldn't find what you were looking for.";
+    if (error.status === 404)
+      return "We couldn't find what you were looking for.";
     if (error.status >= 500) {
       console.error(`Server error (${error.status}):`, error.problem, error);
       return GENERIC_SERVER_ERROR;
