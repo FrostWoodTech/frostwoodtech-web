@@ -8,40 +8,10 @@
       name="description"
       content="FrostWoodTech builds SaaS products and custom client platforms — precise where it counts, fast where it matters, and built to last."
     />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: light)"
-      content="#f7faf9"
-    />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: dark)"
-      content="#121a18"
-    />
+    <meta name="theme-color" content="#fcfdff" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <!-- Blocking pre-paint theme script (avoids a flash); ThemeProvider takes over after mount. -->
-    <script>
-      (function () {
-        var root = document.documentElement;
-        try {
-          var stored = localStorage.getItem("fwt-theme");
-          root.setAttribute(
-            "data-theme",
-            stored === "light" || stored === "dark"
-              ? stored
-              : window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light",
-          );
-        } catch (e) {
-          // Storage can throw in private mode.
-          root.setAttribute("data-theme", "light");
-        }
-      })();
-    </script>
 
     <title>FrostWoodTech | SaaS Products & Custom Platforms</title>
   </head>

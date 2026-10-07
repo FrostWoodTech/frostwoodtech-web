@@ -1,107 +1,98 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
 
 @import "tailwindcss";
 
-/* Theme tokens ("Ice Forest"). Values here are the light theme; `:root[data-theme="dark"]` overrides them.
-   Ramps invert between themes: `-400` is always readable accent text, `-600` always a solid fill. */
+/* Client theme ("Frost"), light only. `ice` (#7DB7FF) is decorative — lines, fills, marks — never
+   text on white; readable accent text is `blue` / `primary-400`. Ramps: `-400` text, `-600` fill. */
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  /* Instrument Serif ships a single weight (400) plus italic. */
+  --font-display: "Instrument Serif", Georgia, serif;
 
-  /* Primary — forest green */
-  --color-primary-50: oklch(0.96 0.02 158);
-  --color-primary-100: oklch(0.92 0.04 158);
-  --color-primary-200: oklch(0.85 0.07 158);
-  --color-primary-300: oklch(0.66 0.12 158);
-  --color-primary-400: oklch(0.45 0.15 158);
-  --color-primary-500: oklch(0.43 0.14 158);
-  --color-primary-600: oklch(0.4 0.13 160);
-  --color-primary-700: oklch(0.34 0.11 160);
-  --color-primary-800: oklch(0.28 0.09 162);
-  --color-primary-900: oklch(0.22 0.07 162);
-  --color-primary-950: oklch(0.17 0.05 164);
+  /* Brand palette */
+  --color-snow: #fcfdff;
+  --color-mist: #f4f8fc;
+  --color-ice: #7db7ff;
+  --color-ice-wash: #eaf3ff;
+  --color-blue: #2464a5;
+  --color-ink: #152840;
+  --color-slate: #52657c;
+  --color-rule: #d9e4ef;
 
-  /* Accent — glacial blue */
-  --color-accent-400: oklch(0.46 0.14 205);
-  --color-accent-500: oklch(0.42 0.15 208);
-  --color-accent-600: oklch(0.38 0.14 210);
-  --color-accent-950: oklch(0.18 0.06 208);
+  /* Primary — frost blue */
+  --color-primary-50: #eaf3ff;
+  --color-primary-100: #d7e7f9;
+  --color-primary-200: #b5d4fb;
+  --color-primary-300: #7db7ff;
+  --color-primary-400: #2464a5;
+  --color-primary-500: #1f5a94;
+  --color-primary-600: #1b4f84;
+  --color-primary-700: #173f69;
+  --color-primary-800: #13314f;
+  --color-primary-900: #152840;
+  --color-primary-950: #0e1b2c;
+
+  --color-accent-400: #2464a5;
+  --color-accent-500: #1f5a94;
+  --color-accent-600: #1b4f84;
+  --color-accent-950: #0e1b2c;
 
   /* Surfaces: 950 page, 900 card, 800 raised, 700 strong */
-  --color-surface-950: oklch(0.982 0.006 175);
-  --color-surface-900: oklch(1 0 0);
-  --color-surface-800: oklch(0.96 0.008 175);
-  --color-surface-700: oklch(0.93 0.01 175);
+  --color-surface-950: #fcfdff;
+  --color-surface-900: #ffffff;
+  --color-surface-800: #f4f8fc;
+  --color-surface-700: #e9f0f7;
 
-  --color-text-primary: oklch(0.17 0.042 166);
-  --color-text-secondary: oklch(0.42 0.025 170);
-  --color-text-muted: oklch(0.52 0.025 170);
+  --color-text-primary: #152840;
+  --color-text-secondary: #52657c;
+  --color-text-muted: #607286;
 
   --color-success-400: oklch(0.5 0.15 158);
   --color-success-500: oklch(0.45 0.14 158);
   --color-danger-400: oklch(0.55 0.19 25);
   --color-danger-500: oklch(0.5 0.2 25);
 
-  --color-border-subtle: oklch(0.9 0.008 175);
-  --color-border-default: oklch(0.85 0.012 175);
+  --color-border-subtle: #d9e4ef;
+  --color-border-default: #c5d3e2;
 
   /* Named tokens the numeric ramps can't express */
-  --color-ice: oklch(0.46 0.14 205);
-  --color-ice-deep: oklch(0.42 0.16 214);
-  --color-forest: oklch(0.45 0.15 158);
-  /* Badge amber with dark ink in both themes; softer here so it doesn't read neon on the mint panel. */
+  --color-ice-deep: #2464a5;
+  --color-forest: #152840;
   --color-amber: oklch(0.875 0.132 84);
   --color-amber-ink: oklch(0.26 0.075 68);
+  /* Client-logo placeholders ("Muted Mark"). */
+  --color-mark: #98a7b7;
 
-  --color-card: oklch(1 0 0 / 0.88);
-  --color-card-br: oklch(0.3 0.03 175 / 0.1);
-  --color-raise: oklch(1 0 0 / 0.72);
-  --color-raise-br: oklch(0.3 0.03 175 / 0.12);
-  --color-hair: oklch(0.3 0.03 175 / 0.1);
-  --color-hair-strong: oklch(0.3 0.03 175 / 0.16);
+  --color-card: #ffffff;
+  --color-card-br: #d9e4ef;
+  --color-raise: rgb(255 255 255 / 0.8);
+  --color-raise-br: #d9e4ef;
+  --color-hair: #d9e4ef;
+  --color-hair-strong: #c5d3e2;
 
-  --color-icon-fg: oklch(0.38 0.13 194);
-  --color-media: oklch(0.9 0.06 196);
-  --color-media-fg: oklch(0.45 0.07 190);
+  --color-icon-fg: #2464a5;
+  --color-media: #eaf3ff;
+  --color-media-fg: #2464a5;
   --color-star: oklch(0.71 0.185 72);
-  /* Opaque on light: a faded accent over the near-white page washes out to grey. */
-  --color-quote: oklch(0.53 0.155 159);
-  --color-code: oklch(0.22 0.03 172);
-  --color-code-fg: oklch(0.9 0.02 175);
+  --color-quote: #7db7ff;
+  --color-code: #152840;
+  --color-code-fg: #e6eef7;
 
-  /* Contrast panel: light tint here, deep forest in the dark theme. */
-  --color-panel-ink: oklch(0.18 0.04 165);
-  --color-panel-ink-2: oklch(0.4 0.035 168);
-  --color-panel-br: oklch(0.66 0.15 157);
-  --color-panel-chip: oklch(1 0 0 / 0.55);
-  --color-panel-chip-br: oklch(0.3 0.05 175 / 0.2);
-  /* Product mock ("app screenshot") palette */
-  --color-mock-bg: oklch(0.97 0.012 175);
-  --color-mock-panel: oklch(0.94 0.015 175);
-  --color-mock-line: oklch(0.3 0.03 175 / 0.12);
-  --color-mock-fill: oklch(0.3 0.03 175 / 0.045);
-  --color-mock-ink: oklch(0.18 0.04 165);
-  --color-mock-ink-2: oklch(0.4 0.03 170);
-  --color-mock-ink-3: oklch(0.52 0.025 170);
-  --color-mock-ice: oklch(0.5 0.14 205);
-  --color-mock-forest: oklch(0.45 0.15 158);
-  /* macOS traffic lights — literal Apple values, same in both themes. */
-  --color-mac-close: #ff5f57;
-  --color-mac-min: #febc2e;
-  --color-mac-max: #28c840;
+  /* Contrast panel */
+  --color-panel-ink: #152840;
+  --color-panel-ink-2: #52657c;
+  --color-panel-br: #7db7ff;
+  --color-panel-chip: rgb(255 255 255 / 0.6);
+  --color-panel-chip-br: #d9e4ef;
 
-  --color-panel-btn: oklch(0.18 0.04 165);
-  --color-panel-btn-ink: oklch(0.99 0.005 190);
+  --color-panel-btn: #152840;
+  --color-panel-btn-ink: #ffffff;
 
   --shadow-card:
-    0 2px 4px -2px oklch(0.3 0.05 175 / 0.07),
-    0 18px 40px -26px oklch(0.3 0.06 178 / 0.3);
+    0 1px 2px rgb(21 40 64 / 0.04), 0 18px 40px -26px rgb(21 40 64 / 0.18);
   --shadow-panel:
-    0 3px 8px -3px oklch(0.45 0.05 178 / 0.07),
-    0 20px 44px -26px oklch(0.45 0.06 178 / 0.22);
-  --shadow-btn:
-    0 14px 34px -14px oklch(0.4 0.13 178 / 0.65),
-    inset 0 1px 0 oklch(1 0 0 / 0.22);
+    0 2px 6px -3px rgb(21 40 64 / 0.05), 0 20px 44px -26px rgb(21 40 64 / 0.16);
+  --shadow-btn: 0 10px 24px -14px rgb(21 40 64 / 0.45);
 
   --animate-fade-in-up: fade-in-up 0.7s ease-out both;
   --animate-fade-in: fade-in 0.6s ease-out both;
@@ -139,199 +130,28 @@
   }
 }
 
-/* Gradients live outside `@theme` so Tailwind doesn't generate colour utilities from them;
-   they're exposed through the `@utility` rules below. */
+/* Background fills live outside `@theme` so Tailwind doesn't generate colour utilities from them;
+   they're exposed through the `@utility` rules below. Kept flat or near-flat: the frost palette
+   avoids visible gradients. */
 :root {
-  --fw-btn: linear-gradient(135deg, oklch(0.4 0.13 192), oklch(0.43 0.14 158));
-  --fw-icon-bg: linear-gradient(
-    140deg,
-    oklch(0.91 0.06 196),
-    oklch(0.93 0.05 168)
-  );
-  --fw-media: linear-gradient(
-    150deg,
-    oklch(0.9 0.06 196),
-    oklch(0.92 0.05 162)
-  );
-  --fw-grad-ice: linear-gradient(
-    100deg,
-    oklch(0.52 0.15 200),
-    oklch(0.42 0.16 214)
-  );
-  --fw-grad-forest: linear-gradient(
-    100deg,
-    oklch(0.52 0.16 158),
-    oklch(0.4 0.15 150)
-  );
+  --fw-btn: linear-gradient(#152840, #152840);
+  --fw-btn-ink: #ffffff;
+  --fw-icon-bg: linear-gradient(#eaf3ff, #eaf3ff);
+  --fw-media: linear-gradient(#eaf3ff, #eaf3ff);
+  --fw-grad-ice: linear-gradient(#2464a5, #2464a5);
+  --fw-grad-forest: linear-gradient(#152840, #152840);
   --fw-amb-1: radial-gradient(
     ellipse at center,
-    oklch(0.86 0.09 198 / 0.5),
+    rgb(125 183 255 / 0.16),
     transparent 62%
   );
-  --fw-amb-2: radial-gradient(
-    circle,
-    oklch(0.88 0.09 158 / 0.42),
-    transparent 65%
-  );
-
-  --fw-panel: linear-gradient(
-    150deg,
-    oklch(0.978 0.026 162),
-    oklch(0.968 0.021 193) 55%,
-    oklch(0.974 0.024 176)
-  );
-
-  --fw-grain: 0.028;
+  --fw-amb-2: radial-gradient(circle, rgb(234 243 255 / 0.7), transparent 65%);
+  --fw-panel: linear-gradient(#eaf3ff, #eaf3ff);
+  --fw-grain: 0;
+  /* Fractal-noise tile shared by fw-grain and the ice background. */
+  --fw-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
 
   color-scheme: light;
-}
-
-/* Dark theme — set on <html> by ThemeProvider and the pre-paint script in index.html. */
-:root[data-theme="dark"] {
-  --color-primary-50: oklch(0.96 0.02 158);
-  --color-primary-100: oklch(0.92 0.04 158);
-  --color-primary-200: oklch(0.87 0.07 158);
-  --color-primary-300: oklch(0.83 0.11 158);
-  --color-primary-400: oklch(0.78 0.13 158);
-  --color-primary-500: oklch(0.72 0.16 158);
-  --color-primary-600: oklch(0.62 0.15 155);
-  --color-primary-700: oklch(0.52 0.13 155);
-  --color-primary-800: oklch(0.4 0.1 157);
-  --color-primary-900: oklch(0.3 0.08 160);
-  --color-primary-950: oklch(0.22 0.06 162);
-
-  --color-accent-400: oklch(0.84 0.11 200);
-  --color-accent-500: oklch(0.78 0.13 202);
-  --color-accent-600: oklch(0.72 0.15 205);
-  --color-accent-950: oklch(0.24 0.06 205);
-
-  --color-surface-950: oklch(0.16 0.021 168);
-  --color-surface-900: oklch(0.2 0.025 170);
-  --color-surface-800: oklch(0.24 0.028 172);
-  --color-surface-700: oklch(0.29 0.03 172);
-
-  --color-text-primary: oklch(0.97 0.008 170);
-  --color-text-secondary: oklch(0.76 0.016 172);
-  --color-text-muted: oklch(0.62 0.016 172);
-
-  --color-success-400: oklch(0.78 0.15 155);
-  --color-success-500: oklch(0.68 0.17 155);
-  --color-danger-400: oklch(0.72 0.17 25);
-  --color-danger-500: oklch(0.62 0.2 25);
-
-  --color-border-subtle: oklch(1 0 0 / 0.08);
-  --color-border-default: oklch(1 0 0 / 0.14);
-
-  --color-ice: oklch(0.84 0.11 200);
-  --color-ice-deep: oklch(0.74 0.16 208);
-  --color-forest: oklch(0.78 0.13 158);
-
-  --color-card: oklch(1 0 0 / 0.035);
-  --color-card-br: oklch(1 0 0 / 0.08);
-  --color-raise: oklch(1 0 0 / 0.05);
-  --color-raise-br: oklch(1 0 0 / 0.12);
-  --color-hair: oklch(1 0 0 / 0.07);
-  --color-hair-strong: oklch(1 0 0 / 0.12);
-
-  --color-icon-fg: oklch(0.88 0.09 195);
-  --color-media: oklch(0.3 0.055 196);
-  --color-media-fg: oklch(0.72 0.08 195);
-  --color-star: oklch(0.85 0.166 80);
-  --color-quote: oklch(0.84 0.11 200 / 0.45);
-  --color-code: oklch(0.13 0.02 172);
-  --color-amber: oklch(0.845 0.168 82);
-
-  --color-panel-ink: oklch(0.99 0.006 190);
-  --color-panel-ink-2: oklch(0.87 0.025 190);
-  --color-panel-br: oklch(1 0 0 / 0.12);
-  --color-panel-chip: oklch(1 0 0 / 0.08);
-  --color-panel-chip-br: oklch(1 0 0 / 0.16);
-  --color-panel-btn: oklch(0.99 0.005 190);
-  --color-panel-btn-ink: oklch(0.2 0.05 180);
-
-  --color-mock-bg: oklch(0.185 0.024 168);
-  --color-mock-panel: oklch(0.23 0.03 172);
-  --color-mock-line: oklch(1 0 0 / 0.07);
-  --color-mock-fill: oklch(1 0 0 / 0.035);
-  --color-mock-ink: oklch(0.97 0.008 170);
-  --color-mock-ink-2: oklch(0.68 0.015 172);
-  --color-mock-ink-3: oklch(0.58 0.015 172);
-  --color-mock-ice: oklch(0.78 0.14 200);
-  --color-mock-forest: oklch(0.72 0.16 158);
-
-  --fw-panel: linear-gradient(
-    150deg,
-    oklch(0.3 0.07 162),
-    oklch(0.2 0.045 190) 55%,
-    oklch(0.25 0.06 172)
-  );
-
-  --shadow-card:
-    inset 0 1px 0 oklch(1 0 0 / 0.06),
-    0 22px 48px -30px oklch(0.05 0.02 180 / 0.85);
-  --shadow-panel:
-    inset 0 1px 0 oklch(1 0 0 / 0.14),
-    0 46px 100px -46px oklch(0.4 0.12 180 / 0.8);
-  --shadow-btn:
-    0 14px 40px -12px oklch(0.72 0.15 180 / 0.7),
-    inset 0 1px 0 oklch(1 0 0 / 0.45);
-
-  --fw-btn: linear-gradient(135deg, oklch(0.88 0.1 196), oklch(0.79 0.15 166));
-  --fw-icon-bg: linear-gradient(
-    140deg,
-    oklch(0.72 0.14 195 / 0.22),
-    oklch(0.6 0.14 165 / 0.18)
-  );
-  --fw-media: linear-gradient(
-    150deg,
-    oklch(0.3 0.055 196),
-    oklch(0.26 0.05 162)
-  );
-  --fw-grad-ice: linear-gradient(
-    100deg,
-    oklch(0.9 0.09 198),
-    oklch(0.74 0.16 208)
-  );
-  --fw-grad-forest: linear-gradient(
-    100deg,
-    oklch(0.84 0.15 160),
-    oklch(0.68 0.17 152)
-  );
-  --fw-amb-1: radial-gradient(
-    ellipse at center,
-    oklch(0.66 0.15 195 / 0.22),
-    transparent 62%
-  );
-  --fw-amb-2: radial-gradient(
-    circle,
-    oklch(0.6 0.17 155 / 0.16),
-    transparent 65%
-  );
-
-  --fw-grain: 0.05;
-
-  color-scheme: dark;
-}
-
-/* The primary button fill flips between themes, so its label colour flips too. */
-:root {
-  --fw-btn-ink: oklch(0.99 0.004 175);
-}
-
-:root[data-theme="dark"] {
-  --fw-btn-ink: oklch(0.15 0.02 165);
-}
-
-/* Chart gradient stops read these directly: `currentColor` in a <stop> inside <defs>
-   doesn't inherit from the referencing path and renders grey. */
-:root {
-  --fw-chart-ice: oklch(0.72 0.15 204);
-  --fw-chart-forest: oklch(0.73 0.16 156);
-}
-
-:root[data-theme="dark"] {
-  --fw-chart-ice: oklch(0.78 0.14 200);
-  --fw-chart-forest: oklch(0.72 0.16 158);
 }
 
 /* Gradient utilities */
@@ -360,7 +180,7 @@
   background-image: var(--fw-amb-2);
 }
 
-/* Gradient text — pairs with `text-transparent`. */
+/* Accent text (flat fill via background-clip) — pairs with `text-transparent`. */
 @utility fw-text-ice {
   background-image: var(--fw-grad-ice);
   background-clip: text;
@@ -388,7 +208,7 @@
     pointer-events: none;
     z-index: 3;
     opacity: var(--fw-grain);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: var(--fw-noise);
   }
 }
 
@@ -399,15 +219,232 @@
   letter-spacing: -0.01em;
 }
 
+/* Ice glass background — components/background/IceGlassBackground.tsx. Palette and glass values
+   arrive as --ice-* custom properties from iceConfig.ts, so the shader and these layers agree. */
+.ice-bg {
+  height: 100vh;
+  /* Large viewport height: the mobile URL bar showing/hiding doesn't resize (and repaint) it. */
+  height: 100lvh;
+  /* Fallback and first paint, until the WebGL ice covers it. */
+  background:
+    radial-gradient(
+      60% 55% at 94% 6%,
+      color-mix(in srgb, var(--ice-ice) var(--ice-glow), transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      55% 50% at 96% 100%,
+      color-mix(in srgb, var(--ice-ice) var(--ice-glow), transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      50% 45% at 2% 96%,
+      color-mix(in srgb, var(--ice-cyan) var(--ice-glow), transparent),
+      transparent 70%
+    ),
+    linear-gradient(155deg, var(--ice-snow) 15%, var(--ice-wash) 100%);
+}
+
+/* Hidden until it holds the picture, so the fallback never flashes to blank. */
+.ice-bg__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.ice-bg__canvas[data-ready] {
+  opacity: 1;
+}
+
+/* The header bar: ice glass at roughly half the slabs' strength. White at the top-left cooling to
+   pale ice blue, enough fill to keep the nav readable over any content. */
+.glass-bar {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgb(255 255 255 / 0.8);
+  background: linear-gradient(
+    160deg,
+    rgb(255 255 255 / 0.66) 0%,
+    rgb(234 243 255 / 0.56) 50%,
+    rgb(207 228 255 / 0.5) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.95),
+    inset 0 -12px 26px -18px rgb(125 183 255 / 0.45),
+    inset 0 0 30px rgb(255 255 255 / 0.22),
+    0 0 0 1px rgb(169 206 255 / 0.4),
+    0 10px 30px -18px rgb(36 100 165 / 0.22);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Lifts off the page once content scrolls underneath. */
+.glass-bar[data-scrolled] {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.95),
+    inset 0 -12px 26px -18px rgb(125 183 255 / 0.45),
+    inset 0 0 30px rgb(255 255 255 / 0.22),
+    0 0 0 1px rgb(169 206 255 / 0.4),
+    0 14px 36px -16px rgb(36 100 165 / 0.32);
+}
+
+/* Reflection streaks at the 60° frost-cut angle, behind the bar's content. */
+.glass-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      120deg,
+      transparent 18%,
+      rgb(255 255 255 / 0.55) 24%,
+      rgb(255 255 255 / 0.1) 28%,
+      transparent 33%
+    ),
+    linear-gradient(
+      120deg,
+      transparent 62%,
+      rgb(255 255 255 / 0.35) 64%,
+      transparent 67%
+    );
+}
+
+/* Faint frost grain inside the glass. */
+.glass-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: var(--fw-noise);
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+}
+
+/* Translucent glass slabs, skewed so their sides run at the 60° frost-cut angle. The backdrop
+   blur frosts whatever is behind them. Not rendered at the moment — kept for a later section. */
+.ice-pane {
+  position: absolute;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / var(--ice-glass-border));
+  border-radius: 40px;
+  background: linear-gradient(
+    160deg,
+    rgb(255 255 255 / calc(var(--ice-glass-tint) + 0.16)) 0%,
+    rgb(255 255 255 / var(--ice-glass-tint)) 45%,
+    rgb(255 255 255 / calc(var(--ice-glass-tint) * 0.5)) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.95),
+    inset 0 0 60px rgb(255 255 255 / 0.35),
+    0 40px 90px -50px rgb(21 40 64 / 0.28);
+  -webkit-backdrop-filter: blur(var(--ice-glass-blur)) saturate(1.25);
+  backdrop-filter: blur(var(--ice-glass-blur)) saturate(1.25);
+  transform: skewX(-30deg);
+}
+
+/* Reflection streaks running parallel to the slanted edges. */
+.ice-pane::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 22%,
+      rgb(255 255 255 / 0.5) 30%,
+      rgb(255 255 255 / 0.08) 36%,
+      transparent 44%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 70%,
+      rgb(255 255 255 / 0.3) 72%,
+      transparent 76%
+    );
+}
+
+/* Frosted texture inside the glass. */
+.ice-pane::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fw-noise);
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+}
+
+.ice-pane--a {
+  top: 9%;
+  right: -12%;
+  width: 42%;
+  height: 72%;
+}
+
+.ice-pane--b {
+  bottom: -18%;
+  left: -14%;
+  width: 40%;
+  height: 44%;
+}
+
+.ice-pane--c {
+  top: 44%;
+  right: 20%;
+  width: 15%;
+  height: 32%;
+  border-radius: 28px;
+}
+
+@media (max-width: 639px) {
+  .ice-pane--a {
+    top: 6%;
+    right: -38%;
+    width: 80%;
+    height: 46%;
+  }
+
+  .ice-pane--b {
+    bottom: -10%;
+    left: -40%;
+    width: 80%;
+    height: 34%;
+  }
+
+  .ice-pane--c {
+    display: none;
+  }
+}
+
+.ice-bg__grain {
+  position: absolute;
+  inset: 0;
+  background-image: var(--fw-noise);
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+@media print {
+  .ice-bg {
+    display: none;
+  }
+}
+
 /* Admin light theme — set on the wrapper in AdminRoot.tsx (and on portalled Modal/ToastContainer).
-   It sits below <html>, so the CMS stays light whatever theme the visitor picked. */
+   It pins the CMS to its own palette, independent of the client tokens in `@theme`. */
 [data-theme="admin-light"] {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
   font-family: var(--font-sans);
 
   /* IMPORTANT: declare every token the CMS uses here, even if it matches the client light theme —
-     anything undeclared falls through to the visitor's (possibly dark) theme. */
+     anything undeclared falls through to the client theme. */
 
   /* Surfaces — 950 is the page and 900 the card, as in the client theme. */
   --color-surface-950: oklch(0.988 0.004 172);
@@ -423,7 +460,7 @@
   --color-border-default: oklch(0.855 0.012 170);
   --color-border-strong: oklch(0.78 0.015 170);
 
-  /* Primary — pinned, since the client ramp inverts in dark mode. */
+  /* Primary — pinned to the CMS green, separate from the client blue ramp. */
   --color-primary-50: oklch(0.972 0.018 160);
   --color-primary-100: oklch(0.938 0.036 160);
   --color-primary-200: oklch(0.885 0.06 160);
@@ -592,6 +629,11 @@ input::-webkit-credentials-auto-fill-button {
 }
 
 ::selection {
+  background-color: var(--color-ice);
+  color: var(--color-ink);
+}
+
+[data-theme="admin-light"] ::selection {
   background-color: var(--color-primary-600);
   color: var(--color-surface-950);
 }

@@ -19,18 +19,15 @@ export interface BrandInfo {
 }
 
 export interface HeroData {
-  readonly badgeTag: string;
-  readonly badgeText: string;
-  /** Split so the accent phrases can carry gradients. */
+  readonly kicker: string;
+  /** Headline renders as two lines; `headlineEmphasis` is set in italic. */
+  readonly headlineFirstLine: string;
   readonly headlineLead: string;
-  readonly headlineIce: string;
-  readonly headlineMid: string;
-  readonly headlineForest: string;
+  readonly headlineEmphasis: string;
   readonly headlineTail: string;
   readonly description: string;
-  readonly primaryCta: CtaConfig;
-  readonly secondaryCta: CtaConfig;
-  readonly trustLine: string;
+  readonly quote: string;
+  readonly quoteNote: string;
 }
 
 export interface Metric {
@@ -55,11 +52,6 @@ export interface ProcessStep {
   readonly step: string;
   readonly title: string;
   readonly description: string;
-}
-
-export interface CtaConfig {
-  readonly label: string;
-  readonly href: string;
 }
 
 export interface Service {

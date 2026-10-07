@@ -4,7 +4,6 @@ import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useArticle } from "@/client/hooks/useArticle";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { toErrorMessage } from "@/client/services/ApiError";
-import useTheme from "@/client/context/useTheme";
 import { BRAND } from "@/client/data/navigation";
 import Spinner from "@/client/components/ui/Spinner";
 import Button from "@/client/components/ui/Button";
@@ -14,7 +13,6 @@ import PanelCTA from "@/client/components/ui/PanelCTA";
 export default function ArticleDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: post, isLoading, isError, error } = useArticle(slug);
-  const { theme } = useTheme();
 
   useDocumentTitle(post ? post.title : "Loading Article…");
 
@@ -115,7 +113,7 @@ export default function ArticleDetailPage() {
 
         <article className="mx-auto mt-16 max-w-3xl">
           {post.contentMarkdown ? (
-            <div data-color-mode={theme} className="fw-prose">
+            <div data-color-mode="light" className="fw-prose">
               <MDEditor.Markdown
                 source={post.contentMarkdown}
                 style={{ backgroundColor: "transparent", color: "inherit" }}

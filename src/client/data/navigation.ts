@@ -11,9 +11,9 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Services", href: "/services" },
   { label: "Products", href: "/products" },
   { label: "Case Studies", href: "/work" },
-  { label: "Plans & Pricing", href: "/pricing" },
+  { label: "Pricing", href: "/pricing" },
   { label: "Insights", href: "/blog" },
-  { label: "About Us", href: "/about" },
+  { label: "About", href: "/about" },
 ] as const;
 
 export const SOCIAL_LINKS: readonly SocialLink[] = [

@@ -2,6 +2,7 @@ import Eyebrow from "@/client/components/ui/Eyebrow";
 import PanelCTA from "@/client/components/ui/PanelCTA";
 import Spinner from "@/client/components/ui/Spinner";
 import PricingCard from "@/client/components/pricing/PricingCard";
+import CurrencySwitcher from "@/client/components/ui/CurrencySwitcher";
 import { useComboPricingPlans } from "@/client/hooks/usePricingPlans";
 import { toErrorMessage } from "@/client/services/ApiError";
 import { PRICING_FAQS } from "@/client/data/pricing";
@@ -63,11 +64,17 @@ export default function PricingPage() {
         )}
 
         {plans.length > 0 && (
-          <div className="mt-14 grid grid-cols-1 items-stretch gap-6 lg:grid-cols-3 lg:gap-9">
-            {plans.map((plan) => (
-              <PricingCard key={plan.id} plan={plan} />
-            ))}
-          </div>
+          <>
+            <CurrencySwitcher
+              label="Prices shown in"
+              className="mt-14 justify-end"
+            />
+            <div className="mt-6 grid grid-cols-1 items-stretch gap-6 lg:grid-cols-3 lg:gap-9">
+              {plans.map((plan) => (
+                <PricingCard key={plan.id} plan={plan} />
+              ))}
+            </div>
+          </>
         )}
 
         <div className="mt-22 grid grid-cols-1 gap-4.5 md:grid-cols-2">

@@ -25,7 +25,7 @@ export default function Logo({ size = "md", className = "" }: LogoProps) {
         viewBox="0 0 32 32"
         fill="none"
         aria-hidden="true"
-        className="text-accent-400"
+        className="text-blue"
       >
         <path
           d="M16 2.5v27M5 8.2l22 15.6M27 8.2L5 23.8"
@@ -39,11 +39,11 @@ export default function Logo({ size = "md", className = "" }: LogoProps) {
           strokeWidth="1.7"
           strokeLinecap="round"
         />
-        <circle cx="16" cy="16" r="3.4" className="fill-primary-400" />
+        <circle cx="16" cy="16" r="3.4" className="fill-ice" />
       </svg>
 
       <span
-        className={`font-display font-medium tracking-[-0.01em] text-text-primary ${TEXT_CLASSES[size]}`}
+        className={`font-bold tracking-[-0.04em] text-ink ${TEXT_CLASSES[size]}`}
       >
         {BRAND.name}
       </span>

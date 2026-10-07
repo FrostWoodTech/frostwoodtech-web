@@ -12,7 +12,6 @@ import { useService } from "@/client/hooks/useService";
 import { useServices } from "@/client/hooks/useServices";
 import { useServicePricingPlans } from "@/client/hooks/usePricingPlans";
 import { mapApiFaqToFaq, mapApiServiceToService } from "@/client/lib/mappers";
-import useTheme from "@/client/context/useTheme";
 import ApiError, { toErrorMessage } from "@/client/services/ApiError";
 import type { ApiService } from "@/client/types";
 
@@ -21,12 +20,10 @@ function ChecklistCard({
   eyebrow,
   title,
   markdown,
-  theme,
 }: {
   readonly eyebrow: string;
   readonly title: string;
   readonly markdown: string;
-  readonly theme: "light" | "dark";
 }) {
   return (
     <div className="rounded-[22px] border border-card-br bg-card p-8 shadow-card sm:p-10">
@@ -34,7 +31,7 @@ function ChecklistCard({
       <h2 className="mb-6 font-display text-[24px] font-medium tracking-[-0.018em] text-text-primary sm:text-[28px]">
         {title}
       </h2>
-      <div data-color-mode={theme} className="fw-prose fw-prose-checklist">
+      <div data-color-mode="light" className="fw-prose fw-prose-checklist">
         <MDEditor.Markdown
           source={markdown}
           style={{ backgroundColor: "transparent", color: "inherit" }}
@@ -44,13 +41,7 @@ function ChecklistCard({
   );
 }
 
-function ServiceDetail({
-  service,
-  theme,
-}: {
-  readonly service: ApiService;
-  readonly theme: "light" | "dark";
-}) {
+function ServiceDetail({ service }: { readonly service: ApiService }) {
   const { data: otherServices } = useServices({ pageSize: 4 });
   const { data: plans = [] } = useServicePricingPlans(service.id);
 
@@ -115,7 +106,6 @@ function ServiceDetail({
               eyebrow="Who this is for"
               title="If this sounds familiar, you are in the right place"
               markdown={service.whoThisIsFor}
-              theme={theme}
             />
           )}
           {service.outcomes && (
@@ -123,7 +113,6 @@ function ServiceDetail({
               eyebrow="What you walk away with"
               title="Results that show up in the business"
               markdown={service.outcomes}
-              theme={theme}
             />
           )}
         </div>
@@ -133,7 +122,7 @@ function ServiceDetail({
         <div className="mt-24 grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
           <div>
             <Eyebrow className="mb-4">In depth</Eyebrow>
-            <div data-color-mode={theme} className="fw-prose">
+            <div data-color-mode="light" className="fw-prose">
               <MDEditor.Markdown
                 source={service.inDepth}
                 style={{ backgroundColor: "transparent", color: "inherit" }}
@@ -160,7 +149,7 @@ function ServiceDetail({
           <h2 className="mb-10 font-display text-[32px] leading-[1.1] font-medium tracking-[-0.018em] text-text-primary md:text-[44px]">
             Capabilities
           </h2>
-          <div data-color-mode={theme} className="fw-prose fw-prose-checklist">
+          <div data-color-mode="light" className="fw-prose fw-prose-checklist">
             <MDEditor.Markdown
               source={service.capabilities}
               style={{ backgroundColor: "transparent", color: "inherit" }}
@@ -273,7 +262,6 @@ function ServiceDetail({
 export default function ServiceDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: service, isPending, isError, error } = useService(slug);
-  const { theme } = useTheme();
 
   if (isPending) {
     return (
@@ -329,7 +317,7 @@ export default function ServiceDetailPage() {
           </span>
         </nav>
 
-        <ServiceDetail service={service} theme={theme} />
+        <ServiceDetail service={service} />
 
         <div className="mt-24">
           <PanelCTA

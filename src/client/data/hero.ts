@@ -1,34 +1,26 @@
 import type { HeroData, Metric } from "@/client/types";
 
 export const HERO_DATA: HeroData = {
-  badgeTag: "NEW",
-  badgeText: "Frostboard 2.0 — our scheduling SaaS is live",
-  headlineLead: "Software with the ",
-  headlineIce: "clarity of ice",
-  headlineMid: ", engineered to ",
-  headlineForest: "grow",
-  headlineTail: ".",
+  kicker: "Software studio · Products & platforms",
+  headlineFirstLine: "Software made",
+  headlineLead: "for a ",
+  headlineEmphasis: "clearer",
+  headlineTail: " future.",
   description:
-    "FrostWoodTech builds SaaS products and custom client platforms — precise where it counts, fast where it matters, and built to last.",
-  primaryCta: {
-    label: "Book a discovery call",
-    href: "/contact",
-  },
-  secondaryCta: {
-    label: "Explore our work",
-    href: "/work",
-  },
-  trustLine:
-    "Fixed-scope proposals · No retainers required · Ships in weeks, not quarters",
+    "We create products of our own—and digital platforms for organisations that want to move with more confidence, not more complexity.",
+  quote:
+    "The person you meet to talk through the work is the person who builds it.",
+  quoteNote: "A small, senior team. Founded in 2019.",
 } as const;
 
-/** TODO: replace the placeholders with real client logos. */
+/** TODO: invented placeholder names — replace with real client logos before launch. */
 export const TRUSTED_BY: readonly string[] = [
-  "[CLIENT 1]",
-  "[CLIENT 2]",
-  "[CLIENT 3]",
-  "[CLIENT 4]",
-  "[CLIENT 5]",
+  "Horizon",
+  "VELA",
+  "Northline",
+  "meridian",
+  "ORA",
+  "taper.",
 ] as const;
 
 export const HOME_METRICS: readonly Metric[] = [

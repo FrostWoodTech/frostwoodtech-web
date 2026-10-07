@@ -4,7 +4,6 @@ import { ArrowLeft, ArrowUpRight, ChevronRight } from "lucide-react";
 import { useProject } from "@/client/hooks/useProject";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { toErrorMessage } from "@/client/services/ApiError";
-import useTheme from "@/client/context/useTheme";
 import Spinner from "@/client/components/ui/Spinner";
 import Button from "@/client/components/ui/Button";
 import Badge from "@/client/components/ui/Badge";
@@ -22,7 +21,6 @@ const CASE_STUDY_SECTIONS = [
 export default function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: project, isLoading, isError, error } = useProject(slug);
-  const { theme } = useTheme();
 
   useDocumentTitle(
     project ? `${project.title} — Case Study` : "Loading Project…",
@@ -111,7 +109,7 @@ export default function ProjectDetailPage() {
         <div className="mt-19 grid grid-cols-1 gap-15 lg:grid-cols-3">
           <div className="flex flex-col gap-11 lg:col-span-2">
             {project.description && (
-              <div data-color-mode={theme} className="fw-prose">
+              <div data-color-mode="light" className="fw-prose">
                 <MDEditor.Markdown
                   source={project.description}
                   style={{ backgroundColor: "transparent", color: "inherit" }}
@@ -122,7 +120,7 @@ export default function ProjectDetailPage() {
             {sections.map(({ key, title }) => (
               <div key={key}>
                 <Eyebrow className="mb-4">{title}</Eyebrow>
-                <div data-color-mode={theme} className="fw-prose">
+                <div data-color-mode="light" className="fw-prose">
                   <MDEditor.Markdown
                     source={project[key] ?? ""}
                     style={{ backgroundColor: "transparent", color: "inherit" }}

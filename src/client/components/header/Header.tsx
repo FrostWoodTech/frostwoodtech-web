@@ -34,18 +34,15 @@ export default function Header() {
   }, []);
 
   return (
-    <header
-      className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
-        isScrolled
-          ? "border-hair bg-surface-950/85 backdrop-blur-xl"
-          : "border-transparent bg-transparent"
-      }`}
-    >
-      <div className="mx-auto flex h-20.5 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 px-4 pt-3 sm:px-6 sm:pt-4 lg:px-8">
+      <div
+        data-scrolled={isScrolled || undefined}
+        className="glass-bar mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 rounded-full pr-2.5 pl-5 sm:pl-6 lg:h-18 lg:pr-3 lg:pl-7"
+      >
         <Logo />
-        <DesktopNav />
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6 xl:gap-9">
+          <DesktopNav />
           <HeaderActions />
           <MobileMenuButton
             isOpen={isMobileMenuOpen}
