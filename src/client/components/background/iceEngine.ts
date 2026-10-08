@@ -1,6 +1,10 @@
 import { hexToLinearRgb } from "@/client/utils/color";
 import type { IceConfig } from "./iceConfig";
-import { FULLSCREEN_VERT, SCENE_FRAG } from "./iceShaders";
+import {
+  createFullscreenProgram,
+  deleteFullscreenProgram,
+} from "@/client/lib/webgl";
+import { SCENE_FRAG } from "./iceShaders";
 
 /** Handle returned to `useIceBackground`; the picture repaints itself on resize. */
 export interface IceRenderer {
@@ -24,67 +28,8 @@ const UNIFORMS = [
   "uSeed",
 ] as const;
 
-type UniformName = (typeof UNIFORMS)[number];
-
-interface GpuResources {
-  readonly program: WebGLProgram;
-  readonly uniforms: Record<UniformName, WebGLUniformLocation | null>;
-  /** Empty: the fullscreen triangle is generated from gl_VertexID. */
-  readonly vao: WebGLVertexArrayObject;
-}
-
-function compileShader(
-  gl: WebGL2RenderingContext,
-  type: GLenum,
-  source: string,
-): WebGLShader | null {
-  const shader = gl.createShader(type);
-  if (!shader) return null;
-
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.error("Ice background shader:", gl.getShaderInfoLog(shader));
-    gl.deleteShader(shader);
-    return null;
-  }
-  return shader;
-}
-
-function createGpuResources(gl: WebGL2RenderingContext): GpuResources | null {
-  const vertex = compileShader(gl, gl.VERTEX_SHADER, FULLSCREEN_VERT);
-  const fragment = compileShader(gl, gl.FRAGMENT_SHADER, SCENE_FRAG);
-  const program = gl.createProgram();
-  const vao = gl.createVertexArray();
-
-  if (!vertex || !fragment || !program || !vao) {
-    if (vertex) gl.deleteShader(vertex);
-    if (fragment) gl.deleteShader(fragment);
-    if (program) gl.deleteProgram(program);
-    if (vao) gl.deleteVertexArray(vao);
-    return null;
-  }
-
-  gl.attachShader(program, vertex);
-  gl.attachShader(program, fragment);
-  gl.linkProgram(program);
-  // Flagged for deletion; freed together with the program.
-  gl.deleteShader(vertex);
-  gl.deleteShader(fragment);
-
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error("Ice background program:", gl.getProgramInfoLog(program));
-    gl.deleteProgram(program);
-    gl.deleteVertexArray(vao);
-    return null;
-  }
-
-  const uniforms = {} as Record<UniformName, WebGLUniformLocation | null>;
-  for (const name of UNIFORMS) {
-    uniforms[name] = gl.getUniformLocation(program, name);
-  }
-  return { program, uniforms, vao };
-}
+const createGpuResources = (gl: WebGL2RenderingContext) =>
+  createFullscreenProgram(gl, SCENE_FRAG, UNIFORMS, "Ice background");
 
 /**
  * Paints the still frosted-ice picture on `canvas` with WebGL2, and again whenever its size
@@ -194,10 +139,7 @@ export function createIceRenderer(
       canvas.removeEventListener("webglcontextrestored", onContextRestored);
       // Free GPU memory but never call loseContext(): under StrictMode the effect re-runs on this
       // same canvas, and getContext() hands back this context, which must still work.
-      if (gpu && !gl.isContextLost()) {
-        gl.deleteProgram(gpu.program);
-        gl.deleteVertexArray(gpu.vao);
-      }
+      if (gpu) deleteFullscreenProgram(gl, gpu);
       gpu = null;
     },
   };

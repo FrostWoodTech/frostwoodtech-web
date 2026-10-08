@@ -54,12 +54,61 @@ export interface ProcessStep {
   readonly description: string;
 }
 
+export type ServiceVisualKind = "website" | "mobile" | "systems" | "cloud";
+
+interface CtaLink {
+  readonly label: string;
+  readonly href: string;
+}
+
+/** Home closing call to action: heading lead + blue italic line, two links, short promises. */
+export interface CtaData {
+  readonly eyebrow: string;
+  readonly titleLead: string;
+  readonly titleEmphasis: string;
+  readonly description: string;
+  readonly primary: CtaLink;
+  readonly secondary: CtaLink;
+  readonly promises: readonly string[];
+}
+
+/** One column of the Home pricing strip: a big value (optional blue suffix) over a short promise. */
+export interface PricingPromise {
+  readonly id: string;
+  readonly value: string;
+  readonly suffix?: string;
+  readonly title: string;
+  readonly description: string;
+}
+
+/** Home brand statement between services and products: `{lead} {emphasis},` then `{lineTwo}`. */
+export interface StatementData {
+  readonly lead: string;
+  readonly emphasis: string;
+  readonly lineTwo: string;
+  readonly description: string;
+}
+
+/** Section heading whose second line is set in blue italic. */
+export interface EmphasisHeaderData {
+  readonly eyebrow: string;
+  readonly titleLead: string;
+  readonly titleEmphasis: string;
+  readonly description: string;
+}
+
 export interface Service {
   readonly id: string;
   readonly title: string;
   readonly description: string;
   readonly iconUrl?: string;
   readonly iconAltText?: string;
+  /** Used when there's no `iconUrl` (placeholder content). */
+  readonly icon?: LucideIcon;
+  /** Home-card illustration; services without one show their icon instead. */
+  readonly visual?: ServiceVisualKind;
+  /** Short chips on the home card. */
+  readonly highlights?: readonly string[];
   readonly href: string;
 }
 
@@ -94,6 +143,8 @@ export interface ProjectImage {
   readonly sortOrder: number;
 }
 
+export type ProductScreenKind = "bookings" | "inventory" | "support";
+
 export interface Product {
   readonly id: string;
   readonly slug: string;
@@ -104,6 +155,8 @@ export interface Product {
   readonly productUrl?: string;
   readonly imagePlaceholder: string;
   readonly href: string;
+  /** Home-showcase drawing for products without screenshots (placeholder content). */
+  readonly screen?: ProductScreenKind;
   readonly images: readonly ProductImage[];
 }
 
@@ -439,6 +492,21 @@ export interface CoreValue {
   readonly icon: LucideIcon;
 }
 
+/** One benefit in the Home "What you get" section. */
+export interface PartneringItem {
+  readonly id: string;
+  /** Short text on the floating card around the hexagon. */
+  readonly label: string;
+  readonly title: string;
+  readonly description: string;
+  readonly icon: LucideIcon;
+}
+
+export interface PartneringData {
+  readonly eyebrow: string;
+  readonly items: readonly PartneringItem[];
+}
+
 export interface ContactData {
   readonly badge: string;
   readonly title: string;
@@ -480,7 +548,11 @@ export interface FooterLinkGroup {
 }
 
 export interface FooterData {
-  readonly blurb: string;
+  /** Serif line under the logo; the emphasis is set in blue italic on its own line. */
+  readonly headlineLead: string;
+  readonly headlineEmphasis: string;
+  /** Availability chip, e.g. "Taking new projects". */
+  readonly status: string;
   readonly email: string;
   readonly linkGroups: readonly FooterLinkGroup[];
   readonly copyright: string;

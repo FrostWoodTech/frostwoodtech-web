@@ -8,9 +8,9 @@ interface IceGlassBackgroundProps {
 }
 
 /**
- * The site-wide frosted-ice background, fixed behind all content and completely still. Layers,
- * bottom to top: CSS gradient (fallback) → WebGL frosted ice → grain. Styles
- * live in the "Ice glass background" block of index.css.
+ * Still frosted-ice background that fills its positioned parent (the Home hero). Layers, bottom
+ * to top: CSS gradient (fallback) → WebGL frosted ice → grain. Styles live in the "Ice glass
+ * background" block of index.css.
  */
 export default function IceGlassBackground({
   config = ICE_CONFIG,
@@ -33,7 +33,7 @@ export default function IceGlassBackground({
   return (
     <div
       aria-hidden="true"
-      className="ice-bg pointer-events-none fixed inset-x-0 top-0 -z-10 overflow-hidden"
+      className="ice-bg pointer-events-none absolute inset-0 overflow-hidden"
       style={style}
     >
       <canvas ref={canvasRef} className="ice-bg__canvas absolute inset-0" />

@@ -73,7 +73,8 @@
   --color-icon-fg: #2464a5;
   --color-media: #eaf3ff;
   --color-media-fg: #2464a5;
-  --color-star: oklch(0.71 0.185 72);
+  /* Apple's system yellow. Decorative only: ratings also carry an aria-label. */
+  --color-star: #ffcc00;
   --color-quote: #7db7ff;
   --color-code: #152840;
   --color-code-fg: #e6eef7;
@@ -222,9 +223,6 @@
 /* Ice glass background — components/background/IceGlassBackground.tsx. Palette and glass values
    arrive as --ice-* custom properties from iceConfig.ts, so the shader and these layers agree. */
 .ice-bg {
-  height: 100vh;
-  /* Large viewport height: the mobile URL bar showing/hiding doesn't resize (and repaint) it. */
-  height: 100lvh;
   /* Fallback and first paint, until the WebGL ice covers it. */
   background:
     radial-gradient(
@@ -433,6 +431,199 @@
 @media print {
   .ice-bg {
     display: none;
+  }
+}
+
+/* Home "What you get" section — components/partnering/. */
+
+/* WebGL snowflake: shown once it has drawn, which also retires the SVG fallback. */
+.ice-flake-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.ice-flake-canvas[data-ready] {
+  opacity: 1;
+}
+
+.ice-flake-canvas[data-ready] ~ .ice-flake-fallback {
+  display: none;
+}
+
+.ice-snow {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgb(91 157 235 / 0.6);
+  animation: ice-snow-drift linear infinite both;
+}
+
+@keyframes ice-snow-drift {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0);
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(18px, 70px, 0);
+  }
+}
+
+.ice-text-in {
+  animation: ice-text-in 0.45s ease-out both;
+}
+
+@keyframes ice-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Brand statement: lines rise in when `data-in-view` is set, then the blue phrase catches one
+   glint. The glint is a lighter band in a text-clipped gradient, parked off the right edge. */
+.statement-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.statement[data-in-view] .statement-reveal {
+  animation: statement-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes statement-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.statement-glint {
+  color: var(--color-blue);
+  background: linear-gradient(
+      100deg,
+      var(--color-blue) 42%,
+      #6aa6ea 50%,
+      var(--color-blue) 58%
+    )
+    0% 0 / 250% 100% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.statement[data-in-view] .statement-glint {
+  animation: statement-glint 1.8s ease-in-out 0.8s both;
+}
+
+@keyframes statement-glint {
+  to {
+    background-position: 100% 0;
+  }
+}
+
+/* Home closing CTA: small flakes drift down and sideways (`--sway`) while turning, fading in and
+   out; the two large corner crystals turn very slowly. */
+.cta-flake {
+  opacity: 0;
+  animation: cta-flake-fall linear infinite both;
+}
+
+@keyframes cta-flake-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0) rotate(0deg);
+  }
+  15%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--sway, 12px), 90px, 0) rotate(180deg);
+  }
+}
+
+.cta-crystal {
+  animation: cta-crystal-turn 90s linear infinite;
+}
+
+@keyframes cta-crystal-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Service-card illustrations: the workflow's dashes run while the card is hovered, and the
+   "online" dot pulses. */
+.service-flow {
+  stroke-dasharray: 3 4;
+}
+
+.group:hover .service-flow {
+  animation: service-flow 0.9s linear infinite;
+}
+
+@keyframes service-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+.service-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: service-pulse 2.4s ease-out infinite;
+}
+
+@keyframes service-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ice-snow {
+    display: none;
+  }
+
+  .ice-text-in,
+  .group:hover .service-flow,
+  .service-pulse,
+  .statement[data-in-view] .statement-glint {
+    animation: none;
+  }
+
+  .statement-reveal,
+  .statement[data-in-view] .statement-reveal,
+  .cta-flake {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .cta-crystal {
+    animation: none;
   }
 }
 

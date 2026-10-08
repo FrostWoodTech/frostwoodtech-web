@@ -1,11 +1,44 @@
-import type { FAQ, SectionHeaderConfig } from "@/client/types";
+import type { EmphasisHeaderData, FAQ, PricingPromise } from "@/client/types";
 
-export const PRICING_HEADER: SectionHeaderConfig = {
-  badge: "Transparent pricing",
-  title: "Investment that pays off.",
-  subtitle:
-    "Clear starting prices, fixed-scope quotes, and a written proposal before a line of code.",
+export const PRICING_TEASER_HEADER: EmphasisHeaderData = {
+  eyebrow: "Pricing",
+  titleLead: "Transparent pricing,",
+  titleEmphasis: "for every project.",
+  description:
+    "Whether you need a website, an app or a ready-made product, you'll always know the price before you commit.",
 } as const;
+
+export const PRICING_PROMISES: readonly PricingPromise[] = [
+  {
+    id: "free-quote",
+    value: "Free",
+    title: "First chat & quote",
+    description:
+      "Tell us your idea and get a clear, written price, with no cost and no commitment.",
+  },
+  {
+    id: "fixed-price",
+    value: "Fixed",
+    title: "Price agreed upfront",
+    description:
+      "The price we quote is the price you pay. No hourly meter running.",
+  },
+  {
+    id: "no-hidden-fees",
+    value: "$0",
+    title: "Hidden fees",
+    description:
+      "Hosting, support and extras are listed up front, never added later.",
+  },
+  {
+    id: "products-from",
+    value: "$19",
+    suffix: "/mo",
+    title: "Products from",
+    description:
+      "Ready-made products on simple monthly plans. Cancel any time.",
+  },
+] as const;
 
 export const PRICING_FAQS: readonly FAQ[] = [
   {
