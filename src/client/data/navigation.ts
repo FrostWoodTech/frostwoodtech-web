@@ -9,7 +9,6 @@ export const BRAND: BrandInfo = {
 export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/services" },
-  { label: "Products", href: "/products" },
   { label: "Case Studies", href: "/work" },
   { label: "Pricing", href: "/pricing" },
   { label: "Insights", href: "/blog" },

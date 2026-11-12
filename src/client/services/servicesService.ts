@@ -1,4 +1,5 @@
 import { httpClient } from "@/client/services/httpClient";
+import { USE_STATIC_DATA, staticApi } from "@/client/services/staticApi";
 import type { ApiService, PagedResult, Site } from "@/client/types";
 
 export interface GetServicesParams {
@@ -14,6 +15,8 @@ export async function getServices(
   { site = SITE, featured, page = 1, pageSize = 20 }: GetServicesParams = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<ApiService>> {
+  if (USE_STATIC_DATA)
+    return staticApi.getServices({ featured, page, pageSize });
   const { data } = await httpClient.get<PagedResult<ApiService>>(
     "/public/services",
     { params: { site, featured, page, pageSize }, signal },
@@ -27,6 +30,7 @@ export async function getService(
   site: Site = SITE,
   signal?: AbortSignal,
 ): Promise<ApiService> {
+  if (USE_STATIC_DATA) return staticApi.getService(slug);
   const { data } = await httpClient.get<ApiService>(
     `/public/services/${slug}`,
     { params: { site }, signal },

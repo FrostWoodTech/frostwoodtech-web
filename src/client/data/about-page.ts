@@ -84,7 +84,7 @@ export const ABOUT_METRICS: readonly Metric[] = [
   { id: "founded", value: "2019", label: "Year we started" },
   {
     id: "shipped",
-    value: "40",
+    value: "5",
     suffix: "+",
     suffixTone: "forest",
     label: "Products & platforms shipped",

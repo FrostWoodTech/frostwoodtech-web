@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import FeaturedServiceCard from "./FeaturedServiceCard";
-import { PLACEHOLDER_SERVICES, SERVICES_HEADER } from "@/client/data/services";
+import { SERVICE_EXTRAS, SERVICES_HEADER } from "@/client/data/services";
 import { mapApiServiceToService } from "@/client/lib/mappers";
 import type { ApiService, Service } from "@/client/types";
 
@@ -16,9 +16,13 @@ interface ServicesProps {
 }
 
 export default function Services({ services }: ServicesProps) {
-  const shown: readonly Service[] = services?.length
-    ? services.slice(0, FEATURED_COUNT).map(mapApiServiceToService)
-    : PLACEHOLDER_SERVICES;
+  const shown: readonly Service[] = (services ?? [])
+    .slice(0, FEATURED_COUNT)
+    .map((api) => ({
+      ...mapApiServiceToService(api),
+      ...SERVICE_EXTRAS[api.slug],
+    }));
+  if (!shown.length) return null;
 
   return (
     <section

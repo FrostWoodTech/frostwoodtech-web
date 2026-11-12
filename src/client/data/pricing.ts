@@ -31,12 +31,11 @@ export const PRICING_PROMISES: readonly PricingPromise[] = [
       "Hosting, support and extras are listed up front, never added later.",
   },
   {
-    id: "products-from",
-    value: "$19",
-    suffix: "/mo",
-    title: "Products from",
+    id: "ownership",
+    value: "100%",
+    title: "Yours to keep",
     description:
-      "Ready-made products on simple monthly plans. Cancel any time.",
+      "You own the code, the designs and the accounts, from day one.",
   },
 ] as const;
 

@@ -1,4 +1,5 @@
 import { httpClient } from "@/client/services/httpClient";
+import { USE_STATIC_DATA, staticApi } from "@/client/services/staticApi";
 import type { ApiPricingPlan, PagedResult } from "@/client/types";
 
 export interface GetPricingPlansParams {
@@ -12,6 +13,8 @@ export async function getComboPricingPlans(
   { featured, page = 1, pageSize = 20 }: GetPricingPlansParams = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<ApiPricingPlan>> {
+  if (USE_STATIC_DATA)
+    return staticApi.getComboPricingPlans({ featured, page, pageSize });
   const { data } = await httpClient.get<PagedResult<ApiPricingPlan>>(
     "/public/pricing/combos",
     { params: { featured, page, pageSize }, signal },
@@ -25,6 +28,7 @@ export async function getServicePricingPlans(
   { page = 1, pageSize = 20 }: Omit<GetPricingPlansParams, "featured"> = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<ApiPricingPlan>> {
+  if (USE_STATIC_DATA) return staticApi.getServicePricingPlans(serviceId);
   const { data } = await httpClient.get<PagedResult<ApiPricingPlan>>(
     `/public/pricing/services/${serviceId}`,
     { params: { page, pageSize }, signal },

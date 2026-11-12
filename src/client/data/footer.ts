@@ -8,9 +8,9 @@ export const FOOTER_DATA: FooterData = {
   copyright: "© 2026 FrostWoodTech. All rights reserved.",
   linkGroups: [
     {
-      title: "Products",
+      title: "Explore",
       links: [
-        { label: "All products", href: "/products" },
+        { label: "Our work", href: "/work" },
         { label: "Pricing", href: "/pricing" },
         { label: "Reviews", href: "/reviews" },
       ],
@@ -28,7 +28,6 @@ export const FOOTER_DATA: FooterData = {
       title: "Company",
       links: [
         { label: "About", href: "/about" },
-        { label: "Case studies", href: "/work" },
         { label: "Insights", href: "/blog" },
         { label: "Contact", href: "/contact" },
       ],

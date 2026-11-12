@@ -9,7 +9,17 @@ export default function Hero() {
         <IceGlassBackground />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:px-8 lg:pt-28">
+      <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:px-8 lg:pt-28">
+        {/* Sized and placed to clear the headline (line 2 ends near 816px) and the quote below it. */}
+        <img
+          src="/images/brand/hero-snowflake.webp"
+          alt=""
+          width={960}
+          height={960}
+          fetchPriority="high"
+          className="mb-6 ml-auto block w-32 drop-shadow-[0_30px_40px_rgb(36_100_165/0.22)] select-none sm:w-44 lg:absolute lg:top-6 lg:right-8 lg:mb-0 lg:w-[220px] xl:w-[340px]"
+        />
+
         <p className="text-[13px] font-bold tracking-[0.015em] text-blue">
           {HERO_DATA.kicker}
         </p>

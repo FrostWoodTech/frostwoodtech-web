@@ -1,9 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import {
-  PLACEHOLDER_REVIEWS,
-  REVIEWS_WALL_HEADER,
-} from "@/client/data/reviews";
+import { REVIEWS_WALL_HEADER } from "@/client/data/reviews";
 import type { ApiReview } from "@/client/types";
 import { initialsOf } from "@/client/utils/initials";
 import ReviewWallCard from "./ReviewWallCard";
@@ -20,10 +17,9 @@ interface ReviewWallProps {
  * which steps down on desktop so the wall reads as staggered.
  */
 export default function ReviewWall({ reviews }: ReviewWallProps) {
-  const shown = reviews?.length
-    ? reviews.slice(0, FEATURED_COUNT)
-    : PLACEHOLDER_REVIEWS;
+  const shown = (reviews ?? []).slice(0, FEATURED_COUNT);
   const [featured, ...rest] = shown;
+  if (!featured) return null;
   const columns = [rest.slice(0, 2), rest.slice(2, 4)];
 
   return (

@@ -10,7 +10,7 @@ export const HERO_DATA: HeroData = {
     "We create products of our own—and digital platforms for organisations that want to move with more confidence, not more complexity.",
   quote:
     "The person you meet to talk through the work is the person who builds it.",
-  quoteNote: "A small, senior team. Founded in 2019.",
+  quoteNote: "A small, senior team. Founded in 2026.",
 } as const;
 
 /** TODO: invented placeholder names — replace with real client logos before launch. */
@@ -26,7 +26,7 @@ export const TRUSTED_BY: readonly string[] = [
 export const HOME_METRICS: readonly Metric[] = [
   {
     id: "shipped",
-    value: "40",
+    value: "5",
     suffix: "+",
     suffixTone: "forest",
     label: "Products & platforms shipped",

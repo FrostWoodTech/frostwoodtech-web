@@ -1,4 +1,5 @@
 import { httpClient } from "@/client/services/httpClient";
+import { USE_STATIC_DATA, staticApi } from "@/client/services/staticApi";
 import type {
   ApiReview,
   PagedResult,
@@ -17,6 +18,7 @@ export async function getReviews(
   { sort = "latest", page = 1, pageSize = 20 }: GetReviewsParams = {},
   signal?: AbortSignal,
 ): Promise<PagedResult<ApiReview>> {
+  if (USE_STATIC_DATA) return staticApi.getReviews({ sort, page, pageSize });
   const { data } = await httpClient.get<PagedResult<ApiReview>>(
     "/public/reviews",
     { params: { sort, page, pageSize }, signal },
@@ -28,6 +30,7 @@ export async function getReviews(
 export async function submitReview(
   payload: SubmitReviewPayload,
 ): Promise<{ id: string }> {
+  if (USE_STATIC_DATA) return staticApi.submit();
   const { data } = await httpClient.post<{ id: string }>(
     "/public/reviews",
     payload,

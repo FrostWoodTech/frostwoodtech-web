@@ -143,7 +143,7 @@ export interface ProjectImage {
   readonly sortOrder: number;
 }
 
-export type ProductScreenKind = "bookings" | "inventory" | "support";
+export type ProjectScreenKind = "theatre" | "people" | "transfers";
 
 export interface Product {
   readonly id: string;
@@ -155,8 +155,6 @@ export interface Product {
   readonly productUrl?: string;
   readonly imagePlaceholder: string;
   readonly href: string;
-  /** Home-showcase drawing for products without screenshots (placeholder content). */
-  readonly screen?: ProductScreenKind;
   readonly images: readonly ProductImage[];
 }
 

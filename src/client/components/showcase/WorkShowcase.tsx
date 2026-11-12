@@ -1,10 +1,10 @@
 import { useId, useRef, useState, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import { PLACEHOLDER_PRODUCTS, PRODUCTS_HEADER } from "@/client/data/products";
+import { PROJECT_SCREENS, WORK_SHOWCASE_HEADER } from "@/client/data/showcase";
 import { stripMarkdown } from "@/client/lib/mappers";
-import type { Product } from "@/client/types";
-import ProductScreen from "./ProductScreen";
+import type { Project } from "@/client/types";
+import ProjectScreen from "./ProjectScreen";
 
 const FEATURED_COUNT = 3;
 
@@ -18,20 +18,18 @@ const ROUND_BUTTON =
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
-interface ProductShowcaseProps {
-  /** Undefined while loading or when the products call fails. */
-  readonly products?: readonly Product[];
+interface WorkShowcaseProps {
+  /** Undefined while loading or when the projects call fails. */
+  readonly projects?: readonly Project[];
 }
 
-/** Home "Our products": the featured products one at a time, switched with tabs or arrows. */
-export default function ProductShowcase({ products }: ProductShowcaseProps) {
-  const shown = products?.length
-    ? products.slice(0, FEATURED_COUNT)
-    : PLACEHOLDER_PRODUCTS;
+/** Home "Our work": the featured projects one at a time, switched with tabs or arrows. */
+export default function WorkShowcase({ projects }: WorkShowcaseProps) {
+  const shown = (projects ?? []).slice(0, FEATURED_COUNT);
   const [selected, setSelected] = useState(0);
   // Clamped so a shorter list arriving from the API never points past its end.
   const active = Math.min(selected, shown.length - 1);
-  const product = shown[active];
+  const project = shown[active];
   const baseId = useId();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -54,35 +52,39 @@ export default function ProductShowcase({ products }: ProductShowcaseProps) {
     show(target, true);
   };
 
+  if (!project) return null;
+
   return (
     <section
-      aria-labelledby="products-heading"
+      aria-labelledby="work-heading"
       className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8 lg:pb-32"
     >
       <div className="mb-12 grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
         <div>
           <p className="flex items-center gap-3 text-[13px] font-bold tracking-[0.015em] text-blue">
             <span aria-hidden="true" className="h-px w-8 bg-blue" />
-            {PRODUCTS_HEADER.eyebrow}
+            {WORK_SHOWCASE_HEADER.eyebrow}
           </p>
           <h2
-            id="products-heading"
+            id="work-heading"
             className="mt-6 font-display text-[46px] leading-[0.96] tracking-[-0.04em] text-ink sm:text-[64px] lg:text-[76px]"
           >
-            <span className="block">{PRODUCTS_HEADER.titleLead}</span>
-            <em className="block text-blue">{PRODUCTS_HEADER.titleEmphasis}</em>
+            <span className="block">{WORK_SHOWCASE_HEADER.titleLead}</span>
+            <em className="block text-blue">
+              {WORK_SHOWCASE_HEADER.titleEmphasis}
+            </em>
           </h2>
         </div>
 
         <div className="lg:pb-2">
           <p className="max-w-115 text-base leading-8 text-slate sm:text-lg">
-            {PRODUCTS_HEADER.description}
+            {WORK_SHOWCASE_HEADER.description}
           </p>
           <Link
-            to="/products"
+            to="/work"
             className="group mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
           >
-            View all products
+            View all work
             <ArrowRight
               size={16}
               aria-hidden="true"
@@ -107,7 +109,7 @@ export default function ProductShowcase({ products }: ProductShowcaseProps) {
         <div className="relative grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_1fr] lg:gap-x-14 lg:gap-y-10 lg:p-12 lg:pr-0">
           <div
             role="tablist"
-            aria-label={PRODUCTS_HEADER.eyebrow}
+            aria-label={WORK_SHOWCASE_HEADER.eyebrow}
             className="-mx-5 flex snap-x gap-2 overflow-x-auto px-5 py-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 lg:col-start-1 lg:row-start-1"
           >
             {shown.map((entry, index) => (
@@ -126,7 +128,7 @@ export default function ProductShowcase({ products }: ProductShowcaseProps) {
                 onKeyDown={onTabKeyDown}
                 className={`shrink-0 snap-start rounded-full border px-4 py-2 text-[14px] font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 ${TAB_CLASSES[index === active ? "active" : "idle"]}`}
               >
-                {entry.name}
+                {entry.title}
               </button>
             ))}
           </div>
@@ -146,7 +148,10 @@ export default function ProductShowcase({ products }: ProductShowcaseProps) {
                       : "pointer-events-none absolute inset-x-0 top-0 opacity-0 motion-safe:translate-y-4"
                   }`}
                 >
-                  <ProductScreen product={entry} />
+                  <ProjectScreen
+                    project={entry}
+                    screen={PROJECT_SCREENS[entry.slug]}
+                  />
                 </div>
               );
             })}
@@ -159,36 +164,43 @@ export default function ProductShowcase({ products }: ProductShowcaseProps) {
             aria-live="polite"
             className="flex min-w-0 flex-col lg:col-start-1 lg:row-start-2"
           >
-            <div key={product.id} className="ice-text-in">
+            <div key={project.id} className="ice-text-in">
               <p className="text-[13px] font-bold tracking-[0.06em] text-blue">
                 {pad(active + 1)}{" "}
                 <span className="text-slate">/ {pad(shown.length)}</span>
               </p>
               <h3 className="mt-4 font-display text-[48px] leading-[0.95] tracking-[-0.035em] text-ink sm:text-[60px]">
-                {product.name}
+                {project.title}
               </h3>
               <p className="mt-3 font-display text-[24px] leading-[1.15] text-blue italic sm:text-[28px]">
-                {product.tagline}
+                {project.tagline}
               </p>
               <p className="mt-5 line-clamp-4 text-base leading-[1.75] text-slate">
-                {stripMarkdown(product.description)}
+                {stripMarkdown(project.description)}
               </p>
-              {product.priceDetails && (
-                <p className="mt-6 inline-flex rounded-full border border-rule bg-white/80 px-3.5 py-1.5 text-[13px] font-semibold text-ink">
-                  {product.priceDetails}
-                </p>
+              {project.categories.length > 0 && (
+                <ul className="mt-6 flex flex-wrap gap-2">
+                  {project.categories.map((category) => (
+                    <li
+                      key={category}
+                      className="rounded-full border border-rule bg-white/80 px-3.5 py-1.5 text-[13px] font-semibold text-ink"
+                    >
+                      {category}
+                    </li>
+                  ))}
+                </ul>
               )}
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  to={product.href}
+                  to={project.href}
                   className="inline-flex h-12 items-center rounded-full bg-ink px-6 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
                 >
-                  View product
+                  View project
                 </Link>
-                {product.productUrl && (
+                {project.websiteUrl && (
                   <a
-                    href={product.productUrl}
+                    href={project.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex h-12 items-center gap-1.5 rounded-full border border-rule bg-white px-6 text-[15px] font-semibold text-ink transition-colors duration-200 hover:border-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2"
@@ -205,7 +217,7 @@ export default function ProductShowcase({ products }: ProductShowcaseProps) {
               <button
                 type="button"
                 onClick={() => show(active - 1)}
-                aria-label="Previous product"
+                aria-label="Previous project"
                 className={ROUND_BUTTON}
               >
                 <ArrowLeft size={18} aria-hidden="true" />
@@ -213,7 +225,7 @@ export default function ProductShowcase({ products }: ProductShowcaseProps) {
               <button
                 type="button"
                 onClick={() => show(active + 1)}
-                aria-label="Next product"
+                aria-label="Next project"
                 className={ROUND_BUTTON}
               >
                 <ArrowRight size={18} aria-hidden="true" />

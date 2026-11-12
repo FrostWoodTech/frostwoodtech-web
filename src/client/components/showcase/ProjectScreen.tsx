@@ -1,20 +1,21 @@
 import { Lock } from "lucide-react";
-import type { Product } from "@/client/types";
-import ProductScreenDrawing from "./ProductScreenDrawing";
+import type { Project, ProjectScreenKind } from "@/client/types";
+import ProjectScreenDrawing from "./ProjectScreenDrawing";
 import { SCREEN_TOASTS } from "./screenToasts";
 
-interface ProductScreenProps {
-  readonly product: Product;
+interface ProjectScreenProps {
+  readonly project: Project;
+  /** Drawing used while the project has no screenshots. */
+  readonly screen?: ProjectScreenKind;
 }
 
 /**
- * A browser window showing the product: its first screenshot, else its placeholder drawing,
+ * A browser window showing the project: its first screenshot, else its placeholder drawing,
  * else its name on frost.
  */
-export default function ProductScreen({ product }: ProductScreenProps) {
-  const image = product.images[0];
-  const toast =
-    !image && product.screen ? SCREEN_TOASTS[product.screen] : undefined;
+export default function ProjectScreen({ project, screen }: ProjectScreenProps) {
+  const image = project.images?.[0];
+  const toast = !image && screen ? SCREEN_TOASTS[screen] : undefined;
   const ToastIcon = toast?.icon;
 
   return (
@@ -28,7 +29,7 @@ export default function ProductScreen({ product }: ProductScreenProps) {
           </span>
           <span className="mx-auto flex h-6 max-w-[60%] min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full bg-mist px-3 text-[11px] text-slate">
             <Lock size={10} aria-hidden="true" className="shrink-0" />
-            <span className="truncate">{product.name}</span>
+            <span className="truncate">{project.title}</span>
           </span>
           <span className="w-12 shrink-0" />
         </div>
@@ -37,15 +38,15 @@ export default function ProductScreen({ product }: ProductScreenProps) {
           {image ? (
             <img
               src={image.url}
-              alt={image.altText || `${product.name} screenshot`}
+              alt={image.altText || `${project.title} screenshot`}
               loading="lazy"
               className="h-full w-full object-cover object-top"
             />
-          ) : product.screen ? (
-            <ProductScreenDrawing kind={product.screen} />
+          ) : screen ? (
+            <ProjectScreenDrawing kind={screen} />
           ) : (
             <div className="flex h-full items-center justify-center bg-linear-to-br from-ice-wash to-snow font-display text-[44px] text-ink">
-              {product.name}
+              {project.title}
             </div>
           )}
         </div>
