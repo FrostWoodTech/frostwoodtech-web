@@ -102,7 +102,7 @@ export default function ArticleDetailPage() {
         </header>
 
         {post.imagePlaceholder && (
-          <div className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-[22px] border border-hair fw-media shadow-card">
+          <div className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-lg border border-hair fw-media shadow-card">
             <img
               src={post.imagePlaceholder}
               alt={`Cover image for ${post.title}`}

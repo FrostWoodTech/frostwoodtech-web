@@ -1,36 +1,39 @@
 import { Link } from "react-router-dom";
-import { BRAND } from "@/client/data/navigation";
+import { SITE } from "@/client/data/site";
 
-interface LogoProps {
-  readonly size?: "sm" | "md";
-  readonly className?: string;
-}
+type LogoTone = "light" | "dark";
 
-const MARK_SIZE: Record<"sm" | "md", number> = { sm: 30, md: 34 };
-const TEXT_CLASSES: Record<"sm" | "md", string> = {
-  sm: "text-[18px]",
-  md: "text-[20px]",
+const TEXT_TONE: Record<LogoTone, string> = {
+  light: "text-ink",
+  dark: "text-white",
 };
 
-export default function Logo({ size = "md", className = "" }: LogoProps) {
+/** `tone` is the background it sits on: "dark" renders the wordmark in white. */
+export default function Logo({
+  tone = "light",
+  onClick,
+}: {
+  readonly tone?: LogoTone;
+  readonly onClick?: () => void;
+}) {
   return (
     <Link
       to="/"
-      className={`flex shrink-0 items-center gap-2.5 ${className}`}
-      aria-label={`${BRAND.name} — home`}
+      onClick={onClick}
+      className="flex shrink-0 items-center gap-2.5 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue"
+      aria-label={`${SITE.name} — home`}
     >
       <img
         src="/images/brand/logo-mark.webp"
         alt=""
-        width={MARK_SIZE[size]}
-        height={MARK_SIZE[size]}
+        width={32}
+        height={32}
         className="shrink-0"
       />
-
       <span
-        className={`font-bold tracking-[-0.04em] text-ink ${TEXT_CLASSES[size]}`}
+        className={`text-[19px] font-extrabold tracking-[-0.04em] ${TEXT_TONE[tone]}`}
       >
-        {BRAND.name}
+        {SITE.name}
       </span>
     </Link>
   );

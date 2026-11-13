@@ -10,95 +10,48 @@ import { TAGS } from "./tags";
 /** No products yet; the Products page shows its empty state. */
 export const PRODUCTS: readonly ApiProduct[] = [];
 
-// TODO: invented reviews for layout only; replace with real ones before launch.
+// TODO: placeholder reviews for layout only — replace with real client reviews before launch.
+// Reviews show anonymously (text and a generic avatar); `name` is kept for the admin only.
 export const REVIEWS: readonly ApiReview[] = [
   {
-    id: "review-maya",
-    name: "Maya R.",
-    position: "Owner, Bloom Hair Studio",
-    country: "United Kingdom",
-    countryCode: "GB",
-    rating: 5,
-    reviewText:
-      "They rebuilt our booking system in six weeks. Clients book online at midnight now, no-shows dropped by half, and I finally get my evenings back.",
-    createdAt: "2026-09-01T00:00:00Z",
-  },
-  {
-    id: "review-tom",
-    name: "Tom B.",
-    position: "Operations lead, Harbour Coffee",
-    country: "Germany",
-    countryCode: "DE",
-    rating: 5,
-    reviewText:
-      "Everything was explained in plain English, and the price never moved. Our stock app saves the team hours every week.",
-    createdAt: "2026-08-14T00:00:00Z",
-  },
-  {
-    id: "review-priya",
-    name: "Priya S.",
-    position: "Founder, Kindred Learning",
-    country: "India",
-    countryCode: "IN",
-    rating: 5,
-    reviewText:
-      "It felt like having our own tech team. Quick replies, honest advice, and they told us when an idea wasn't worth the money.",
-    createdAt: "2026-07-30T00:00:00Z",
-  },
-  {
-    id: "review-leo",
-    name: "Leo K.",
-    position: "Director, Northline Logistics",
-    country: "Poland",
-    countryCode: "PL",
-    rating: 5,
-    reviewText:
-      "Our old system went down every Monday. Since the move we haven't had a single outage, and support answers within minutes.",
-    createdAt: "2026-07-02T00:00:00Z",
-  },
-  {
-    id: "review-ana",
-    name: "Ana M.",
-    position: "Marketing manager, Solar Casa",
-    country: "Portugal",
-    countryCode: "PT",
-    rating: 5,
-    reviewText:
-      "Our new website looks beautiful and loads in a blink. Enquiries doubled in the first two months, and we can update pages ourselves.",
-    createdAt: "2026-06-18T00:00:00Z",
-  },
-  {
-    id: "review-james",
-    name: "James O.",
-    position: "Practice manager, Clearview Dental",
-    country: "Australia",
-    countryCode: "AU",
-    rating: 5,
-    reviewText:
-      "FrostBook was set up in an afternoon. Patients love booking online and the reminders have made a real difference.",
-    createdAt: "2026-05-27T00:00:00Z",
-  },
-  {
-    id: "review-sofia",
-    name: "Sofia L.",
-    position: "Co-founder, Petal & Pine",
-    country: "Sweden",
-    countryCode: "SE",
-    rating: 4,
-    reviewText:
-      "Great communication from start to finish. One feature took a week longer than planned, but they kept us updated the whole way.",
-    createdAt: "2026-04-11T00:00:00Z",
-  },
-  {
-    id: "review-kasun",
-    name: "Kasun P.",
-    position: "CEO, Lanka Fresh",
+    id: "review-nuwan",
+    name: "Nuwan Perera",
     country: "Sri Lanka",
     countryCode: "LK",
     rating: 5,
     reviewText:
-      "Our online shop finally works on every phone, and orders have grown every month since launch.",
-    createdAt: "2026-03-05T00:00:00Z",
+      "We used to take bookings over the phone and in a notebook. Now people pick their own seats and pay online, and on busy nights there are no more mix-ups at the door.",
+    createdAt: "2026-09-18T00:00:00Z",
+  },
+  {
+    id: "review-sarah",
+    name: "Sarah Mitchell",
+    country: "United Kingdom",
+    countryCode: "GB",
+    rating: 5,
+    reviewText:
+      "Leave requests and attendance were spread across emails and spreadsheets. Teamora put it all in one place, and the weekly demos meant there were no surprises at the end.",
+    createdAt: "2026-08-27T00:00:00Z",
+  },
+  {
+    id: "review-daniel",
+    name: "Daniel Fernando",
+    country: "Sri Lanka",
+    countryCode: "LK",
+    rating: 4,
+    reviewText:
+      "The transfer booking system works well and our drivers find it easy. One part took a little longer than planned, but they told us early and kept us updated throughout.",
+    createdAt: "2026-07-22T00:00:00Z",
+  },
+  {
+    id: "review-emma",
+    name: "Emma Collins",
+    country: "Australia",
+    countryCode: "AU",
+    rating: 5,
+    reviewText:
+      "Quick to reply and straightforward about cost. When we asked for a feature we didn't really need, they said so and suggested something simpler.",
+    createdAt: "2026-06-30T00:00:00Z",
   },
 ];
 
@@ -126,9 +79,9 @@ export const FAQS: readonly ApiFaq[] = [
   },
   {
     id: "faq-own",
-    question: "Who owns what you build?",
+    question: "Do we need our own developers or servers?",
     answer:
-      "You do. The code, designs and accounts are yours, and you can take them with you at any time.",
+      "No. We keep the software, host it and look after it — updates, security and fixes included — so you can simply use it and get on with running your business.",
     sortOrder: 3,
   },
   {

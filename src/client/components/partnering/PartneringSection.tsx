@@ -2,21 +2,9 @@ import { useEffect, useState, type FocusEvent } from "react";
 import { Pause, Play } from "lucide-react";
 import { PARTNERING_DATA } from "@/client/data/partnering";
 import { usePrefersReducedMotion } from "@/client/hooks/usePrefersReducedMotion";
-import FrostCard from "./FrostCard";
-import IceSnowflake from "./IceSnowflake";
+import BenefitCard from "./BenefitCard";
 
 const ROTATE_MS = 4000;
-
-/**
- * One per gap between the snowflake's arms, in item order; add a position when adding an item.
- * Staggered on purpose, and nudged so the arm tips stay visible beside the cards.
- */
-const CARD_POSITIONS = [
-  "-left-[5%] top-[14%]",
-  "right-0 top-[27%]",
-  "left-0 bottom-[25%]",
-  "-right-[3%] bottom-[11%]",
-] as const;
 
 export default function PartneringSection() {
   const { eyebrow, items } = PARTNERING_DATA;
@@ -66,23 +54,22 @@ export default function PartneringSection() {
     >
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8">
         <div className="min-w-0">
-          <div className="relative mx-auto max-w-[560px] lg:py-4">
-            <IceSnowflake />
+          <div className="hidden grid-cols-2 gap-4 rounded-2xl border border-rule bg-mist p-6 lg:grid">
             {items.map((entry, index) => (
-              <FrostCard
+              <BenefitCard
                 key={entry.id}
                 item={entry}
                 active={index === active}
                 onSelect={() => select(index)}
-                className={`absolute hidden w-52 lg:flex ${CARD_POSITIONS[index] ?? ""}`}
+                className="flex h-20"
               />
             ))}
           </div>
 
-          {/* Below lg the cards leave the hexagon and become a row of chips that scrolls on its own. */}
-          <div className="-mx-4 mt-8 flex snap-x gap-3 overflow-x-auto px-6 py-3[scrollbar-width:none] sm:-mx-6 sm:px-6 lg:hidden">
+          {/* Below lg the grid becomes a row of chips that scrolls on its own. */}
+          <div className="-mx-4 mt-8 flex snap-x gap-3 overflow-x-auto px-6 py-3 [scrollbar-width:none] sm:-mx-6 sm:px-6 lg:hidden">
             {items.map((entry, index) => (
-              <FrostCard
+              <BenefitCard
                 key={entry.id}
                 item={entry}
                 active={index === active}
@@ -96,7 +83,7 @@ export default function PartneringSection() {
         <div>
           <h2
             id="partnering-heading"
-            className="text-[13px] font-bold tracking-[0.015em] text-blue"
+            className="text-[13px] font-semibold tracking-[0.08em] text-blue uppercase"
           >
             {eyebrow}
           </h2>
@@ -106,8 +93,8 @@ export default function PartneringSection() {
             aria-live={userPicked && !rotating ? "polite" : "off"}
             className="mt-6 min-h-[13rem] sm:min-h-[12rem]"
           >
-            <div key={item.id} className="ice-text-in">
-              <h3 className="font-display text-[40px] leading-[1.02] tracking-[-0.03em] text-ink sm:text-[52px] lg:text-[56px]">
+            <div key={item.id} className="fade-swap">
+              <h3 className="font-display text-[32px] leading-[1.1] tracking-[-0.03em] text-ink sm:text-[40px] lg:text-[44px]">
                 {item.title}
               </h3>
               <p className="mt-5 max-w-[520px] text-base leading-8 text-slate sm:text-lg">
@@ -129,8 +116,8 @@ export default function PartneringSection() {
                 <span
                   className={`block h-1.5 rounded-full transition-all duration-300 ${
                     index === active
-                      ? "w-10 bg-ice shadow-[0_0_12px_rgb(125_183_255/0.8)]"
-                      : "w-6 bg-rule group-hover:bg-ice/60"
+                      ? "w-10 bg-blue"
+                      : "w-6 bg-rule group-hover:bg-border-default"
                   }`}
                 />
               </button>

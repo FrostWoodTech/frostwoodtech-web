@@ -545,7 +545,7 @@ function IconVisual({ service }: ServiceVisualProps) {
       <span className="absolute h-44 w-44 rounded-full border border-ice/30" />
       <span className="absolute h-30 w-30 rounded-full border border-ice/50" />
       <span
-        className={`${FLOAT} relative flex h-18 w-18 items-center justify-center rounded-[22px] border border-rule bg-white text-blue shadow-[0_14px_30px_-16px_rgb(21_40_64/0.35)] motion-safe:group-hover:-translate-y-1.5`}
+        className={`${FLOAT} relative flex h-18 w-18 items-center justify-center rounded-lg border border-rule bg-white text-blue shadow-[0_14px_30px_-16px_rgb(21_40_64/0.35)] motion-safe:group-hover:-translate-y-1.5`}
       >
         {service.iconUrl ? (
           <img

@@ -94,17 +94,7 @@ export default function WorkShowcase({ projects }: WorkShowcaseProps) {
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-4xl border border-rule bg-linear-to-br from-ice-wash via-mist to-snow">
-        {/* The service cards' frost recipe: 60° lines and a soft light from the top-left. */}
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 bg-[repeating-linear-gradient(120deg,transparent_0_26px,rgb(125_183_255/0.1)_26px_27px)]"
-        />
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgb(255_255_255/0.95),transparent_50%)]"
-        />
-
+      <div className="relative overflow-hidden rounded-2xl border border-rule bg-mist">
         {/* DOM order (tabs, screen, text) is the mobile order; on desktop the screen moves right. */}
         <div className="relative grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_1fr] lg:gap-x-14 lg:gap-y-10 lg:p-12 lg:pr-0">
           <div
@@ -164,7 +154,7 @@ export default function WorkShowcase({ projects }: WorkShowcaseProps) {
             aria-live="polite"
             className="flex min-w-0 flex-col lg:col-start-1 lg:row-start-2"
           >
-            <div key={project.id} className="ice-text-in">
+            <div key={project.id} className="fade-swap">
               <p className="text-[13px] font-bold tracking-[0.06em] text-blue">
                 {pad(active + 1)}{" "}
                 <span className="text-slate">/ {pad(shown.length)}</span>

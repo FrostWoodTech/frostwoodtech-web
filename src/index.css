@@ -1,99 +1,107 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
 
 @import "tailwindcss";
 
-/* Client theme ("Frost"), light only. `ice` (#7DB7FF) is decorative — lines, fills, marks — never
-   text on white; readable accent text is `blue` / `primary-400`. Ramps: `-400` text, `-600` fill. */
+/* Client theme ("Bold corporate"), light only: near-black ink, white, neutral greys and one electric
+   blue. `ice` is a neutral decorative grey — never text. Accent text: `blue` on light, `blue-soft` on ink. */
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  /* Instrument Serif ships a single weight (400) plus italic. */
-  --font-display: "Instrument Serif", Georgia, serif;
+  /* Headlines: Inter Tight at 600, set on .font-display in the base layer below. */
+  --font-display:
+    "Inter Tight", "Manrope", ui-sans-serif, system-ui, sans-serif;
 
   /* Brand palette */
-  --color-snow: #fcfdff;
-  --color-mist: #f4f8fc;
-  --color-ice: #7db7ff;
-  --color-ice-wash: #eaf3ff;
-  --color-blue: #2464a5;
-  --color-ink: #152840;
-  --color-slate: #52657c;
-  --color-rule: #d9e4ef;
+  --color-snow: #ffffff;
+  --color-mist: #f6f7f9;
+  --color-ice: #c7d0dc;
+  --color-ice-wash: #eef2f7;
+  --color-blue: #2355f5;
+  /* Accent text on ink backgrounds. */
+  --color-blue-soft: #9db4ff;
+  /* Seasonal offer only: deep festive red and green with gold accents (see .promo-surface). */
+  --color-festive-red: #c8102e;
+  --color-festive-green: #0b6b37;
+  --color-gold: #f2cf7e;
+  --color-gold-ink: #1f1406;
+  --color-ink: #0b1220;
+  --color-slate: #4a5568;
+  --color-rule: #e2e6ec;
 
-  /* Primary — frost blue */
-  --color-primary-50: #eaf3ff;
-  --color-primary-100: #d7e7f9;
-  --color-primary-200: #b5d4fb;
-  --color-primary-300: #7db7ff;
-  --color-primary-400: #2464a5;
-  --color-primary-500: #1f5a94;
-  --color-primary-600: #1b4f84;
-  --color-primary-700: #173f69;
-  --color-primary-800: #13314f;
-  --color-primary-900: #152840;
-  --color-primary-950: #0e1b2c;
+  /* Primary — corporate blue */
+  --color-primary-50: #eef2f7;
+  --color-primary-100: #e1e7f0;
+  --color-primary-200: #c7d3e8;
+  --color-primary-300: #c7d0dc;
+  --color-primary-400: #1e4fa3;
+  --color-primary-500: #1a4590;
+  --color-primary-600: #173d80;
+  --color-primary-700: #14336b;
+  --color-primary-800: #112a55;
+  --color-primary-900: #0f1c2e;
+  --color-primary-950: #0a1422;
 
-  --color-accent-400: #2464a5;
-  --color-accent-500: #1f5a94;
-  --color-accent-600: #1b4f84;
-  --color-accent-950: #0e1b2c;
+  --color-accent-400: #1e4fa3;
+  --color-accent-500: #1a4590;
+  --color-accent-600: #173d80;
+  --color-accent-950: #0a1422;
 
   /* Surfaces: 950 page, 900 card, 800 raised, 700 strong */
-  --color-surface-950: #fcfdff;
+  --color-surface-950: #ffffff;
   --color-surface-900: #ffffff;
-  --color-surface-800: #f4f8fc;
-  --color-surface-700: #e9f0f7;
+  --color-surface-800: #f6f7f9;
+  --color-surface-700: #eceff3;
 
-  --color-text-primary: #152840;
-  --color-text-secondary: #52657c;
-  --color-text-muted: #607286;
+  --color-text-primary: #0f1c2e;
+  --color-text-secondary: #4a5568;
+  --color-text-muted: #5f6b7a;
 
   --color-success-400: oklch(0.5 0.15 158);
   --color-success-500: oklch(0.45 0.14 158);
   --color-danger-400: oklch(0.55 0.19 25);
   --color-danger-500: oklch(0.5 0.2 25);
 
-  --color-border-subtle: #d9e4ef;
-  --color-border-default: #c5d3e2;
+  --color-border-subtle: #e2e6ec;
+  --color-border-default: #cfd5dd;
 
   /* Named tokens the numeric ramps can't express */
-  --color-ice-deep: #2464a5;
-  --color-forest: #152840;
+  --color-ice-deep: #1e4fa3;
+  --color-forest: #0f1c2e;
   --color-amber: oklch(0.875 0.132 84);
   --color-amber-ink: oklch(0.26 0.075 68);
   /* Client-logo placeholders ("Muted Mark"). */
   --color-mark: #98a7b7;
 
   --color-card: #ffffff;
-  --color-card-br: #d9e4ef;
+  --color-card-br: #e2e6ec;
   --color-raise: rgb(255 255 255 / 0.8);
-  --color-raise-br: #d9e4ef;
-  --color-hair: #d9e4ef;
-  --color-hair-strong: #c5d3e2;
+  --color-raise-br: #e2e6ec;
+  --color-hair: #e2e6ec;
+  --color-hair-strong: #cfd5dd;
 
-  --color-icon-fg: #2464a5;
-  --color-media: #eaf3ff;
-  --color-media-fg: #2464a5;
+  --color-icon-fg: #1e4fa3;
+  --color-media: #eef2f7;
+  --color-media-fg: #1e4fa3;
   /* Apple's system yellow. Decorative only: ratings also carry an aria-label. */
   --color-star: #ffcc00;
-  --color-quote: #7db7ff;
-  --color-code: #152840;
-  --color-code-fg: #e6eef7;
+  --color-quote: #c7d0dc;
+  --color-code: #0f1c2e;
+  --color-code-fg: #e8ebf0;
 
   /* Contrast panel */
-  --color-panel-ink: #152840;
-  --color-panel-ink-2: #52657c;
-  --color-panel-br: #7db7ff;
+  --color-panel-ink: #0f1c2e;
+  --color-panel-ink-2: #4a5568;
+  --color-panel-br: #c7d0dc;
   --color-panel-chip: rgb(255 255 255 / 0.6);
-  --color-panel-chip-br: #d9e4ef;
+  --color-panel-chip-br: #e2e6ec;
 
-  --color-panel-btn: #152840;
+  --color-panel-btn: #0f1c2e;
   --color-panel-btn-ink: #ffffff;
 
   --shadow-card:
-    0 1px 2px rgb(21 40 64 / 0.04), 0 18px 40px -26px rgb(21 40 64 / 0.18);
+    0 1px 2px rgb(15 28 46 / 0.04), 0 18px 40px -26px rgb(15 28 46 / 0.18);
   --shadow-panel:
-    0 2px 6px -3px rgb(21 40 64 / 0.05), 0 20px 44px -26px rgb(21 40 64 / 0.16);
-  --shadow-btn: 0 10px 24px -14px rgb(21 40 64 / 0.45);
+    0 2px 6px -3px rgb(15 28 46 / 0.05), 0 20px 44px -26px rgb(15 28 46 / 0.16);
+  --shadow-btn: 0 10px 24px -14px rgb(15 28 46 / 0.45);
 
   --animate-fade-in-up: fade-in-up 0.7s ease-out both;
   --animate-fade-in: fade-in 0.6s ease-out both;
@@ -135,21 +143,21 @@
    they're exposed through the `@utility` rules below. Kept flat or near-flat: the frost palette
    avoids visible gradients. */
 :root {
-  --fw-btn: linear-gradient(#152840, #152840);
+  --fw-btn: linear-gradient(#0f1c2e, #0f1c2e);
   --fw-btn-ink: #ffffff;
-  --fw-icon-bg: linear-gradient(#eaf3ff, #eaf3ff);
-  --fw-media: linear-gradient(#eaf3ff, #eaf3ff);
-  --fw-grad-ice: linear-gradient(#2464a5, #2464a5);
-  --fw-grad-forest: linear-gradient(#152840, #152840);
+  --fw-icon-bg: linear-gradient(#eef2f7, #eef2f7);
+  --fw-media: linear-gradient(#eef2f7, #eef2f7);
+  --fw-grad-ice: linear-gradient(#1e4fa3, #1e4fa3);
+  --fw-grad-forest: linear-gradient(#0f1c2e, #0f1c2e);
   --fw-amb-1: radial-gradient(
     ellipse at center,
-    rgb(125 183 255 / 0.16),
+    rgb(30 79 163 / 0.16),
     transparent 62%
   );
-  --fw-amb-2: radial-gradient(circle, rgb(234 243 255 / 0.7), transparent 65%);
-  --fw-panel: linear-gradient(#eaf3ff, #eaf3ff);
+  --fw-amb-2: radial-gradient(circle, rgb(238 242 247 / 0.7), transparent 65%);
+  --fw-panel: linear-gradient(#eef2f7, #eef2f7);
   --fw-grain: 0;
-  /* Fractal-noise tile shared by fw-grain and the ice background. */
+  /* Fractal-noise tile used by fw-grain. */
   --fw-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
 
   color-scheme: light;
@@ -213,6 +221,19 @@
   }
 }
 
+/* In `components` so utilities such as `font-semibold` can still override the weight. */
+@layer components {
+  /* Client headlines: Inter Tight bold. Emphasis inside a headline is colour, not italics. */
+  .font-display {
+    font-weight: 700;
+  }
+
+  .font-display em {
+    font-style: normal;
+    color: var(--color-blue);
+  }
+}
+
 /* Admin headings */
 @utility admin-display {
   font-family: var(--font-sans);
@@ -220,267 +241,12 @@
   letter-spacing: -0.01em;
 }
 
-/* Ice glass background — components/background/IceGlassBackground.tsx. Palette and glass values
-   arrive as --ice-* custom properties from iceConfig.ts, so the shader and these layers agree. */
-.ice-bg {
-  /* Fallback and first paint, until the WebGL ice covers it. */
-  background:
-    radial-gradient(
-      60% 55% at 94% 6%,
-      color-mix(in srgb, var(--ice-ice) var(--ice-glow), transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      55% 50% at 96% 100%,
-      color-mix(in srgb, var(--ice-ice) var(--ice-glow), transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      50% 45% at 2% 96%,
-      color-mix(in srgb, var(--ice-cyan) var(--ice-glow), transparent),
-      transparent 70%
-    ),
-    linear-gradient(155deg, var(--ice-snow) 15%, var(--ice-wash) 100%);
+/* Section text that fades up on change (partnering) or once on first view (brand statement). */
+.fade-swap {
+  animation: fade-swap 0.45s ease-out both;
 }
 
-/* Hidden until it holds the picture, so the fallback never flashes to blank. */
-.ice-bg__canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-}
-
-.ice-bg__canvas[data-ready] {
-  opacity: 1;
-}
-
-/* The header bar: ice glass at roughly half the slabs' strength. White at the top-left cooling to
-   pale ice blue, enough fill to keep the nav readable over any content. */
-.glass-bar {
-  position: relative;
-  isolation: isolate;
-  border: 1px solid rgb(255 255 255 / 0.8);
-  background: linear-gradient(
-    160deg,
-    rgb(255 255 255 / 0.66) 0%,
-    rgb(234 243 255 / 0.56) 50%,
-    rgb(207 228 255 / 0.5) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
-    inset 0 -12px 26px -18px rgb(125 183 255 / 0.45),
-    inset 0 0 30px rgb(255 255 255 / 0.22),
-    0 0 0 1px rgb(169 206 255 / 0.4),
-    0 10px 30px -18px rgb(36 100 165 / 0.22);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  backdrop-filter: blur(14px) saturate(1.4);
-  transition: box-shadow 0.3s ease;
-}
-
-/* Lifts off the page once content scrolls underneath. */
-.glass-bar[data-scrolled] {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
-    inset 0 -12px 26px -18px rgb(125 183 255 / 0.45),
-    inset 0 0 30px rgb(255 255 255 / 0.22),
-    0 0 0 1px rgb(169 206 255 / 0.4),
-    0 14px 36px -16px rgb(36 100 165 / 0.32);
-}
-
-/* Reflection streaks at the 60° frost-cut angle, behind the bar's content. */
-.glass-bar::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      120deg,
-      transparent 18%,
-      rgb(255 255 255 / 0.55) 24%,
-      rgb(255 255 255 / 0.1) 28%,
-      transparent 33%
-    ),
-    linear-gradient(
-      120deg,
-      transparent 62%,
-      rgb(255 255 255 / 0.35) 64%,
-      transparent 67%
-    );
-}
-
-/* Faint frost grain inside the glass. */
-.glass-bar::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  pointer-events: none;
-  background-image: var(--fw-noise);
-  opacity: 0.07;
-  mix-blend-mode: overlay;
-}
-
-/* Translucent glass slabs, skewed so their sides run at the 60° frost-cut angle. The backdrop
-   blur frosts whatever is behind them. Not rendered at the moment — kept for a later section. */
-.ice-pane {
-  position: absolute;
-  overflow: hidden;
-  border: 1px solid rgb(255 255 255 / var(--ice-glass-border));
-  border-radius: 40px;
-  background: linear-gradient(
-    160deg,
-    rgb(255 255 255 / calc(var(--ice-glass-tint) + 0.16)) 0%,
-    rgb(255 255 255 / var(--ice-glass-tint)) 45%,
-    rgb(255 255 255 / calc(var(--ice-glass-tint) * 0.5)) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
-    inset 0 0 60px rgb(255 255 255 / 0.35),
-    0 40px 90px -50px rgb(21 40 64 / 0.28);
-  -webkit-backdrop-filter: blur(var(--ice-glass-blur)) saturate(1.25);
-  backdrop-filter: blur(var(--ice-glass-blur)) saturate(1.25);
-  transform: skewX(-30deg);
-}
-
-/* Reflection streaks running parallel to the slanted edges. */
-.ice-pane::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      90deg,
-      transparent 22%,
-      rgb(255 255 255 / 0.5) 30%,
-      rgb(255 255 255 / 0.08) 36%,
-      transparent 44%
-    ),
-    linear-gradient(
-      90deg,
-      transparent 70%,
-      rgb(255 255 255 / 0.3) 72%,
-      transparent 76%
-    );
-}
-
-/* Frosted texture inside the glass. */
-.ice-pane::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--fw-noise);
-  opacity: 0.1;
-  mix-blend-mode: overlay;
-}
-
-.ice-pane--a {
-  top: 9%;
-  right: -12%;
-  width: 42%;
-  height: 72%;
-}
-
-.ice-pane--b {
-  bottom: -18%;
-  left: -14%;
-  width: 40%;
-  height: 44%;
-}
-
-.ice-pane--c {
-  top: 44%;
-  right: 20%;
-  width: 15%;
-  height: 32%;
-  border-radius: 28px;
-}
-
-@media (max-width: 639px) {
-  .ice-pane--a {
-    top: 6%;
-    right: -38%;
-    width: 80%;
-    height: 46%;
-  }
-
-  .ice-pane--b {
-    bottom: -10%;
-    left: -40%;
-    width: 80%;
-    height: 34%;
-  }
-
-  .ice-pane--c {
-    display: none;
-  }
-}
-
-.ice-bg__grain {
-  position: absolute;
-  inset: 0;
-  background-image: var(--fw-noise);
-  opacity: 0.05;
-  mix-blend-mode: overlay;
-}
-
-@media print {
-  .ice-bg {
-    display: none;
-  }
-}
-
-/* Home "What you get" section — components/partnering/. */
-
-/* WebGL snowflake: shown once it has drawn, which also retires the SVG fallback. */
-.ice-flake-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-}
-
-.ice-flake-canvas[data-ready] {
-  opacity: 1;
-}
-
-.ice-flake-canvas[data-ready] ~ .ice-flake-fallback {
-  display: none;
-}
-
-.ice-snow {
-  position: absolute;
-  border-radius: 9999px;
-  background: rgb(91 157 235 / 0.6);
-  animation: ice-snow-drift linear infinite both;
-}
-
-@keyframes ice-snow-drift {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, -12px, 0);
-  }
-  15% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 0.9;
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(18px, 70px, 0);
-  }
-}
-
-.ice-text-in {
-  animation: ice-text-in 0.45s ease-out both;
-}
-
-@keyframes ice-text-in {
+@keyframes fade-swap {
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -491,8 +257,6 @@
   }
 }
 
-/* Brand statement: lines rise in when `data-in-view` is set, then the blue phrase catches one
-   glint. The glint is a lighter band in a text-clipped gradient, parked off the right edge. */
 .statement-reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -510,62 +274,6 @@
   to {
     opacity: 1;
     transform: none;
-  }
-}
-
-.statement-glint {
-  color: var(--color-blue);
-  background: linear-gradient(
-      100deg,
-      var(--color-blue) 42%,
-      #6aa6ea 50%,
-      var(--color-blue) 58%
-    )
-    0% 0 / 250% 100% no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.statement[data-in-view] .statement-glint {
-  animation: statement-glint 1.8s ease-in-out 0.8s both;
-}
-
-@keyframes statement-glint {
-  to {
-    background-position: 100% 0;
-  }
-}
-
-/* Home closing CTA: small flakes drift down and sideways (`--sway`) while turning, fading in and
-   out; the two large corner crystals turn very slowly. */
-.cta-flake {
-  opacity: 0;
-  animation: cta-flake-fall linear infinite both;
-}
-
-@keyframes cta-flake-fall {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, -16px, 0) rotate(0deg);
-  }
-  15%,
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(var(--sway, 12px), 90px, 0) rotate(180deg);
-  }
-}
-
-.cta-crystal {
-  animation: cta-crystal-turn 90s linear infinite;
-}
-
-@keyframes cta-crystal-turn {
-  to {
-    transform: rotate(360deg);
   }
 }
 
@@ -602,27 +310,84 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ice-snow {
-    display: none;
-  }
+/* Seasonal offer. Red and green are never blended (that turns brown): `promo-surface` is rich
+   Christmas red, `promo-green` is holly green, and each only shifts between its own shades. */
+@utility promo-surface {
+  background-color: var(--color-festive-red);
+  background-image:
+    radial-gradient(
+      55% 70% at 100% 0%,
+      rgb(255 120 120 / 0.22),
+      transparent 65%
+    ),
+    linear-gradient(135deg, #a10b1e 0%, #c8102e 45%, #d5162f 70%, #b30d25 100%);
+}
 
-  .ice-text-in,
+/* Top bar: rich Christmas red flowing into holly green, warmed by a candle-gold glow where they meet. */
+@utility promo-blend {
+  background-color: var(--color-festive-green);
+  background-image:
+    radial-gradient(
+      38% 60% at 22% 55%,
+      rgb(255 190 110 / 0.28),
+      transparent 70%
+    ),
+    radial-gradient(30% 70% at 52% 50%, rgb(255 176 84 / 0.3), transparent 70%),
+    radial-gradient(45% 70% at 94% 0%, rgb(255 220 150 / 0.3), transparent 65%),
+    radial-gradient(60% 80% at 0% 100%, rgb(255 60 70 / 0.35), transparent 60%),
+    linear-gradient(
+      112deg,
+      #a30d1d 0%,
+      #d0142e 26%,
+      #b80f26 44%,
+      #127a40 58%,
+      #0c6b37 78%,
+      #075a2c 100%
+    );
+}
+
+@utility promo-green {
+  background-color: var(--color-festive-green);
+  background-image:
+    radial-gradient(60% 80% at 50% 0%, rgb(60 170 100 / 0.3), transparent 70%),
+    linear-gradient(160deg, #0d7a3f 0%, #0b6b37 45%, #08582c 100%);
+}
+
+/* Gold foil text; the light band drifts across it slowly. */
+.promo-gold {
+  background: linear-gradient(
+      100deg,
+      #c9993f 0%,
+      #f7e3ae 30%,
+      #d8ad5c 50%,
+      #fbeec6 62%,
+      #c9993f 100%
+    )
+    0 0 / 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: promo-shimmer 7s ease-in-out infinite alternate;
+}
+
+@keyframes promo-shimmer {
+  to {
+    background-position: 100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-gold,
+  .fade-swap,
   .group:hover .service-flow,
-  .service-pulse,
-  .statement[data-in-view] .statement-glint {
+  .service-pulse {
     animation: none;
   }
 
   .statement-reveal,
-  .statement[data-in-view] .statement-reveal,
-  .cta-flake {
+  .statement[data-in-view] .statement-reveal {
     opacity: 1;
     transform: none;
-    animation: none;
-  }
-
-  .cta-crystal {
     animation: none;
   }
 }

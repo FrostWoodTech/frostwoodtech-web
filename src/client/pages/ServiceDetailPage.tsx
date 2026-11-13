@@ -26,7 +26,7 @@ function ChecklistCard({
   readonly markdown: string;
 }) {
   return (
-    <div className="rounded-[22px] border border-card-br bg-card p-8 shadow-card sm:p-10">
+    <div className="rounded-lg border border-card-br bg-card p-8 shadow-card sm:p-10">
       <Eyebrow className="mb-4">{eyebrow}</Eyebrow>
       <h2 className="mb-6 font-display text-[24px] font-medium tracking-[-0.018em] text-text-primary sm:text-[28px]">
         {title}
@@ -88,7 +88,7 @@ function ServiceDetail({ service }: { readonly service: ApiService }) {
           </div>
         </div>
 
-        <div className="relative h-110 overflow-hidden rounded-[22px] fw-media border border-hair shadow-card">
+        <div className="relative h-110 overflow-hidden rounded-lg fw-media border border-hair shadow-card">
           {service.heroImageUrl ? (
             <img
               src={service.heroImageUrl}
@@ -130,7 +130,7 @@ function ServiceDetail({ service }: { readonly service: ApiService }) {
             </div>
           </div>
           {service.depthImageUrl && (
-            <div className="overflow-hidden rounded-[22px] border border-hair fw-media shadow-card">
+            <div className="overflow-hidden rounded-lg border border-hair fw-media shadow-card">
               <img
                 src={service.depthImageUrl}
                 alt={service.depthImageAltText ?? ""}

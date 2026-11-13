@@ -1,18 +1,10 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import ClientLayout from "@/client/layout/ClientLayout";
 import Home from "@/client/pages/Home";
 import ContactPage from "@/client/pages/ContactPage";
 import AboutPage from "@/client/pages/AboutPage";
-import WorkPage from "@/client/pages/WorkPage";
-import ProjectDetailPage from "@/client/pages/ProjectDetailPage";
-import BlogPage from "@/client/pages/BlogPage";
-import ArticleDetailPage from "@/client/pages/ArticleDetailPage";
-import ClientReviewsPage from "@/client/pages/ReviewsPage";
 import ServicesPage from "@/client/pages/ServicesPage";
-import ServiceDetailPage from "@/client/pages/ServiceDetailPage";
-import ClientPricingPage from "@/client/pages/PricingPage";
-import ProductsPage from "@/client/pages/ProductsPage";
-import ProductDetailPage from "@/client/pages/ProductDetailPage";
+import ClientProjectsPage from "@/client/pages/ProjectsPage";
 import AdminRoot from "@/admin/layout/AdminRoot";
 import RequireAuth from "@/admin/components/RequireAuth";
 import RequireSuperAdmin from "@/admin/components/RequireSuperAdmin";
@@ -59,52 +51,30 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "about",
-        element: <AboutPage />,
-      },
-      {
         path: "services",
         element: <ServicesPage />,
       },
       {
-        path: "services/:slug",
-        element: <ServiceDetailPage />,
+        path: "about",
+        element: <AboutPage />,
       },
       {
-        path: "pricing",
-        element: <ClientPricingPage />,
+        path: "projects",
+        element: <ClientProjectsPage />,
       },
       {
-        path: "products",
-        element: <ProductsPage />,
-      },
-      {
-        path: "products/:slug",
-        element: <ProductDetailPage />,
-      },
-      {
+        // The old portfolio URL.
         path: "work",
-        element: <WorkPage />,
-      },
-      {
-        path: "work/:slug",
-        element: <ProjectDetailPage />,
-      },
-      {
-        path: "blog",
-        element: <BlogPage />,
-      },
-      {
-        path: "blog/:slug",
-        element: <ArticleDetailPage />,
-      },
-      {
-        path: "reviews",
-        element: <ClientReviewsPage />,
+        element: <Navigate to="/projects" replace />,
       },
       {
         path: "contact",
         element: <ContactPage />,
+      },
+      {
+        // The site is five pages; retired URLs (/blog, /pricing, …) go home.
+        path: "*",
+        element: <Navigate to="/" replace />,
       },
     ],
   },

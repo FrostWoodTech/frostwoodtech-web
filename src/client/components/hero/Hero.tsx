@@ -1,52 +1,107 @@
-import IceGlassBackground from "@/client/components/background/IceGlassBackground";
-import { HERO_DATA } from "@/client/data/hero";
+import { useRef } from "react";
+import { Check } from "lucide-react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { MaskLine, PillLink, SectionLabel } from "@/client/components/site/ui";
+import { EASE } from "@/client/components/motion/presets";
+import { HOME_HERO, PRIMARY_CTA } from "@/client/data/site";
+
+const PROMISES = ["Fixed price", "Weekly demos", "Fully managed"] as const;
+
+/** Entrance timings (seconds after load), so the hero plays as one sequence. */
+const T = { badge: 0.1, lineOne: 0.15, lineTwo: 0.3, rule: 0.65, body: 0.75 };
+
+const fadeUp = (delay: number) => ({
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.9, ease: EASE, delay },
+});
 
 export default function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  // The headline drifts up and dims a little as the hero scrolls away.
+  const headlineY = useTransform(scrollYProgress, [0, 1], ["0%", "-18%"]);
+  const headlineOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.35]);
+
   return (
-    <section className="relative isolate">
-      {/* Reaches up behind the floating header (its height per breakpoint) so the pill sits on ice. */}
-      <div className="absolute inset-x-0 -top-19 bottom-0 -z-10 sm:-top-20 lg:-top-22">
-        <IceGlassBackground />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:px-8 lg:pt-28">
-        {/* Sized and placed to clear the headline (line 2 ends near 816px) and the quote below it. */}
-        <img
-          src="/images/brand/hero-snowflake.webp"
-          alt=""
-          width={960}
-          height={960}
-          fetchPriority="high"
-          className="mb-6 ml-auto block w-32 drop-shadow-[0_30px_40px_rgb(36_100_165/0.22)] select-none sm:w-44 lg:absolute lg:top-6 lg:right-8 lg:mb-0 lg:w-[220px] xl:w-[340px]"
-        />
-
-        <p className="text-[13px] font-bold tracking-[0.015em] text-blue">
-          {HERO_DATA.kicker}
-        </p>
-
-        {/* Sizes are tuned so each line fits one row at its breakpoint (line 2 ≈ 5.6em wide). */}
-        <h1 className="mt-7 font-display text-[56px] leading-[0.87] tracking-[-0.052em] text-ink sm:text-[96px] md:text-[112px] lg:text-[140px]">
-          {HERO_DATA.headlineFirstLine}
-          <br />
-          {HERO_DATA.headlineLead}
-          <em>{HERO_DATA.headlineEmphasis}</em>
-          {HERO_DATA.headlineTail}
-        </h1>
-
-        <div className="mt-11 grid gap-12 lg:mt-14 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-end lg:gap-20">
-          <p className="max-w-[510px] text-base leading-8 text-slate sm:text-lg">
-            {HERO_DATA.description}
+    <section ref={ref} className="overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 pt-16 pb-16 sm:px-6 sm:pt-24 lg:px-8 lg:pt-28 lg:pb-24">
+        <motion.div
+          {...fadeUp(T.badge)}
+          className="flex flex-wrap items-center justify-between gap-4"
+        >
+          <SectionLabel>{HOME_HERO.eyebrow}</SectionLabel>
+          <p className="inline-flex items-center gap-2.5 rounded-full border border-rule px-3.5 py-1.5 text-[13px] font-semibold text-ink">
+            <span aria-hidden="true" className="relative flex h-2 w-2">
+              <span className="service-pulse absolute inset-0 rounded-full bg-success-400/60" />
+              <span className="relative h-2 w-2 rounded-full bg-success-400" />
+            </span>
+            Taking new projects
           </p>
+        </motion.div>
 
-          <aside className="border-l border-ice pb-1 pl-5">
-            <p className="text-lg leading-7 font-semibold tracking-[-0.03em] text-ink">
-              &ldquo;{HERO_DATA.quote}&rdquo;
-            </p>
-            <p className="mt-4 text-sm leading-6 text-slate">
-              {HERO_DATA.quoteNote}
-            </p>
-          </aside>
+        <motion.h1
+          style={{ y: headlineY, opacity: headlineOpacity }}
+          className="mt-10 font-display text-[50px] leading-[0.95] tracking-[-0.05em] sm:text-[84px] lg:text-[124px] xl:text-[140px]"
+        >
+          <MaskLine onLoad delay={T.lineOne} className="text-ink">
+            {HOME_HERO.lineOne}
+          </MaskLine>
+          <MaskLine onLoad delay={T.lineTwo} className="text-blue">
+            {HOME_HERO.lineTwo}
+          </MaskLine>
+        </motion.h1>
+
+        <div className="relative mt-12 pt-10 lg:mt-16">
+          <motion.span
+            aria-hidden="true"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 1.2, ease: EASE, delay: T.rule }}
+            className="absolute inset-x-0 top-0 h-px origin-left bg-rule"
+          />
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-20">
+            <motion.p
+              {...fadeUp(T.body)}
+              className="max-w-xl text-lg leading-8 text-slate"
+            >
+              {HOME_HERO.description}
+            </motion.p>
+            <motion.div
+              {...fadeUp(T.body + 0.1)}
+              className="flex flex-wrap gap-3"
+            >
+              <PillLink href={PRIMARY_CTA.href} variant="dark">
+                {PRIMARY_CTA.label}
+              </PillLink>
+              <PillLink
+                href={HOME_HERO.secondary.href}
+                variant="outline"
+                arrow={false}
+              >
+                {HOME_HERO.secondary.label}
+              </PillLink>
+            </motion.div>
+          </div>
         </div>
+
+        <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-[14.5px] font-semibold text-ink">
+          {PROMISES.map((promise, index) => (
+            <motion.li
+              key={promise}
+              {...fadeUp(T.body + 0.25 + index * 0.08)}
+              className="flex items-center gap-2"
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue text-white">
+                <Check size={12} strokeWidth={3} aria-hidden="true" />
+              </span>
+              {promise}
+            </motion.li>
+          ))}
+        </ul>
       </div>
     </section>
   );

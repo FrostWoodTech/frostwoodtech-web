@@ -15,7 +15,7 @@ const VARIANT_CLASSES: Record<
   { card: string; quote: string; avatar: string }
 > = {
   featured: {
-    card: "rounded-[28px] bg-linear-to-br from-ice-wash via-mist to-snow p-8 sm:p-10",
+    card: "rounded-xl bg-mist p-8 sm:p-10",
     quote:
       "line-clamp-8 font-display text-[26px] leading-[1.22] tracking-[-0.015em] text-ink sm:text-[30px] lg:text-[32px]",
     avatar: "h-12 w-12 bg-blue text-white",
@@ -43,15 +43,6 @@ export default function ReviewWallCard({
     >
       {featured && (
         <>
-          {/* The service and product panels' frost recipe: 60° lines and top-left light. */}
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-[repeating-linear-gradient(120deg,transparent_0_26px,rgb(125_183_255/0.1)_26px_27px)]"
-          />
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgb(255_255_255/0.95),transparent_55%)]"
-          />
           <span
             aria-hidden="true"
             className="relative -mb-6 block font-display text-[120px] leading-none text-blue/80"

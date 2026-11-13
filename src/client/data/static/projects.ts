@@ -21,7 +21,19 @@ export const PROJECTS: readonly ApiProject[] = [
     featured: true,
     sortOrder: 0,
     tags: [TAGS.ticketing, TAGS.booking],
-    images: [],
+    images: [
+      {
+        id: "project-theatre-booking-image-1",
+        objectKey: "images/projects/theatre-booking.webp",
+        url: "/images/projects/theatre-booking.webp",
+        altText:
+          "Theatre booking screen: a film poster beside showtime buttons and a seat map with three seats selected",
+        width: 1448,
+        height: 1086,
+        isPrimary: true,
+        sortOrder: 0,
+      },
+    ],
   },
   {
     id: "project-teamora",
@@ -41,7 +53,19 @@ export const PROJECTS: readonly ApiProject[] = [
     featured: true,
     sortOrder: 1,
     tags: [TAGS.hr, TAGS.system],
-    images: [],
+    images: [
+      {
+        id: "project-teamora-image-1",
+        objectKey: "images/projects/teamora.webp",
+        url: "/images/projects/teamora.webp",
+        altText:
+          "Teamora dashboard: employee totals, a team list with attendance status, a weekly attendance chart and leave requests",
+        width: 1448,
+        height: 1086,
+        isPrimary: true,
+        sortOrder: 0,
+      },
+    ],
   },
   {
     id: "project-aurora",
@@ -61,6 +85,18 @@ export const PROJECTS: readonly ApiProject[] = [
     featured: true,
     sortOrder: 2,
     tags: [TAGS.transport, TAGS.booking],
-    images: [],
+    images: [
+      {
+        id: "project-aurora-image-1",
+        objectKey: "images/projects/aurora.webp",
+        url: "/images/projects/aurora.webp",
+        altText:
+          "Aurora booking screen: an executive car outside an airport terminal beside a transfer booking form and journey summary",
+        width: 1448,
+        height: 1086,
+        isPrimary: true,
+        sortOrder: 0,
+      },
+    ],
   },
 ];

@@ -96,7 +96,7 @@ export default function ContactForm({ data }: ContactFormProps) {
 
   if (sent) {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-[22px] border border-card-br bg-card p-10 text-center shadow-card sm:p-14">
+      <div className="flex flex-col items-center gap-4 rounded-lg border border-card-br bg-card p-10 text-center shadow-card sm:p-14">
         <CheckCircle2
           size={40}
           aria-hidden="true"
@@ -126,7 +126,7 @@ export default function ContactForm({ data }: ContactFormProps) {
   );
 
   return (
-    <div className="rounded-[22px] border border-card-br bg-card p-8 shadow-card sm:p-10">
+    <div className="rounded-lg border border-card-br bg-card p-8 shadow-card sm:p-10">
       <h2 className="font-display text-[26px] font-medium tracking-[-0.018em] text-text-primary">
         Start a project
       </h2>

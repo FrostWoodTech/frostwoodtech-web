@@ -33,20 +33,11 @@ export default function FeaturedServiceCard({
   return (
     <Link
       to={service.href}
-      className={`group relative flex flex-col gap-1 rounded-[28px] border border-rule bg-white p-2.5 shadow-[0_18px_40px_-30px_rgb(21_40_64/0.35)] transition duration-300 hover:border-ice/70 hover:shadow-[0_0_0_4px_rgb(125_183_255/0.14),0_28px_56px_-30px_rgb(36_100_165/0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 motion-safe:hover:-translate-y-1 ${layout.card}`}
+      className={`group relative flex flex-col gap-1 rounded-xl border border-rule bg-white p-2.5 shadow-[0_18px_40px_-30px_rgb(21_40_64/0.35)] transition duration-300 hover:border-border-default hover:shadow-[0_24px_48px_-30px_rgb(15_28_46/0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 motion-safe:hover:-translate-y-1 ${layout.card}`}
     >
       <div
-        className={`relative overflow-hidden rounded-[22px] border border-rule/70 bg-linear-to-br from-ice-wash via-mist to-snow ${layout.visual}`}
+        className={`relative overflow-hidden rounded-lg border border-rule/70 bg-mist ${layout.visual}`}
       >
-        {/* Faint lines at the 60° frost-cut angle, and a soft light from the top-left. */}
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 bg-[repeating-linear-gradient(120deg,transparent_0_26px,rgb(125_183_255/0.1)_26px_27px)]"
-        />
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(circle_at_15%_0%,rgb(255_255_255/0.95),transparent_55%)]"
-        />
         <div className="absolute inset-0 p-4">
           <ServiceVisual service={service} />
         </div>

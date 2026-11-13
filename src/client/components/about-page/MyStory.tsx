@@ -5,7 +5,7 @@ import { STORY_DATA } from "@/client/data/about-page";
 export default function MyStory() {
   return (
     <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
-      <div className="relative h-110 overflow-hidden rounded-[22px] fw-media border border-hair shadow-card">
+      <div className="relative h-110 overflow-hidden rounded-lg fw-media border border-hair shadow-card">
         <svg
           viewBox="0 0 620 440"
           preserveAspectRatio="xMidYMid slice"
