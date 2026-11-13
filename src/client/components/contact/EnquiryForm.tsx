@@ -168,13 +168,12 @@ export default function EnquiryForm() {
       phone: blank(values.phone),
       company: blank(values.company),
       message: values.message.trim(),
-      serviceId:
-        values.service && values.service !== SOMETHING_ELSE
-          ? values.service
-          : undefined,
+      serviceName:
+        values.service === SOMETHING_ELSE
+          ? "Something else"
+          : services.find((service) => service.id === values.service)?.name,
       budgetRange: values.budget || undefined,
       subject: isWithinWindow(PROMO) ? PROMO.enquirySubject : undefined,
-      site: "agency",
       website: honeypot || undefined,
     };
 

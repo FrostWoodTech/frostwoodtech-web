@@ -72,16 +72,14 @@ export default function ProjectList() {
           </div>
         )}
 
-        {isPending && (
-          <div className="aspect-[2/1] animate-pulse rounded-[28px] bg-mist" />
-        )}
+        {isPending && <div className="aspect-[2/1] animate-pulse bg-mist" />}
         {error && (
           <p role="alert" className="text-[15px] text-danger-500">
             {toErrorMessage(error)}
           </p>
         )}
         {!isPending && !error && projects.length === 0 && (
-          <p className="rounded-[28px] bg-mist p-10 text-[16px] text-slate">
+          <p className="bg-mist p-10 text-[16px] text-slate">
             New projects are on their way. Check back soon.
           </p>
         )}

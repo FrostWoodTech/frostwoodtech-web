@@ -29,6 +29,8 @@ export const SITE = {
     { display: "+94 71 380 5613", whatsapp: "https://wa.me/94713805613" },
   ],
   responseTime: "Within one working day",
+  /** Prefilled into the WhatsApp chat so the first message is never blank. */
+  whatsappGreeting: "Hi FrostWoodTech, I'd like to talk about a project.",
 } as const;
 
 export const NAV_LINKS = [

@@ -409,7 +409,7 @@ export type ContactBudgetRange =
   | "over_fifteen_k"
   | "not_sure";
 
-/** `DTOs/Public/CreateContactSubmissionRequest.cs`. `website` is a honeypot and must stay empty. */
+/** Posted to `api/contact.ts`. `website` is a honeypot and must stay empty. */
 export interface SubmitContactPayload {
   readonly name: string;
   readonly email: string;
@@ -417,9 +417,8 @@ export interface SubmitContactPayload {
   readonly company?: string;
   readonly subject?: string;
   readonly message: string;
-  readonly serviceId?: string;
+  readonly serviceName?: string;
   readonly budgetRange?: ContactBudgetRange;
-  readonly site: Site;
   readonly website?: string;
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import { Menu, Send, X } from "lucide-react";
 import {
   AnimatePresence,
   motion,
@@ -91,7 +91,7 @@ export default function Header() {
         <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
           <Logo />
 
-          <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
+          <nav aria-label="Main" className="hidden items-center gap-8 lg:flex">
             {NAV_LINKS.map((link) => (
               <NavLink
                 key={link.href}
@@ -124,17 +124,24 @@ export default function Header() {
             <PillLink
               href={PRIMARY_CTA.href}
               variant="dark"
-              className="hidden h-11! px-5! text-[14px]! sm:inline-flex"
+              className="h-11! px-5! text-[14px]! whitespace-nowrap max-lg:hidden!"
             >
               {PRIMARY_CTA.label}
             </PillLink>
+            <Link
+              to={PRIMARY_CTA.href}
+              aria-label={PRIMARY_CTA.label}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-ink text-white transition-colors hover:bg-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2 lg:hidden"
+            >
+              <Send size={18} aria-hidden="true" />
+            </Link>
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-label="Open menu"
               aria-expanded={open}
               aria-controls="site-menu"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-rule text-ink transition-colors hover:border-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-blue md:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-rule text-ink transition-colors hover:border-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-blue lg:hidden"
             >
               <Menu size={20} aria-hidden="true" />
             </button>

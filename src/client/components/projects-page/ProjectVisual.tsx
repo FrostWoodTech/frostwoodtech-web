@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion } from "motion/react";
 import { EASE, VIEWPORT } from "@/client/components/motion/presets";
 import type { Project, ProjectImage } from "@/client/types";
 
@@ -13,15 +12,15 @@ const TONES = [
   { panel: "bg-mist text-ink", tag: "bg-white", ghost: "text-ink/[0.06]" },
 ] as const;
 
-/** Unfolds from a slightly inset, rounded frame the first time it scrolls into view. */
+/** Unfolds from a slightly inset frame the first time it scrolls into view. */
 const unfold = {
-  initial: { clipPath: "inset(8% 6% 8% 6% round 28px)", opacity: 0 },
-  whileInView: { clipPath: "inset(0% 0% 0% 0% round 28px)", opacity: 1 },
+  initial: { clipPath: "inset(8% 6% 8% 6%)", opacity: 0 },
+  whileInView: { clipPath: "inset(0% 0% 0% 0%)", opacity: 1 },
   viewport: VIEWPORT,
   transition: { duration: 1.2, ease: EASE },
 } as const;
 
-/** The screenshot unfolds into view, then drifts slightly against the scroll (parallax). */
+/** The screenshot unfolds into view; the frame matches the image ratio so nothing is cropped. */
 function ScreenshotVisual({
   image,
   className,
@@ -29,31 +28,17 @@ function ScreenshotVisual({
   readonly image: ProjectImage;
   readonly className: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
-
   return (
     <motion.div
-      ref={ref}
       {...unfold}
-      className={`relative overflow-hidden rounded-[28px] border border-rule bg-mist ${className}`}
+      className={`relative overflow-hidden border border-rule bg-mist ${className}`}
     >
-      {/* Taller than the frame so the drift never shows an edge. */}
-      <motion.div
-        style={{ y }}
-        className="absolute inset-x-0 -top-[7%] h-[114%]"
-      >
-        <img
-          src={image.url}
-          alt={image.altText}
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-        />
-      </motion.div>
+      <img
+        src={image.url}
+        alt={image.altText}
+        loading="lazy"
+        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+      />
     </motion.div>
   );
 }
@@ -71,7 +56,7 @@ function TypographicVisual({
     <motion.div
       aria-hidden="true"
       {...unfold}
-      className={`relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-rule p-7 sm:p-9 ${tone.panel} ${className}`}
+      className={`relative flex flex-col justify-between overflow-hidden border border-rule p-7 sm:p-9 ${tone.panel} ${className}`}
     >
       <span
         className={`pointer-events-none absolute -right-[0.06em] -bottom-[0.22em] font-display text-[clamp(120px,22vw,300px)] leading-none tracking-[-0.06em] whitespace-nowrap select-none ${tone.ghost}`}

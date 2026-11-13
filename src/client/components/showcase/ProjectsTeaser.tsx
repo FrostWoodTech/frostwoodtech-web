@@ -42,7 +42,7 @@ export default function ProjectsTeaser() {
           <StaggerItem as="li" key={project.id}>
             <Link
               to={`/projects#${project.slug}`}
-              className="group block rounded-[28px] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-4"
+              className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-4"
             >
               <ProjectVisual project={project} className="aspect-[4/3]" />
               <div className="mt-6 flex items-start justify-between gap-4">

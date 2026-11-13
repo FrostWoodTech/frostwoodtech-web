@@ -6,6 +6,7 @@ import Footer from "@/client/components/footer/Footer";
 import ToastProvider from "@/client/context/ToastProvider";
 import CurrencyProvider from "@/client/context/CurrencyProvider";
 import ErrorBoundary from "@/client/components/ErrorBoundary";
+import WhatsAppChat from "@/client/components/site/WhatsAppChat";
 import { PageTransition } from "@/client/components/motion/SiteMotion";
 
 const queryClient = new QueryClient({
@@ -36,6 +37,7 @@ export default function ClientLayout() {
               </ErrorBoundary>
             </main>
             <Footer />
+            <WhatsAppChat />
           </MotionConfig>
         </ToastProvider>
       </CurrencyProvider>
