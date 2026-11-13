@@ -1,14 +1,10 @@
 import { Star } from "lucide-react";
 import type { ApiReview } from "@/client/types";
 import { countryCodeToFlag } from "@/client/lib/countryFlag";
+import { initialsOf } from "@/client/utils/initials";
 
 interface ReviewCardProps {
   readonly review: ApiReview;
-}
-
-function initialsOf(name: string): string {
-  const parts = name.trim().split(/\s+/).slice(0, 2);
-  return parts.map((part) => part.charAt(0).toUpperCase()).join("") || "?";
 }
 
 export default function ReviewCard({ review }: ReviewCardProps) {

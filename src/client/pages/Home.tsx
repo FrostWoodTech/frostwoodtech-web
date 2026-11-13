@@ -1,42 +1,34 @@
 import Hero from "@/client/components/hero/Hero";
-import TrustedBy from "@/client/components/trusted-by/TrustedBy";
-import Services from "@/client/components/services/Services";
-import Metrics from "@/client/components/metrics/Metrics";
-import Pricing from "@/client/components/pricing/Pricing";
-import TestimonialCarousel from "@/client/components/testimonial/TestimonialCarousel";
-import PanelCTA from "@/client/components/ui/PanelCTA";
-import { HOME_METRICS } from "@/client/data/hero";
+import ServiceAccordion from "@/client/components/services/ServiceAccordion";
+import ProjectsTeaser from "@/client/components/showcase/ProjectsTeaser";
+import { ChristmasOfferBand } from "@/client/components/promo/ChristmasOffer";
+import ClosingCta from "@/client/components/site/ClosingCta";
+import Marquee from "@/client/components/motion/Marquee";
+import {
+  ProcessSection,
+  ResultsSection,
+  TestimonialsSection,
+  WhyUsSection,
+} from "@/client/components/site/sections";
 import { useHome } from "@/client/hooks/useHome";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function Home() {
+  useDocumentTitle("FrostWoodTech | Websites, apps & business software");
   const { data: home } = useHome();
 
   return (
     <>
       <Hero />
-      <TrustedBy />
-      {home && <Services services={home.featuredServices} />}
-      <Metrics metrics={HOME_METRICS} />
-      {home && <Pricing plans={home.featuredPricingPlans} />}
-      {home && <TestimonialCarousel reviews={home.featuredReviews} />}
-
-      <section className="mx-auto max-w-7xl px-4 py-26 sm:px-6 lg:px-8">
-        <PanelCTA
-          align="center"
-          title={
-            <>
-              Let&rsquo;s build something
-              <br />
-              that lasts a decade.
-            </>
-          }
-          description="Tell us what you're building. You'll get a scoped proposal and a fixed price within three working days."
-          primaryLabel="Start a project"
-          primaryHref="/contact"
-          secondaryLabel="See our work"
-          secondaryHref="/work"
-        />
-      </section>
+      <Marquee />
+      <ServiceAccordion />
+      <ChristmasOfferBand />
+      <ProjectsTeaser />
+      <ProcessSection />
+      <WhyUsSection />
+      <ResultsSection />
+      <TestimonialsSection reviews={home?.featuredReviews} />
+      <ClosingCta />
     </>
   );
 }

@@ -1,11 +1,13 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MotionConfig } from "motion/react";
 import Header from "@/client/components/header/Header";
 import Footer from "@/client/components/footer/Footer";
-import ThemeProvider from "@/client/context/ThemeProvider";
 import ToastProvider from "@/client/context/ToastProvider";
 import CurrencyProvider from "@/client/context/CurrencyProvider";
 import ErrorBoundary from "@/client/components/ErrorBoundary";
+import WhatsAppChat from "@/client/components/site/WhatsAppChat";
+import { PageTransition } from "@/client/components/motion/SiteMotion";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,21 +21,26 @@ export default function ClientLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        {/* Must be inside the query provider. */}
-        <CurrencyProvider>
-          <ToastProvider>
+      {/* Must be inside the query provider. */}
+      <CurrencyProvider>
+        <ToastProvider>
+          {/* "user": movement is dropped for visitors who ask their OS for reduced motion. */}
+          <MotionConfig reducedMotion="user">
+            <ScrollRestoration />
             <Header />
-            <main className="min-h-screen">
+            <main id="main" className="min-h-screen">
               {/* Keyed by path so leaving a crashed page resets the boundary. */}
               <ErrorBoundary key={pathname}>
-                <Outlet />
+                <PageTransition>
+                  <Outlet />
+                </PageTransition>
               </ErrorBoundary>
             </main>
             <Footer />
-          </ToastProvider>
-        </CurrencyProvider>
-      </ThemeProvider>
+            <WhatsAppChat />
+          </MotionConfig>
+        </ToastProvider>
+      </CurrencyProvider>
     </QueryClientProvider>
   );
 }

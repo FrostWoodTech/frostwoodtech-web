@@ -106,7 +106,7 @@ function resolveCoverImage(coverImageKey?: string): string {
 }
 
 /** Strips common Markdown syntax for plain-text card blurbs (not a full parser). */
-function stripMarkdown(markdown: string): string {
+export function stripMarkdown(markdown: string): string {
   return markdown
     .replace(/`{1,3}[^`]*`{1,3}/g, (match) => match.replace(/`/g, ""))
     .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")

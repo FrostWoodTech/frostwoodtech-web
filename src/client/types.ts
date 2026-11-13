@@ -19,18 +19,15 @@ export interface BrandInfo {
 }
 
 export interface HeroData {
-  readonly badgeTag: string;
-  readonly badgeText: string;
-  /** Split so the accent phrases can carry gradients. */
+  readonly kicker: string;
+  /** Headline renders as two lines; `headlineEmphasis` is set in italic. */
+  readonly headlineFirstLine: string;
   readonly headlineLead: string;
-  readonly headlineIce: string;
-  readonly headlineMid: string;
-  readonly headlineForest: string;
+  readonly headlineEmphasis: string;
   readonly headlineTail: string;
   readonly description: string;
-  readonly primaryCta: CtaConfig;
-  readonly secondaryCta: CtaConfig;
-  readonly trustLine: string;
+  readonly quote: string;
+  readonly quoteNote: string;
 }
 
 export interface Metric {
@@ -57,9 +54,47 @@ export interface ProcessStep {
   readonly description: string;
 }
 
-export interface CtaConfig {
+export type ServiceVisualKind = "website" | "mobile" | "systems" | "cloud";
+
+interface CtaLink {
   readonly label: string;
   readonly href: string;
+}
+
+/** Home closing call to action: heading lead + blue italic line, two links, short promises. */
+export interface CtaData {
+  readonly eyebrow: string;
+  readonly titleLead: string;
+  readonly titleEmphasis: string;
+  readonly description: string;
+  readonly primary: CtaLink;
+  readonly secondary: CtaLink;
+  readonly promises: readonly string[];
+}
+
+/** One column of the Home pricing strip: a big value (optional blue suffix) over a short promise. */
+export interface PricingPromise {
+  readonly id: string;
+  readonly value: string;
+  readonly suffix?: string;
+  readonly title: string;
+  readonly description: string;
+}
+
+/** Home brand statement between services and products: `{lead} {emphasis},` then `{lineTwo}`. */
+export interface StatementData {
+  readonly lead: string;
+  readonly emphasis: string;
+  readonly lineTwo: string;
+  readonly description: string;
+}
+
+/** Section heading whose second line is set in blue italic. */
+export interface EmphasisHeaderData {
+  readonly eyebrow: string;
+  readonly titleLead: string;
+  readonly titleEmphasis: string;
+  readonly description: string;
 }
 
 export interface Service {
@@ -68,6 +103,12 @@ export interface Service {
   readonly description: string;
   readonly iconUrl?: string;
   readonly iconAltText?: string;
+  /** Used when there's no `iconUrl` (placeholder content). */
+  readonly icon?: LucideIcon;
+  /** Home-card illustration; services without one show their icon instead. */
+  readonly visual?: ServiceVisualKind;
+  /** Short chips on the home card. */
+  readonly highlights?: readonly string[];
   readonly href: string;
 }
 
@@ -101,6 +142,8 @@ export interface ProjectImage {
   readonly isPrimary: boolean;
   readonly sortOrder: number;
 }
+
+export type ProjectScreenKind = "theatre" | "people" | "transfers";
 
 export interface Product {
   readonly id: string;
@@ -366,7 +409,7 @@ export type ContactBudgetRange =
   | "over_fifteen_k"
   | "not_sure";
 
-/** `DTOs/Public/CreateContactSubmissionRequest.cs`. `website` is a honeypot and must stay empty. */
+/** Posted to `api/contact.ts`. `website` is a honeypot and must stay empty. */
 export interface SubmitContactPayload {
   readonly name: string;
   readonly email: string;
@@ -374,9 +417,8 @@ export interface SubmitContactPayload {
   readonly company?: string;
   readonly subject?: string;
   readonly message: string;
-  readonly serviceId?: string;
+  readonly serviceName?: string;
   readonly budgetRange?: ContactBudgetRange;
-  readonly site: Site;
   readonly website?: string;
 }
 
@@ -447,6 +489,21 @@ export interface CoreValue {
   readonly icon: LucideIcon;
 }
 
+/** One benefit in the Home "What you get" section. */
+export interface PartneringItem {
+  readonly id: string;
+  /** Short text on the floating card around the hexagon. */
+  readonly label: string;
+  readonly title: string;
+  readonly description: string;
+  readonly icon: LucideIcon;
+}
+
+export interface PartneringData {
+  readonly eyebrow: string;
+  readonly items: readonly PartneringItem[];
+}
+
 export interface ContactData {
   readonly badge: string;
   readonly title: string;
@@ -488,7 +545,11 @@ export interface FooterLinkGroup {
 }
 
 export interface FooterData {
-  readonly blurb: string;
+  /** Serif line under the logo; the emphasis is set in blue italic on its own line. */
+  readonly headlineLead: string;
+  readonly headlineEmphasis: string;
+  /** Availability chip, e.g. "Taking new projects". */
+  readonly status: string;
   readonly email: string;
   readonly linkGroups: readonly FooterLinkGroup[];
   readonly copyright: string;

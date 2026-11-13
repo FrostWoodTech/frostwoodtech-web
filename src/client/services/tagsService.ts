@@ -1,4 +1,5 @@
 import { httpClient } from "@/client/services/httpClient";
+import { USE_STATIC_DATA, staticApi } from "@/client/services/staticApi";
 import type { ApiTag, TechCategory } from "@/client/types";
 
 export interface GetTagsParams {
@@ -12,6 +13,7 @@ export async function getTags(
   { isTechnology, category }: GetTagsParams = {},
   signal?: AbortSignal,
 ): Promise<readonly ApiTag[]> {
+  if (USE_STATIC_DATA) return staticApi.getTags({ isTechnology, category });
   const { data } = await httpClient.get<readonly ApiTag[]>("/public/tags", {
     params: { isTechnology, category },
     signal,

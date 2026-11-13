@@ -4,7 +4,6 @@ import { ArrowLeft, ArrowUpRight, ChevronRight } from "lucide-react";
 import { useProduct } from "@/client/hooks/useProduct";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { toErrorMessage } from "@/client/services/ApiError";
-import useTheme from "@/client/context/useTheme";
 import Spinner from "@/client/components/ui/Spinner";
 import Button from "@/client/components/ui/Button";
 import Eyebrow from "@/client/components/ui/Eyebrow";
@@ -13,7 +12,6 @@ import PanelCTA from "@/client/components/ui/PanelCTA";
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: product, isLoading, isError, error } = useProduct(slug);
-  const { theme } = useTheme();
 
   useDocumentTitle(product ? product.name : "Loading Product…");
 
@@ -93,7 +91,7 @@ export default function ProductDetailPage() {
         <div className="mt-19 grid grid-cols-1 gap-15 lg:grid-cols-3">
           <div className="flex flex-col gap-11 lg:col-span-2">
             {product.description && (
-              <div data-color-mode={theme} className="fw-prose">
+              <div data-color-mode="light" className="fw-prose">
                 <MDEditor.Markdown
                   source={product.description}
                   style={{ backgroundColor: "transparent", color: "inherit" }}
@@ -132,7 +130,7 @@ export default function ProductDetailPage() {
                       PRICING
                     </div>
                     <div
-                      data-color-mode={theme}
+                      data-color-mode="light"
                       className="fw-prose mt-2 text-[15.5px] text-text-primary"
                     >
                       <MDEditor.Markdown
