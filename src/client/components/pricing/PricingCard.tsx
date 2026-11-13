@@ -1,74 +1,166 @@
-import { Check, ArrowRight } from "lucide-react";
-import Button from "@/client/components/ui/Button";
-import type { PricingTier } from "@/client/types";
+import { Check, Minus } from "lucide-react";
+import { Link } from "react-router-dom";
+import type { ApiPricingPlan } from "@/client/types";
+import useCurrency from "@/client/context/useCurrency";
+import { formatPlanPrice } from "@/client/utils/pricing";
 
 interface PricingCardProps {
-  readonly tier: PricingTier;
+  readonly plan: ApiPricingPlan;
 }
 
-export default function PricingCard({ tier }: PricingCardProps) {
+const DEFAULT_CTA_LABEL = "Get a quote";
+const DEFAULT_CTA_URL = "/contact";
+
+export default function PricingCard({ plan }: PricingCardProps) {
+  const { isPopular } = plan;
+  const { currency } = useCurrency();
+  const price = formatPlanPrice(plan, currency);
+
+  const ctaLabel = plan.ctaLabel ?? DEFAULT_CTA_LABEL;
+  const ctaUrl = plan.ctaUrl ?? DEFAULT_CTA_URL;
+  const ctaClasses = `relative z-2 mt-auto rounded-xl py-3.5 text-center text-[14.5px] font-bold transition-all duration-200 ${
+    isPopular
+      ? "bg-panel-btn text-panel-btn-ink hover:-translate-y-0.5"
+      : "border border-card-br bg-surface-900 text-text-primary hover:border-hair-strong"
+  }`;
+  const features = [...plan.features].sort((a, b) => a.sortOrder - b.sortOrder);
+
   return (
-    <article
-      className={`group relative flex flex-col rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
-        tier.isPopular
-          ? "bg-surface-800/80 border-2 border-primary-500/40 shadow-lg shadow-primary-600/10 hover:border-primary-400/60 hover:shadow-primary-500/20"
-          : "bg-surface-900/60 border border-border-subtle hover:border-primary-600/20 hover:shadow-primary-600/5"
+    <div
+      className={`relative flex flex-col gap-5 overflow-hidden rounded-[20px] border p-8 ${
+        isPopular
+          ? "fw-panel fw-grain border-panel-br shadow-panel lg:z-10 lg:scale-105"
+          : "border-card-br bg-card shadow-card"
       }`}
     >
-      {/* Popular badge */}
-      {tier.isPopular && (
-        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-          <span className="inline-flex px-4 py-1.5 text-[10px] font-bold tracking-widest uppercase rounded-full bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-lg shadow-primary-600/30">
-            Most Popular
+      <div className="relative z-2">
+        <div className="flex items-center justify-between gap-3">
+          <span
+            className={`text-xs font-bold tracking-[0.1em] uppercase ${
+              isPopular ? "text-panel-ink-2" : "text-text-muted"
+            }`}
+          >
+            {plan.name}
           </span>
+          {isPopular && (
+            <span className="shrink-0 rounded-full bg-amber px-3 py-1 text-[11px] font-extrabold tracking-[0.05em] text-amber-ink">
+              MOST POPULAR
+            </span>
+          )}
         </div>
-      )}
 
-      {/* Tier name */}
-      <h3 className="text-lg font-semibold text-text-primary mb-4">
-        {tier.name}
-      </h3>
+        <div className="mt-3.5 flex flex-wrap items-baseline gap-2">
+          {price.prefix && (
+            <span
+              className={`text-[13.5px] ${
+                isPopular ? "text-panel-ink-2" : "text-text-muted"
+              }`}
+            >
+              {price.prefix}
+            </span>
+          )}
+          <span
+            className={`font-display text-[44px] leading-none font-medium tabular-nums ${
+              isPopular ? "text-panel-ink" : "text-text-primary"
+            }`}
+          >
+            {price.amount ?? "Contact us"}
+          </span>
+          {price.suffix && (
+            <span
+              className={`text-[13.5px] ${
+                isPopular ? "text-panel-ink-2" : "text-text-muted"
+              }`}
+            >
+              {price.suffix}
+            </span>
+          )}
+        </div>
 
-      {/* Price */}
-      <div className="flex items-baseline gap-1.5 mb-4">
-        <span className="text-[10px] font-semibold tracking-widest uppercase text-text-muted">
-          {tier.priceLabel}
-        </span>
-        <span className="text-4xl font-bold text-text-primary tracking-tight">
-          {tier.price}
-        </span>
+        {plan.tagline && (
+          <p
+            className={`mt-3 text-[14.5px] font-semibold ${
+              isPopular ? "text-panel-ink" : "text-text-primary"
+            }`}
+          >
+            {plan.tagline}
+          </p>
+        )}
+
+        <p
+          className={`mt-2 text-[14.5px] leading-[1.6] ${
+            isPopular ? "text-panel-ink-2" : "text-text-secondary"
+          }`}
+        >
+          {plan.description}
+        </p>
+
+        {plan.deliveryText && (
+          <p
+            className={`mt-2.5 text-[13px] ${
+              isPopular ? "text-panel-ink-2" : "text-text-muted"
+            }`}
+          >
+            Delivery: {plan.deliveryText}
+          </p>
+        )}
       </div>
 
-      {/* Description */}
-      <p className="text-sm text-text-secondary leading-relaxed mb-8">
-        {tier.description}
-      </p>
+      {features.length > 0 && (
+        <>
+          <div
+            aria-hidden="true"
+            className={`relative z-2 h-px ${
+              isPopular ? "bg-panel-chip-br" : "bg-hair"
+            }`}
+          />
 
-      {/* Features list */}
-      <ul className="flex flex-col gap-3.5 mb-8 flex-1" role="list">
-        {tier.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-3">
-            <Check
-              size={16}
-              className={`shrink-0 mt-0.5 ${
-                tier.isPopular ? "text-primary-400" : "text-text-muted"
-              }`}
-            />
-            <span className="text-sm text-text-secondary">{feature}</span>
-          </li>
-        ))}
-      </ul>
+          <ul className="relative z-2 flex flex-col gap-3">
+            {features.map((feature) => {
+              const Icon = feature.isIncluded ? Check : Minus;
+              return (
+                <li
+                  key={feature.id}
+                  className={`flex items-center gap-2.5 text-[14.5px] ${
+                    feature.isIncluded
+                      ? isPopular
+                        ? "text-panel-ink"
+                        : "text-text-primary"
+                      : "text-text-muted line-through"
+                  }`}
+                >
+                  <Icon
+                    size={16}
+                    aria-hidden="true"
+                    className={`shrink-0 ${
+                      isPopular ? "text-panel-ink" : "text-primary-400"
+                    }`}
+                  />
+                  <span className="sr-only">
+                    {feature.isIncluded ? "Included:" : "Not included:"}
+                  </span>
+                  {feature.text}
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
 
-      {/* CTA */}
-      <Button
-        href={tier.ctaHref}
-        variant={tier.isPopular ? "primary" : "outline"}
-        size="md"
-        icon={<ArrowRight size={16} />}
-        className="w-full uppercase tracking-wider text-xs"
-      >
-        {tier.ctaLabel}
-      </Button>
-    </article>
+      {/^https?:\/\//i.test(ctaUrl) ? (
+        <a
+          href={ctaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={ctaClasses}
+        >
+          {ctaLabel}
+        </a>
+      ) : (
+        <Link to={ctaUrl} className={ctaClasses}>
+          {ctaLabel}
+        </Link>
+      )}
+    </div>
   );
 }

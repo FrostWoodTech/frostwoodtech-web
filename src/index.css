@@ -1,52 +1,108 @@
-/* ─── Google Fonts ─────────────────────────────────────────── */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
 
 @import "tailwindcss";
 
-/* ─── Tailwind v4 Theme Tokens ─────────────────────────────── */
+/* Client theme ("Bold corporate"), light only: near-black ink, white, neutral greys and one electric
+   blue. `ice` is a neutral decorative grey — never text. Accent text: `blue` on light, `blue-soft` on ink. */
 @theme {
-  /* Typography */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  /* Headlines: Inter Tight at 600, set on .font-display in the base layer below. */
+  --font-display:
+    "Inter Tight", "Manrope", ui-sans-serif, system-ui, sans-serif;
 
-  /* Primary palette — Purple */
-  --color-primary-50: oklch(0.97 0.01 285);
-  --color-primary-100: oklch(0.93 0.03 285);
-  --color-primary-200: oklch(0.87 0.06 285);
-  --color-primary-300: oklch(0.78 0.1 285);
-  --color-primary-400: oklch(0.68 0.15 285);
-  --color-primary-500: oklch(0.58 0.2 285);
-  --color-primary-600: oklch(0.5 0.22 285);
-  --color-primary-700: oklch(0.43 0.2 285);
-  --color-primary-800: oklch(0.36 0.16 285);
-  --color-primary-900: oklch(0.3 0.12 285);
+  /* Brand palette */
+  --color-snow: #ffffff;
+  --color-mist: #f6f7f9;
+  --color-ice: #c7d0dc;
+  --color-ice-wash: #eef2f7;
+  --color-blue: #2355f5;
+  /* Accent text on ink backgrounds. */
+  --color-blue-soft: #9db4ff;
+  /* Seasonal offer only: deep festive red and green with gold accents (see .promo-surface). */
+  --color-festive-red: #c8102e;
+  --color-festive-green: #0b6b37;
+  --color-gold: #f2cf7e;
+  --color-gold-ink: #1f1406;
+  --color-ink: #0b1220;
+  --color-slate: #4a5568;
+  --color-rule: #e2e6ec;
 
-  /* Accent palette — Cyan/Blue */
-  --color-accent-400: oklch(0.75 0.15 230);
-  --color-accent-500: oklch(0.65 0.18 230);
-  --color-accent-600: oklch(0.55 0.2 230);
+  /* Primary — corporate blue */
+  --color-primary-50: #eef2f7;
+  --color-primary-100: #e1e7f0;
+  --color-primary-200: #c7d3e8;
+  --color-primary-300: #c7d0dc;
+  --color-primary-400: #1e4fa3;
+  --color-primary-500: #1a4590;
+  --color-primary-600: #173d80;
+  --color-primary-700: #14336b;
+  --color-primary-800: #112a55;
+  --color-primary-900: #0f1c2e;
+  --color-primary-950: #0a1422;
 
-  /* Surface palette — Dark backgrounds */
-  --color-surface-950: oklch(0.1 0.01 260);
-  --color-surface-900: oklch(0.14 0.015 260);
-  --color-surface-800: oklch(0.18 0.02 260);
-  --color-surface-700: oklch(0.22 0.02 260);
+  --color-accent-400: #1e4fa3;
+  --color-accent-500: #1a4590;
+  --color-accent-600: #173d80;
+  --color-accent-950: #0a1422;
 
-  /* Text */
-  --color-text-primary: oklch(0.95 0.005 260);
-  --color-text-secondary: oklch(0.7 0.01 260);
-  --color-text-muted: oklch(0.55 0.01 260);
+  /* Surfaces: 950 page, 900 card, 800 raised, 700 strong */
+  --color-surface-950: #ffffff;
+  --color-surface-900: #ffffff;
+  --color-surface-800: #f6f7f9;
+  --color-surface-700: #eceff3;
 
-  /* Semantic — feedback states */
-  --color-success-400: oklch(0.78 0.15 155);
-  --color-success-500: oklch(0.68 0.17 155);
-  --color-danger-400: oklch(0.72 0.17 25);
-  --color-danger-500: oklch(0.62 0.2 25);
+  --color-text-primary: #0f1c2e;
+  --color-text-secondary: #4a5568;
+  --color-text-muted: #5f6b7a;
 
-  /* Border */
-  --color-border-subtle: oklch(0.25 0.02 260);
-  --color-border-default: oklch(0.3 0.02 260);
+  --color-success-400: oklch(0.5 0.15 158);
+  --color-success-500: oklch(0.45 0.14 158);
+  --color-danger-400: oklch(0.55 0.19 25);
+  --color-danger-500: oklch(0.5 0.2 25);
 
-  /* Animations */
+  --color-border-subtle: #e2e6ec;
+  --color-border-default: #cfd5dd;
+
+  /* Named tokens the numeric ramps can't express */
+  --color-ice-deep: #1e4fa3;
+  --color-forest: #0f1c2e;
+  --color-amber: oklch(0.875 0.132 84);
+  --color-amber-ink: oklch(0.26 0.075 68);
+  /* Client-logo placeholders ("Muted Mark"). */
+  --color-mark: #98a7b7;
+
+  --color-card: #ffffff;
+  --color-card-br: #e2e6ec;
+  --color-raise: rgb(255 255 255 / 0.8);
+  --color-raise-br: #e2e6ec;
+  --color-hair: #e2e6ec;
+  --color-hair-strong: #cfd5dd;
+
+  --color-icon-fg: #1e4fa3;
+  --color-media: #eef2f7;
+  --color-media-fg: #1e4fa3;
+  /* Apple's system yellow. Decorative only: ratings also carry an aria-label. */
+  --color-star: #ffcc00;
+  --color-quote: #c7d0dc;
+  --color-code: #0f1c2e;
+  --color-code-fg: #e8ebf0;
+
+  /* Contrast panel */
+  --color-panel-ink: #0f1c2e;
+  --color-panel-ink-2: #4a5568;
+  --color-panel-br: #c7d0dc;
+  --color-panel-chip: rgb(255 255 255 / 0.6);
+  --color-panel-chip-br: #e2e6ec;
+
+  --color-panel-btn: #0f1c2e;
+  --color-panel-btn-ink: #ffffff;
+
+  --shadow-card:
+    0 1px 2px rgb(15 28 46 / 0.04), 0 18px 40px -26px rgb(15 28 46 / 0.18);
+  --shadow-panel:
+    0 2px 6px -3px rgb(15 28 46 / 0.05), 0 20px 44px -26px rgb(15 28 46 / 0.16);
+  --shadow-btn: 0 10px 24px -14px rgb(15 28 46 / 0.45);
+
   --animate-fade-in-up: fade-in-up 0.7s ease-out both;
   --animate-fade-in: fade-in 0.6s ease-out both;
   --animate-slide-in-right: slide-in-right 0.4s ease-out both;
@@ -83,41 +139,253 @@
   }
 }
 
-/* ─── Admin Panel Light Theme ──────────────────────────────── */
-[data-theme="admin-light"] {
-  --color-surface-950: oklch(1 0 0);
-  --color-surface-900: oklch(0.99 0 0);
-  --color-surface-800: oklch(0.96 0.002 260);
-  --color-surface-700: oklch(0.91 0.004 260);
+/* Background fills live outside `@theme` so Tailwind doesn't generate colour utilities from them;
+   they're exposed through the `@utility` rules below. Kept flat or near-flat: the frost palette
+   avoids visible gradients. */
+:root {
+  --fw-btn: linear-gradient(#0f1c2e, #0f1c2e);
+  --fw-btn-ink: #ffffff;
+  --fw-icon-bg: linear-gradient(#eef2f7, #eef2f7);
+  --fw-media: linear-gradient(#eef2f7, #eef2f7);
+  --fw-grad-ice: linear-gradient(#1e4fa3, #1e4fa3);
+  --fw-grad-forest: linear-gradient(#0f1c2e, #0f1c2e);
+  --fw-amb-1: radial-gradient(
+    ellipse at center,
+    rgb(30 79 163 / 0.16),
+    transparent 62%
+  );
+  --fw-amb-2: radial-gradient(circle, rgb(238 242 247 / 0.7), transparent 65%);
+  --fw-panel: linear-gradient(#eef2f7, #eef2f7);
+  --fw-grain: 0;
+  /* Fractal-noise tile used by fw-grain. */
+  --fw-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
 
-  --color-text-primary: oklch(0.2 0.01 260);
-  --color-text-secondary: oklch(0.42 0.01 260);
-  --color-text-muted: oklch(0.58 0.01 260);
-
-  --color-border-subtle: oklch(0.91 0.005 260);
-  --color-border-default: oklch(0.85 0.006 260);
-
-  /* Accent — black, overriding the site-wide purple for the admin panel */
-  --color-primary-50: oklch(0.97 0 0);
-  --color-primary-100: oklch(0.92 0 0);
-  --color-primary-200: oklch(0.83 0 0);
-  --color-primary-300: oklch(0.65 0 0);
-  --color-primary-400: oklch(0.45 0 0);
-  --color-primary-500: oklch(0.28 0 0);
-  --color-primary-600: oklch(0.15 0 0);
-  --color-primary-700: oklch(0.1 0 0);
-  --color-primary-800: oklch(0.07 0 0);
-  --color-primary-900: oklch(0.04 0 0);
-
-  /* Slightly deepened feedback colors for legible text on a white background */
-  --color-success-400: oklch(0.6 0.15 155);
-  --color-danger-400: oklch(0.58 0.19 25);
-
-  background-color: var(--color-surface-950);
-  color: var(--color-text-primary);
+  color-scheme: light;
 }
 
-/* ─── Base Styles ──────────────────────────────────────────── */
+/* Gradient utilities */
+@utility fw-btn {
+  background-image: var(--fw-btn);
+  color: var(--fw-btn-ink);
+}
+
+@utility fw-panel {
+  background-image: var(--fw-panel);
+}
+
+@utility fw-icon-bg {
+  background-image: var(--fw-icon-bg);
+}
+
+@utility fw-media {
+  background-image: var(--fw-media);
+}
+
+@utility fw-amb-1 {
+  background-image: var(--fw-amb-1);
+}
+
+@utility fw-amb-2 {
+  background-image: var(--fw-amb-2);
+}
+
+/* Accent text (flat fill via background-clip) — pairs with `text-transparent`. */
+@utility fw-text-ice {
+  background-image: var(--fw-grad-ice);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@utility fw-text-forest {
+  background-image: var(--fw-grad-forest);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Film grain over gradients. Apply to a `relative` container. */
+@utility fw-grain {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    opacity: var(--fw-grain);
+    background-image: var(--fw-noise);
+  }
+}
+
+/* In `components` so utilities such as `font-semibold` can still override the weight. */
+@layer components {
+  /* Client headlines: Inter Tight bold. Emphasis inside a headline is colour, not italics. */
+  .font-display {
+    font-weight: 700;
+  }
+
+  .font-display em {
+    font-style: normal;
+    color: var(--color-blue);
+  }
+}
+
+/* Section text that fades up on change (partnering) or once on first view (brand statement). */
+.fade-swap {
+  animation: fade-swap 0.45s ease-out both;
+}
+
+@keyframes fade-swap {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.statement-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.statement[data-in-view] .statement-reveal {
+  animation: statement-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes statement-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Service-card illustrations: the workflow's dashes run while the card is hovered, and the
+   "online" dot pulses. */
+.service-flow {
+  stroke-dasharray: 3 4;
+}
+
+.group:hover .service-flow {
+  animation: service-flow 0.9s linear infinite;
+}
+
+@keyframes service-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+.service-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: service-pulse 2.4s ease-out infinite;
+}
+
+@keyframes service-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+/* Seasonal offer. Red and green are never blended (that turns brown): `promo-surface` is rich
+   Christmas red, `promo-green` is holly green, and each only shifts between its own shades. */
+@utility promo-surface {
+  background-color: var(--color-festive-red);
+  background-image:
+    radial-gradient(
+      55% 70% at 100% 0%,
+      rgb(255 120 120 / 0.22),
+      transparent 65%
+    ),
+    linear-gradient(135deg, #a10b1e 0%, #c8102e 45%, #d5162f 70%, #b30d25 100%);
+}
+
+/* Top bar: rich Christmas red flowing into holly green, warmed by a candle-gold glow where they meet. */
+@utility promo-blend {
+  background-color: var(--color-festive-green);
+  background-image:
+    radial-gradient(
+      38% 60% at 22% 55%,
+      rgb(255 190 110 / 0.28),
+      transparent 70%
+    ),
+    radial-gradient(30% 70% at 52% 50%, rgb(255 176 84 / 0.3), transparent 70%),
+    radial-gradient(45% 70% at 94% 0%, rgb(255 220 150 / 0.3), transparent 65%),
+    radial-gradient(60% 80% at 0% 100%, rgb(255 60 70 / 0.35), transparent 60%),
+    linear-gradient(
+      112deg,
+      #a30d1d 0%,
+      #d0142e 26%,
+      #b80f26 44%,
+      #127a40 58%,
+      #0c6b37 78%,
+      #075a2c 100%
+    );
+}
+
+@utility promo-green {
+  background-color: var(--color-festive-green);
+  background-image:
+    radial-gradient(60% 80% at 50% 0%, rgb(60 170 100 / 0.3), transparent 70%),
+    linear-gradient(160deg, #0d7a3f 0%, #0b6b37 45%, #08582c 100%);
+}
+
+/* Gold foil text; the light band drifts across it slowly. */
+.promo-gold {
+  background: linear-gradient(
+      100deg,
+      #c9993f 0%,
+      #f7e3ae 30%,
+      #d8ad5c 50%,
+      #fbeec6 62%,
+      #c9993f 100%
+    )
+    0 0 / 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: promo-shimmer 7s ease-in-out infinite alternate;
+}
+
+@keyframes promo-shimmer {
+  to {
+    background-position: 100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-gold,
+  .fade-swap,
+  .group:hover .service-flow,
+  .service-pulse {
+    animation: none;
+  }
+
+  .statement-reveal,
+  .statement[data-in-view] .statement-reveal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+/* Base */
 html {
   scroll-behavior: smooth;
 }
@@ -130,13 +398,31 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Selection Color ──────────────────────────────────────── */
-::selection {
-  background-color: var(--color-primary-600);
-  color: white;
+/* Autofill can't change background-color, so an inset box-shadow covers the browser's blue.
+   Native password-reveal buttons are hidden in favour of our own toggle. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text-primary);
+  box-shadow: 0 0 0 1000px var(--color-surface-900) inset;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
-/* ─── Scrollbar ────────────────────────────────────────────── */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+input::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
+
+::selection {
+  background-color: var(--color-ice);
+  color: var(--color-ink);
+}
+
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -154,9 +440,7 @@ body {
   background: var(--color-primary-600);
 }
 
-/* Scoped scrollbar for scrollable modal panels — a floating rounded pill
-   instead of the global flush track, so it doesn't square off the panel's
-   rounded corners. */
+/* Modal scrollbar: a floating pill so it doesn't square off rounded corners. */
 .modal-scroll {
   scrollbar-width: thin;
   scrollbar-color: var(--color-border-default) transparent;
@@ -175,4 +459,60 @@ body {
 
 .modal-scroll::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-primary-600);
+}
+
+/* Public markdown prose — retints @uiw/react-md-editor's preview onto theme tokens. */
+.fw-prose .wmde-markdown {
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 16.5px;
+  line-height: 1.75;
+}
+
+.fw-prose .wmde-markdown h1,
+.fw-prose .wmde-markdown h2,
+.fw-prose .wmde-markdown h3,
+.fw-prose .wmde-markdown h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  color: var(--color-text-primary);
+  border-bottom: 0;
+}
+
+.fw-prose .wmde-markdown strong {
+  color: var(--color-text-primary);
+}
+
+.fw-prose .wmde-markdown a {
+  color: var(--color-accent-400);
+}
+
+.fw-prose .wmde-markdown blockquote {
+  border-left: 3px solid var(--color-primary-400);
+  color: var(--color-text-primary);
+  background: transparent;
+}
+
+.fw-prose .wmde-markdown code {
+  background-color: var(--color-raise);
+  color: var(--color-text-primary);
+}
+
+.fw-prose .wmde-markdown pre,
+.fw-prose .wmde-markdown pre code {
+  background-color: var(--color-code);
+  color: var(--color-code-fg);
+}
+
+.fw-prose .wmde-markdown hr {
+  background-color: var(--color-hair);
+}
+
+.fw-prose .wmde-markdown table tr,
+.fw-prose .wmde-markdown table td,
+.fw-prose .wmde-markdown table th {
+  border-color: var(--color-hair);
+  background-color: transparent;
 }

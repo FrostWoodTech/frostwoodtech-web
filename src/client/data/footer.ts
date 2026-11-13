@@ -1,35 +1,42 @@
 import type { FooterData } from "@/client/types";
 
 export const FOOTER_DATA: FooterData = {
-  addressLines: ["YourName Studios", "Mesa, AZ 85212"],
-  email: "hello@yourdomain.com",
-  serviceArea:
-    "Serving Mesa, Phoenix, Tempe, Scottsdale, Chandler, Gilbert, Queen Creek, AZ",
-  copyright:
-    "© 2026 YourName Studios. Web design & e-commerce development in Mesa, AZ.",
+  headlineLead: "Clear, dependable software",
+  headlineEmphasis: "for growing businesses.",
+  status: "Taking new projects",
+  email: "[hello@frostwoodtech.com]",
+  copyright: "© 2026 FrostWoodTech. All rights reserved.",
   linkGroups: [
     {
-      title: "COMPANY",
+      title: "Explore",
       links: [
-        { label: "Services", href: "/services" },
-        { label: "Work", href: "/work" },
-        { label: "Blog", href: "/blog" },
-        { label: "About", href: "/about" },
-        { label: "Contact", href: "/contact" },
-        { label: "Free Audit", href: "#" },
+        { label: "Our work", href: "/work" },
+        { label: "Pricing", href: "/pricing" },
+        { label: "Reviews", href: "/reviews" },
       ],
     },
     {
-      title: "SERVICES",
+      title: "Services",
       links: [
-        { label: "E-commerce", href: "#" },
-        { label: "Web Design", href: "#" },
-        { label: "Graphic Design", href: "#" },
-        { label: "App Development", href: "#" },
-        { label: "Web Development", href: "#" },
-        { label: "SEO", href: "#" },
-        { label: "All services →", href: "/services", isAccent: true },
+        { label: "SaaS & web apps", href: "/services" },
+        { label: "Web & e-commerce", href: "/services" },
+        { label: "Design systems", href: "/services" },
+        { label: "SEO & growth", href: "/services" },
       ],
     },
+    {
+      title: "Company",
+      links: [
+        { label: "About", href: "/about" },
+        { label: "Insights", href: "/blog" },
+        { label: "Contact", href: "/contact" },
+      ],
+    },
+  ],
+  // TODO: point these at real pages once they exist.
+  legalLinks: [
+    { label: "Privacy", href: "#" },
+    { label: "Terms", href: "#" },
+    { label: "Security", href: "#" },
   ],
 } as const;

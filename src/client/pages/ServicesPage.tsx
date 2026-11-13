@@ -1,21 +1,27 @@
-import ServicesHero from "../components/services-page/ServicesHero";
-import ServiceOfferings from "../components/services-page/ServiceOfferings";
-import RelatedWork from "../components/services-page/RelatedWork";
-import FaqSection from "../components/services-page/FaqSection";
+import ServiceBlocks from "@/client/components/services-page/ServiceBlocks";
+import ClosingCta from "@/client/components/site/ClosingCta";
+import { ChristmasOfferBand } from "@/client/components/promo/ChristmasOffer";
+import {
+  FaqSection,
+  PageHero,
+  ProcessSection,
+} from "@/client/components/site/sections";
+import { SERVICES_HERO } from "@/client/data/site";
+import { useFaqs } from "@/client/hooks/useFaqs";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function ServicesPage() {
+  useDocumentTitle("Services | FrostWoodTech");
+  const { data: faqs } = useFaqs();
+
   return (
-    <div className="relative pt-32 pb-24 sm:pb-32 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ServicesHero />
-        <ServiceOfferings />
-
-        {/* Divider before Related Work */}
-        <div className="w-full h-px bg-border-subtle mb-32" />
-
-        <RelatedWork />
-        <FaqSection />
-      </div>
-    </div>
+    <>
+      <PageHero {...SERVICES_HERO} />
+      <ServiceBlocks />
+      <ChristmasOfferBand />
+      <ProcessSection />
+      <FaqSection faqs={faqs} />
+      <ClosingCta />
+    </>
   );
 }

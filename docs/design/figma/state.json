@@ -1,0 +1,1175 @@
+{
+  "createdNodeIds": [
+    "6:2",
+    "6:3",
+    "6:4",
+    "6:5",
+    "6:6",
+    "6:7",
+    "6:60",
+    "6:61",
+    "6:62",
+    "6:63",
+    "6:64",
+    "6:65",
+    "6:66",
+    "6:67",
+    "6:68",
+    "6:69",
+    "6:70",
+    "6:71",
+    "6:72",
+    "6:73",
+    "6:74",
+    "6:75",
+    "6:76",
+    "6:77",
+    "6:78",
+    "6:79",
+    "6:80",
+    "6:81",
+    "6:82",
+    "6:83",
+    "6:84",
+    "6:85",
+    "6:86",
+    "6:87",
+    "6:88",
+    "6:89",
+    "6:90",
+    "6:91",
+    "6:92",
+    "6:93",
+    "6:94",
+    "6:95",
+    "6:96",
+    "6:97",
+    "6:98",
+    "6:99",
+    "6:100",
+    "6:101",
+    "6:102",
+    "6:103",
+    "6:104",
+    "6:105",
+    "6:106",
+    "6:107",
+    "6:108",
+    "6:109",
+    "6:110",
+    "6:111",
+    "6:112",
+    "6:113",
+    "6:114",
+    "6:115",
+    "6:116",
+    "6:117",
+    "6:118",
+    "6:119",
+    "6:120",
+    "6:121",
+    "6:122",
+    "6:123",
+    "6:124",
+    "6:132",
+    "6:133",
+    "6:134",
+    "6:135",
+    "6:136",
+    "6:137",
+    "6:138",
+    "6:139",
+    "6:140",
+    "6:143",
+    "6:144",
+    "6:145",
+    "6:153",
+    "6:154",
+    "6:155",
+    "6:156",
+    "6:157",
+    "6:158",
+    "6:159",
+    "6:160",
+    "6:161",
+    "6:164",
+    "6:165",
+    "6:166",
+    "6:174",
+    "6:175",
+    "6:176",
+    "6:177",
+    "6:178",
+    "6:186",
+    "6:187",
+    "6:188",
+    "6:189",
+    "6:190",
+    "6:191",
+    "6:192",
+    "6:193",
+    "6:194",
+    "6:195",
+    "6:196",
+    "6:197",
+    "6:198",
+    "6:199",
+    "6:200",
+    "6:201",
+    "6:202",
+    "6:203",
+    "6:204",
+    "6:205",
+    "6:206",
+    "6:207",
+    "6:208",
+    "6:209",
+    "6:210",
+    "6:211",
+    "6:212",
+    "6:213",
+    "6:214",
+    "6:215",
+    "6:216",
+    "6:217",
+    "6:218",
+    "6:219",
+    "6:220",
+    "6:221",
+    "6:222",
+    "6:223",
+    "6:224",
+    "6:225",
+    "6:226",
+    "6:227",
+    "6:228",
+    "6:229",
+    "6:230",
+    "6:231",
+    "6:232",
+    "6:233",
+    "6:234",
+    "6:235",
+    "6:236",
+    "6:237",
+    "6:238",
+    "6:239",
+    "6:240",
+    "6:241",
+    "6:242",
+    "6:243",
+    "6:244",
+    "6:245",
+    "6:246",
+    "6:247",
+    "6:248",
+    "6:249",
+    "6:250",
+    "6:251",
+    "6:252",
+    "6:253",
+    "6:254",
+    "6:255",
+    "6:256",
+    "6:257",
+    "6:258",
+    "6:259",
+    "6:260",
+    "6:261",
+    "6:262",
+    "6:263",
+    "6:264",
+    "6:265",
+    "6:266"
+  ],
+  "mutatedNodeIds": [
+    "0:1"
+  ],
+  "pages": {
+    "FrostWoodTech · Complete website": "6:2"
+  },
+  "components": {
+    "Button/ice/Default": "6:86",
+    "Button/ice/Hover": "6:89",
+    "Button/ice/Focus": "6:92",
+    "Button/ice/Disabled": "6:95",
+    "Button/dark/Default": "6:98",
+    "Button/dark/Hover": "6:101",
+    "Button/dark/Focus": "6:104",
+    "Button/dark/Disabled": "6:107",
+    "Button/outline/Default": "6:110",
+    "Button/outline/Hover": "6:113",
+    "Button/outline/Focus": "6:116",
+    "Button/outline/Disabled": "6:119",
+    "Header/Desktop/Light": "6:122",
+    "Header/Desktop/Dark": "6:143",
+    "Header/Mobile/Light": "6:164",
+    "Header/Mobile/Dark": "6:176",
+    "Footer/Desktop": "6:188",
+    "Footer/Mobile": "6:215",
+    "Field/Input": "6:242",
+    "Field/Textarea": "6:245",
+    "Field/Select": "6:248",
+    "Field/Search": "6:251",
+    "Filter/Default": "6:254",
+    "Filter/Selected": "6:256",
+    "Accordion/Closed": "6:258",
+    "Accordion/Open": "6:262",
+    "Service/0/Desktop": "9:19",
+    "Service/1/Desktop": "9:33",
+    "Service/2/Desktop": "9:47",
+    "Service/3/Desktop": "9:61",
+    "Service/0/Mobile": "9:75",
+    "Service/1/Mobile": "9:89",
+    "Service/2/Mobile": "9:103",
+    "Service/3/Mobile": "9:117",
+    "Project/0/Desktop": "9:124",
+    "Project/1/Desktop": "9:131",
+    "Project/0/Mobile": "9:138",
+    "Project/1/Mobile": "9:145",
+    "Review/Desktop": "9:152",
+    "Review/Mobile": "9:159",
+    "Article/Desktop": "9:175",
+    "Article/Mobile": "9:191",
+    "Product UI/FrostBook": "9:262",
+    "Product UI/FrostStock": "9:293",
+    "Product UI/FrostDesk": "9:324",
+    "Home section/Header/Desktop": "19:46",
+    "Home section/Hero/Desktop": "19:126",
+    "Home section/Capabilities strip/Desktop": "19:195",
+    "Home section/Demo brands/Desktop": "19:241",
+    "Home section/Expertise/Desktop": "19:376",
+    "Home section/Studio approach/Desktop": "19:574",
+    "Home section/Selected concepts/Desktop": "19:742",
+    "Home section/Product lab/Desktop": "19:1018",
+    "Home section/Client stories/Desktop": "19:1300",
+    "Home section/Process/Desktop": "19:1465",
+    "Home section/Closing CTA/Desktop": "19:1564",
+    "Home section/Footer/Desktop": "19:1695",
+    "Home section/Header/Mobile": "19:1825",
+    "Home section/Hero/Mobile": "19:1890",
+    "Home section/Capabilities strip/Mobile": "19:1952",
+    "Home section/Demo brands/Mobile": "19:1989",
+    "Home section/Expertise/Mobile": "19:2123",
+    "Home section/Studio approach/Mobile": "19:2318",
+    "Home section/Selected concepts/Mobile": "19:2480",
+    "Home section/Product lab/Mobile": "19:2722",
+    "Home section/Client stories/Mobile": "19:2972",
+    "Home section/Process/Mobile": "19:3138",
+    "Home section/Closing CTA/Mobile": "19:3237",
+    "Home section/Footer/Mobile": "19:3367",
+    "Header/Mobile/Open": "30:668"
+  },
+  "styles": {
+    "Display": "S:7595e5f20ce024915eb3262ea8798cab152d4e9a,",
+    "Display mobile": "S:de74fdac4e89c1bf37f6c4d9c832cf113557dcb3,",
+    "Heading": "S:df027067988c60fdd34af6e9465883cde1ab38bc,",
+    "Heading mobile": "S:cae510a754742634139913e08c5926e5cac6e26c,",
+    "Title": "S:d226897b61cb71e5a63a49511fa851bfeafc81df,",
+    "Title mobile": "S:a3946e61a9dd1d2317e538c0c0c8ce823cedd710,",
+    "Body": "S:5cf445c776653b9583081f68919223fea1b5b430,",
+    "Body small": "S:e824160ce3c03a53d6670ce323e0df09a58332b0,",
+    "Label": "S:e79304710a9b5be31d36a122aea0b3f60cd4472b,",
+    "Button": "S:48a8837b6157f4df1627ba5f52dca65017ec5dee,"
+  },
+  "variables": {
+    "midnight": "VariableID:6:10",
+    "navy": "VariableID:6:12",
+    "snow": "VariableID:6:14",
+    "ice": "VariableID:6:16",
+    "silver": "VariableID:6:18",
+    "ink": "VariableID:6:20",
+    "muted": "VariableID:6:22",
+    "line": "VariableID:6:24",
+    "blue": "VariableID:6:26",
+    "cobalt": "VariableID:6:28",
+    "white": "VariableID:6:30",
+    "copper": "VariableID:6:32",
+    "error": "VariableID:6:34",
+    "s4": "VariableID:6:35",
+    "s8": "VariableID:6:36",
+    "s12": "VariableID:6:37",
+    "s16": "VariableID:6:38",
+    "s20": "VariableID:6:39",
+    "s24": "VariableID:6:40",
+    "s28": "VariableID:6:41",
+    "s32": "VariableID:6:42",
+    "s40": "VariableID:6:43",
+    "s48": "VariableID:6:44",
+    "s56": "VariableID:6:45",
+    "s64": "VariableID:6:46",
+    "s80": "VariableID:6:47",
+    "s96": "VariableID:6:48",
+    "s112": "VariableID:6:49"
+  },
+  "collectionId": "VariableCollectionId:6:8",
+  "bounds": {
+    "x": 200,
+    "y": 120,
+    "width": 1440,
+    "height": 932
+  },
+  "textFont": "Manrope",
+  "fileKey": "opBkY1Cwcu2fIPlAVWYhAA",
+  "projectId": "671342791",
+  "screens": [
+    {
+      "id": "11:6",
+      "name": "About / Desktop",
+      "width": 1440,
+      "height": 3320,
+      "children": 7,
+      "descendants": 120,
+      "counts": {
+        "INSTANCE": 4,
+        "FRAME": 34,
+        "GROUP": 3,
+        "VECTOR": 20,
+        "TEXT": 61
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "11:127",
+      "name": "About / Mobile",
+      "width": 390,
+      "height": 4470,
+      "children": 7,
+      "descendants": 111,
+      "counts": {
+        "INSTANCE": 3,
+        "FRAME": 32,
+        "GROUP": 3,
+        "VECTOR": 19,
+        "TEXT": 55
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "11:239",
+      "name": "Services / Desktop",
+      "width": 1440,
+      "height": 3835,
+      "children": 7,
+      "descendants": 164,
+      "counts": {
+        "INSTANCE": 12,
+        "FRAME": 35,
+        "GROUP": 6,
+        "VECTOR": 39,
+        "TEXT": 75
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "11:404",
+      "name": "Services / Mobile",
+      "width": 390,
+      "height": 5082,
+      "children": 7,
+      "descendants": 155,
+      "counts": {
+        "INSTANCE": 11,
+        "FRAME": 33,
+        "GROUP": 6,
+        "VECTOR": 38,
+        "TEXT": 69
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "11:560",
+      "name": "Service detail — Business systems / Desktop",
+      "width": 1440,
+      "height": 5505,
+      "children": 10,
+      "descendants": 168,
+      "counts": {
+        "INSTANCE": 11,
+        "FRAME": 39,
+        "GROUP": 4,
+        "VECTOR": 28,
+        "TEXT": 82,
+        "RECTANGLE": 8
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "11:729",
+      "name": "Service detail — Business systems / Mobile",
+      "width": 390,
+      "height": 6299,
+      "children": 10,
+      "descendants": 159,
+      "counts": {
+        "INSTANCE": 10,
+        "FRAME": 37,
+        "GROUP": 4,
+        "VECTOR": 27,
+        "TEXT": 76,
+        "RECTANGLE": 8
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "12:6",
+      "name": "Products / Desktop",
+      "width": 1440,
+      "height": 3694.675048828125,
+      "children": 5,
+      "descendants": 232,
+      "counts": {
+        "INSTANCE": 10,
+        "FRAME": 68,
+        "GROUP": 2,
+        "VECTOR": 17,
+        "TEXT": 140
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "12:239",
+      "name": "Products / Mobile",
+      "width": 390,
+      "height": 4026.71240234375,
+      "children": 5,
+      "descendants": 223,
+      "counts": {
+        "INSTANCE": 9,
+        "FRAME": 66,
+        "GROUP": 2,
+        "VECTOR": 16,
+        "TEXT": 134
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "12:463",
+      "name": "Product detail — FrostBook / Desktop",
+      "width": 1440,
+      "height": 5240.3251953125,
+      "children": 7,
+      "descendants": 308,
+      "counts": {
+        "INSTANCE": 11,
+        "FRAME": 95,
+        "GROUP": 1,
+        "VECTOR": 11,
+        "TEXT": 195
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "12:772",
+      "name": "Product detail — FrostBook / Mobile",
+      "width": 390,
+      "height": 5131.64990234375,
+      "children": 7,
+      "descendants": 299,
+      "counts": {
+        "INSTANCE": 10,
+        "FRAME": 93,
+        "GROUP": 1,
+        "VECTOR": 10,
+        "TEXT": 189
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "12:1072",
+      "name": "Pricing / Desktop",
+      "width": 1440,
+      "height": 3969,
+      "children": 8,
+      "descendants": 163,
+      "counts": {
+        "INSTANCE": 12,
+        "FRAME": 41,
+        "GROUP": 2,
+        "VECTOR": 18,
+        "TEXT": 96
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "12:1236",
+      "name": "Pricing / Mobile",
+      "width": 390,
+      "height": 5827,
+      "children": 8,
+      "descendants": 154,
+      "counts": {
+        "INSTANCE": 11,
+        "FRAME": 39,
+        "GROUP": 2,
+        "VECTOR": 17,
+        "TEXT": 90
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "15:6",
+      "name": "Work / Desktop",
+      "width": 1440,
+      "height": 2537,
+      "children": 5,
+      "descendants": 101,
+      "counts": {
+        "INSTANCE": 12,
+        "FRAME": 21,
+        "GROUP": 2,
+        "VECTOR": 14,
+        "TEXT": 52,
+        "RECTANGLE": 2
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "15:108",
+      "name": "Work / Mobile",
+      "width": 390,
+      "height": 2994,
+      "children": 5,
+      "descendants": 94,
+      "counts": {
+        "INSTANCE": 11,
+        "FRAME": 21,
+        "GROUP": 2,
+        "VECTOR": 13,
+        "TEXT": 46,
+        "RECTANGLE": 2
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "15:203",
+      "name": "Project detail — Northline / Desktop",
+      "width": 1440,
+      "height": 5851,
+      "children": 8,
+      "descendants": 129,
+      "counts": {
+        "INSTANCE": 6,
+        "FRAME": 32,
+        "GROUP": 2,
+        "VECTOR": 15,
+        "TEXT": 70,
+        "RECTANGLE": 7
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "15:333",
+      "name": "Project detail — Northline / Mobile",
+      "width": 390,
+      "height": 5368,
+      "children": 8,
+      "descendants": 120,
+      "counts": {
+        "INSTANCE": 5,
+        "FRAME": 30,
+        "GROUP": 2,
+        "VECTOR": 14,
+        "TEXT": 64,
+        "RECTANGLE": 7
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "15:454",
+      "name": "Insights / Desktop",
+      "width": 1440,
+      "height": 3413,
+      "children": 6,
+      "descendants": 168,
+      "counts": {
+        "INSTANCE": 15,
+        "FRAME": 36,
+        "GROUP": 7,
+        "VECTOR": 45,
+        "TEXT": 68
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "15:623",
+      "name": "Insights / Mobile",
+      "width": 390,
+      "height": 4546,
+      "children": 6,
+      "descendants": 164,
+      "counts": {
+        "INSTANCE": 14,
+        "FRAME": 39,
+        "GROUP": 7,
+        "VECTOR": 44,
+        "TEXT": 62
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "15:788",
+      "name": "Article detail / Desktop",
+      "width": 1440,
+      "height": 4011,
+      "children": 6,
+      "descendants": 152,
+      "counts": {
+        "INSTANCE": 7,
+        "FRAME": 32,
+        "GROUP": 6,
+        "VECTOR": 38,
+        "TEXT": 71
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "15:941",
+      "name": "Article detail / Mobile",
+      "width": 390,
+      "height": 5095,
+      "children": 6,
+      "descendants": 136,
+      "counts": {
+        "INSTANCE": 6,
+        "FRAME": 29,
+        "GROUP": 6,
+        "VECTOR": 37,
+        "TEXT": 59
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:6",
+      "name": "Contact / Desktop",
+      "width": 1440,
+      "height": 2388,
+      "children": 4,
+      "descendants": 107,
+      "counts": {
+        "INSTANCE": 11,
+        "FRAME": 21,
+        "GROUP": 2,
+        "VECTOR": 14,
+        "TEXT": 61
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:114",
+      "name": "Contact / Mobile",
+      "width": 390,
+      "height": 3412,
+      "children": 4,
+      "descendants": 98,
+      "counts": {
+        "INSTANCE": 10,
+        "FRAME": 19,
+        "GROUP": 2,
+        "VECTOR": 13,
+        "TEXT": 55
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:213",
+      "name": "Reviews / Desktop",
+      "width": 1440,
+      "height": 3372,
+      "children": 6,
+      "descendants": 116,
+      "counts": {
+        "INSTANCE": 11,
+        "FRAME": 23,
+        "GROUP": 2,
+        "VECTOR": 15,
+        "TEXT": 68
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:330",
+      "name": "Reviews / Mobile",
+      "width": 390,
+      "height": 4767,
+      "children": 6,
+      "descendants": 110,
+      "counts": {
+        "INSTANCE": 10,
+        "FRAME": 24,
+        "GROUP": 2,
+        "VECTOR": 14,
+        "TEXT": 62
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "19:6",
+      "name": "Home / Desktop — existing design",
+      "width": 1440,
+      "height": 9008.2861328125,
+      "sections": 12,
+      "nativeTextCount": 217,
+      "imageNodes": [
+        {
+          "id": "I19:127;19:87",
+          "name": "Image",
+          "w": 1267.2000732421875,
+          "h": 820
+        },
+        {
+          "id": "I19:743;19:687",
+          "name": "Image (AI-generated concept of a logistics dashboard overlooking a shipping port)",
+          "w": 704.7250366210938,
+          "h": 533.875
+        },
+        {
+          "id": "I19:743;19:721",
+          "name": "Image (AI-generated concept of a botanical skincare shopping app on two phones)",
+          "w": 587.2750244140625,
+          "h": 564.6875
+        }
+      ],
+      "counts": {
+        "INSTANCE": 12,
+        "FRAME": 459,
+        "GROUP": 23,
+        "VECTOR": 183,
+        "TEXT": 215
+      },
+      "fonts": [
+        "Manrope",
+        "IBM Plex Mono",
+        "Lora",
+        "Inter"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "19:1799",
+      "name": "Home / Mobile — existing design",
+      "width": 390,
+      "height": 11066.5390625,
+      "sections": 12,
+      "nativeTextCount": 205,
+      "imageNodes": [
+        {
+          "id": "I19:1891;19:1852",
+          "name": "Image",
+          "w": 390.3999938964844,
+          "h": 460
+        },
+        {
+          "id": "I19:2481;19:2426",
+          "name": "Image (AI-generated concept of a logistics dashboard overlooking a shipping port)",
+          "w": 346.3999938964844,
+          "h": 288.6625061035156
+        },
+        {
+          "id": "I19:2481;19:2459",
+          "name": "Image (AI-generated concept of a botanical skincare shopping app on two phones)",
+          "w": 346.3999938964844,
+          "h": 288.6625061035156
+        }
+      ],
+      "counts": {
+        "INSTANCE": 12,
+        "FRAME": 427,
+        "GROUP": 22,
+        "VECTOR": 167,
+        "TEXT": 203
+      },
+      "fonts": [
+        "Manrope",
+        "IBM Plex Mono",
+        "Lora",
+        "Inter"
+      ],
+      "emptyImages": 0
+    }
+  ],
+  "stateScreens": [
+    {
+      "id": "16:441",
+      "name": "Mobile navigation / Open / Mobile",
+      "width": 390,
+      "height": 828,
+      "children": 2,
+      "descendants": 26,
+      "counts": {
+        "INSTANCE": 2,
+        "FRAME": 4,
+        "GROUP": 1,
+        "VECTOR": 7,
+        "TEXT": 13
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:468",
+      "name": "Collections / No results / Desktop",
+      "width": 1440,
+      "height": 1464,
+      "children": 3,
+      "descendants": 71,
+      "counts": {
+        "INSTANCE": 9,
+        "FRAME": 14,
+        "GROUP": 1,
+        "VECTOR": 8,
+        "TEXT": 41
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:540",
+      "name": "Collections / No results / Mobile",
+      "width": 390,
+      "height": 1666,
+      "children": 3,
+      "descendants": 64,
+      "counts": {
+        "INSTANCE": 8,
+        "FRAME": 14,
+        "GROUP": 1,
+        "VECTOR": 7,
+        "TEXT": 35
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:605",
+      "name": "Collections / Loading & error / Desktop",
+      "width": 1440,
+      "height": 1660,
+      "children": 4,
+      "descendants": 62,
+      "counts": {
+        "INSTANCE": 4,
+        "FRAME": 13,
+        "GROUP": 1,
+        "VECTOR": 8,
+        "TEXT": 35,
+        "RECTANGLE": 3
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:668",
+      "name": "Collections / Loading & error / Mobile",
+      "width": 390,
+      "height": 1560,
+      "children": 4,
+      "descendants": 53,
+      "counts": {
+        "INSTANCE": 3,
+        "FRAME": 11,
+        "GROUP": 1,
+        "VECTOR": 7,
+        "TEXT": 29,
+        "RECTANGLE": 3
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:722",
+      "name": "Detail / Not found / Desktop",
+      "width": 1440,
+      "height": 1586,
+      "children": 4,
+      "descendants": 61,
+      "counts": {
+        "INSTANCE": 4,
+        "FRAME": 13,
+        "GROUP": 1,
+        "VECTOR": 8,
+        "TEXT": 37
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:784",
+      "name": "Detail / Not found / Mobile",
+      "width": 390,
+      "height": 1529,
+      "children": 4,
+      "descendants": 52,
+      "counts": {
+        "INSTANCE": 3,
+        "FRAME": 11,
+        "GROUP": 1,
+        "VECTOR": 7,
+        "TEXT": 31
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:837",
+      "name": "Contact / Validation & recovery / Desktop",
+      "width": 1440,
+      "height": 1701,
+      "children": 3,
+      "descendants": 65,
+      "counts": {
+        "INSTANCE": 6,
+        "FRAME": 13,
+        "GROUP": 1,
+        "VECTOR": 8,
+        "TEXT": 39
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:903",
+      "name": "Contact / Validation & recovery / Mobile",
+      "width": 390,
+      "height": 1697,
+      "children": 3,
+      "descendants": 56,
+      "counts": {
+        "INSTANCE": 5,
+        "FRAME": 11,
+        "GROUP": 1,
+        "VECTOR": 7,
+        "TEXT": 33
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:960",
+      "name": "Contact / Success / Desktop",
+      "width": 1440,
+      "height": 1399,
+      "children": 3,
+      "descendants": 64,
+      "counts": {
+        "INSTANCE": 4,
+        "FRAME": 13,
+        "GROUP": 2,
+        "VECTOR": 14,
+        "TEXT": 33
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:1025",
+      "name": "Contact / Success / Mobile",
+      "width": 390,
+      "height": 1284,
+      "children": 3,
+      "descendants": 55,
+      "counts": {
+        "INSTANCE": 3,
+        "FRAME": 11,
+        "GROUP": 2,
+        "VECTOR": 13,
+        "TEXT": 27
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:1081",
+      "name": "Review submission / Open / Desktop",
+      "width": 1440,
+      "height": 2131,
+      "children": 3,
+      "descendants": 74,
+      "counts": {
+        "INSTANCE": 9,
+        "FRAME": 12,
+        "GROUP": 1,
+        "VECTOR": 8,
+        "TEXT": 46
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:1156",
+      "name": "Review submission / Open / Mobile",
+      "width": 390,
+      "height": 2081,
+      "children": 3,
+      "descendants": 65,
+      "counts": {
+        "INSTANCE": 8,
+        "FRAME": 10,
+        "GROUP": 1,
+        "VECTOR": 7,
+        "TEXT": 40
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    },
+    {
+      "id": "16:1222",
+      "name": "Controls / States / Desktop",
+      "width": 1440,
+      "height": 1247,
+      "children": 2,
+      "descendants": 81,
+      "counts": {
+        "INSTANCE": 19,
+        "FRAME": 23,
+        "GROUP": 1,
+        "VECTOR": 19,
+        "TEXT": 32
+      },
+      "fonts": [
+        "Manrope"
+      ],
+      "emptyImages": 0
+    }
+  ],
+  "reviewFrameId": "29:9",
+  "validation": {
+    "date": "2026-10-15",
+    "mainScreens": 26,
+    "stateExamples": 14,
+    "horizontalOverflow": 0,
+    "emptyImageReferences": 0,
+    "notes": [
+      "Native editable layers and Manrope verified.",
+      "Homepage: IBM Plex Mono substitutes Consolas; Lora substitutes Georgia in the demo brand.",
+      "Design deliverable only; no live API or backend submission test."
+    ],
+    "consolidation": {
+      "screenCount": 40,
+      "preservedScreenIds": true,
+      "pageCount": 1,
+      "missingScreens": 0,
+      "overlappingScreens": 0
+    }
+  },
+  "sections": {
+    "Work & stories": "42:1720",
+    "Contact & reviews": "42:1727",
+    "Company & capabilities": "42:1708",
+    "Home": "42:1704",
+    "Interaction states": "42:1732",
+    "Design system & reusable components": "44:4739",
+    "Products & pricing": "42:1714"
+  },
+  "visualEnrichment": {
+    "date": "2026-10-15",
+    "record": "enrichment-validation.json",
+    "assetIds": [
+      "47:4742",
+      "49:4742",
+      "50:4742",
+      "51:4742"
+    ],
+    "pageCount": 1,
+    "screenCount": 40,
+    "homepagePreserved": true
+  }
+}

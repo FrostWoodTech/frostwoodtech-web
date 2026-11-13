@@ -29,14 +29,11 @@ function processFile(filePath) {
 
   const fileDir = path.dirname(filePath);
 
-  // Regex to match imports: import ... from "relative-path" or import "relative-path"
   const importRegex = /(from\s+|import\s+)(['"])(\.\.?\/[^'"]+)\2/g;
 
   content = content.replace(importRegex, (match, prefix, quote, relPath) => {
     const absoluteImportPath = path.resolve(fileDir, relPath);
-    // Check if the resolved path is inside src
     if (absoluteImportPath.startsWith(srcDir)) {
-      // Calculate path relative to src
       let aliasPath =
         "@/" + path.relative(srcDir, absoluteImportPath).replace(/\\/g, "/");
       changed = true;

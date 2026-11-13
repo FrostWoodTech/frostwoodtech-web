@@ -1,117 +1,53 @@
-import {
-  Code2,
-  Server,
-  BrainCircuit,
-  Smartphone,
-  LayoutTemplate,
-  Database,
-} from "lucide-react";
-import type { ServiceOffering, FAQ } from "@/client/types";
+import type { Metric, ProcessStep, SectionHeaderConfig } from "@/client/types";
 
-export const SERVICES_DATA: readonly ServiceOffering[] = [
+export const SERVICES_PAGE_HEADER: SectionHeaderConfig = {
+  badge: "Services",
+  title: "Everything it takes\nto ship, and keep shipping.",
+  subtitle:
+    "Six disciplines, one team. We scope, design, build, launch and maintain — so there is never a handoff where the quality drops.",
+} as const;
+
+export const SERVICES_PAGE_STATS: readonly Metric[] = [
   {
-    id: "srv-frontend",
-    title: "Frontend Development",
-    description:
-      "Crafting pixel-perfect, highly interactive, and accessible user interfaces using modern React ecosystems.",
-    icon: LayoutTemplate,
-    features: [
-      "React & Next.js Architecture",
-      "Tailwind CSS & Framer Motion",
-      "Responsive Web Design",
-      "Web Performance Optimization",
-    ],
+    id: "proposal",
+    value: "3 days",
+    label: "From enquiry to written proposal",
   },
-  {
-    id: "srv-backend",
-    title: "Backend Development",
-    description:
-      "Building scalable, secure, and robust server-side architectures and APIs to power your applications.",
-    icon: Server,
-    features: [
-      "Node.js & Express / NestJS",
-      "RESTful & GraphQL APIs",
-      "Microservices Architecture",
-      "Cloud Infrastructure (AWS/GCP)",
-    ],
-  },
-  {
-    id: "srv-ai",
-    title: "AI Integrations",
-    description:
-      "Empowering your software with cutting-edge artificial intelligence, from LLMs to predictive models.",
-    icon: BrainCircuit,
-    features: [
-      "OpenAI & Anthropic API Integration",
-      "Custom RAG Pipelines",
-      "AI-driven Process Automation",
-      "Intelligent Chatbots",
-    ],
-  },
-  {
-    id: "srv-fullstack",
-    title: "Full-Stack Applications",
-    description:
-      "End-to-end development handling both client and server for a seamless, cohesive product delivery.",
-    icon: Code2,
-    features: [
-      "End-to-end Product Development",
-      "Database Design & ORMs",
-      "Authentication & Security",
-      "CI/CD Pipelines",
-    ],
-  },
-  {
-    id: "srv-mobile",
-    title: "Mobile Development",
-    description:
-      "Cross-platform mobile applications that provide native-like experiences on both iOS and Android.",
-    icon: Smartphone,
-    features: [
-      "React Native Apps",
-      "App Store Deployment",
-      "Native API Integrations",
-      "Offline-First Architecture",
-    ],
-  },
-  {
-    id: "srv-database",
-    title: "Database Architecture",
-    description:
-      "Designing efficient schemas and optimizing queries to ensure your data layer scales seamlessly.",
-    icon: Database,
-    features: [
-      "PostgreSQL & MySQL",
-      "MongoDB & NoSQL",
-      "Data Migration Strategies",
-      "Query Optimization",
-    ],
-  },
+  { id: "release", value: "6 weeks", label: "Median time to first release" },
 ] as const;
 
-export const FAQ_DATA: readonly FAQ[] = [
+export const PROCESS_HEADER: SectionHeaderConfig = {
+  badge: "How we work",
+  title: "Four steps. No surprises.",
+} as const;
+
+export const PROCESS_STEPS: readonly ProcessStep[] = [
   {
-    id: "faq-1",
-    question: "What technologies do you build with?",
-    answer:
-      "I specialize in the modern JavaScript/TypeScript ecosystem. For the frontend, I use React, Next.js, and Tailwind CSS. For the backend, I leverage Node.js, Express, and databases like PostgreSQL. I also have deep experience integrating AI models via OpenAI and Anthropic APIs.",
+    id: "scope",
+    step: "01",
+    title: "Scope",
+    description:
+      "A working session to pin down the problem, the users and the must-haves. You leave with a written scope and a fixed price.",
   },
   {
-    id: "faq-2",
-    question: "Can you build a custom web application?",
-    answer:
-      "Absolutely. I build custom, scalable web applications tailored exactly to your business logic. From internal dashboards to public-facing SaaS products, I handle the entire lifecycle from architecture to deployment.",
+    id: "design",
+    step: "02",
+    title: "Design",
+    description:
+      "Flows and screens you can click through before we build them — plus the token system the whole product inherits.",
   },
   {
-    id: "faq-3",
-    question: "Do you take over existing codebases?",
-    answer:
-      "Yes, I frequently take over, refactor, and scale existing codebases. I begin with a thorough audit to understand the architecture, identify technical debt, and ensure a smooth transition before adding new features.",
+    id: "build",
+    step: "03",
+    title: "Build",
+    description:
+      "Two-week increments on a staging URL you can watch. Typed, tested, reviewed — no black box, no surprise invoice.",
   },
   {
-    id: "faq-4",
-    question: "How do you handle project communication?",
-    answer:
-      "I believe in radical transparency. I provide weekly status updates, maintain a shared task tracker, and am available via Slack or email for rapid async communication to ensure we are always aligned.",
+    id: "launch",
+    step: "04",
+    title: "Launch & keep",
+    description:
+      "We ship it, monitor it, and hand over documentation. Stay on a support plan or take the keys — entirely your call.",
   },
 ] as const;

@@ -1,62 +1,67 @@
-import type { PricingTier, SectionHeaderConfig } from "@/client/types";
+import type { EmphasisHeaderData, FAQ, PricingPromise } from "@/client/types";
 
-export const PRICING_HEADER: SectionHeaderConfig = {
-  badge: "Transparent Pricing",
-  title: "Investment That\nPays Off",
-  subtitle:
-    "Clear starting prices and fixed-scope quotes — no surprises. Every project gets a custom proposal.",
+export const PRICING_TEASER_HEADER: EmphasisHeaderData = {
+  eyebrow: "Pricing",
+  titleLead: "Transparent pricing,",
+  titleEmphasis: "for every project.",
+  description:
+    "Whether you need a website, an app or a ready-made product, you'll always know the price before you commit.",
 } as const;
 
-export const PRICING_TIERS: readonly PricingTier[] = [
+export const PRICING_PROMISES: readonly PricingPromise[] = [
   {
-    id: "starter",
-    name: "Starter Website",
-    price: "$2,500",
-    priceLabel: "FROM",
+    id: "free-quote",
+    value: "Free",
+    title: "First chat & quote",
     description:
-      "A polished, fast site to establish credibility and capture leads.",
-    features: [
-      "Up to 5 pages",
-      "Mobile-first design",
-      "Basic SEO setup",
-      "Contact + lead capture",
-    ],
-    isPopular: false,
-    ctaLabel: "Learn More",
-    ctaHref: "#contact",
+      "Tell us your idea and get a clear, written price, with no cost and no commitment.",
   },
   {
-    id: "business",
-    name: "Business & E-commerce",
-    price: "$3,500",
-    priceLabel: "FROM",
+    id: "fixed-price",
+    value: "Fixed",
+    title: "Price agreed upfront",
     description:
-      "A conversion-focused site or online store built to grow revenue.",
-    features: [
-      "Custom design",
-      "Shopify or CMS build",
-      "Advanced SEO + schema",
-      "Integrations & automation",
-    ],
-    isPopular: true,
-    ctaLabel: "Learn More",
-    ctaHref: "#contact",
+      "The price we quote is the price you pay. No hourly meter running.",
   },
   {
-    id: "custom",
-    name: "Custom & Plus",
-    price: "$7,500",
-    priceLabel: "FROM",
+    id: "no-hidden-fees",
+    value: "$0",
+    title: "Hidden fees",
     description:
-      "Custom web apps and Shopify Plus builds with deep functionality.",
-    features: [
-      "Custom development",
-      "Portals & dashboards",
-      "API integrations",
-      "Ongoing partnership",
-    ],
-    isPopular: false,
-    ctaLabel: "Learn More",
-    ctaHref: "#contact",
+      "Hosting, support and extras are listed up front, never added later.",
+  },
+  {
+    id: "ownership",
+    value: "100%",
+    title: "Yours to keep",
+    description:
+      "You own the code, the designs and the accounts, from day one.",
+  },
+] as const;
+
+export const PRICING_FAQS: readonly FAQ[] = [
+  {
+    id: "from-prices",
+    question: "Why are these starting prices?",
+    answer:
+      "Because quoting a flat number for work we have not scoped would be guessing. The floor is real — most Business projects land between $3,500 and $6,000.",
+  },
+  {
+    id: "payments",
+    question: "How do payments work?",
+    answer:
+      "Half to start, half on launch, for projects under $10k. Larger builds are billed against milestones you sign off on.",
+  },
+  {
+    id: "changes",
+    question: "What if we need changes later?",
+    answer:
+      "Small changes are covered by your support window. Anything larger gets its own small fixed-price scope — no open-ended hourly billing.",
+  },
+  {
+    id: "equity",
+    question: "Do you take equity instead?",
+    answer:
+      "Occasionally, as part of a blended deal for products we would use ourselves. Ask on the call — the answer is usually no, but it is worth asking.",
   },
 ] as const;
