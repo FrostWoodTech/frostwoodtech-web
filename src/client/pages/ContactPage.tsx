@@ -1,5 +1,9 @@
 import EnquiryForm from "@/client/components/contact/EnquiryForm";
-import { FaqSection, PageHero } from "@/client/components/site/sections";
+import {
+  FaqSection,
+  PageHero,
+  PricingNoteStrip,
+} from "@/client/components/site/sections";
 import { SectionLabel } from "@/client/components/site/ui";
 import { CONTACT_HERO, NEXT_STEPS, SITE } from "@/client/data/site";
 import { useFaqs } from "@/client/hooks/useFaqs";
@@ -25,7 +29,9 @@ export default function ContactPage() {
     <>
       <PageHero {...CONTACT_HERO} />
 
-      <section className="py-20 lg:py-28">
+      <PricingNoteStrip />
+
+      <section className="py-14 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-14 lg:px-8">
           <EnquiryForm />
 

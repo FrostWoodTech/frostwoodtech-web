@@ -4,6 +4,7 @@ import { ChristmasOfferBand } from "@/client/components/promo/ChristmasOffer";
 import {
   FaqSection,
   PageHero,
+  PricingNoteSection,
   ProcessSection,
 } from "@/client/components/site/sections";
 import { SERVICES_HERO } from "@/client/data/site";
@@ -18,6 +19,7 @@ export default function ServicesPage() {
     <>
       <PageHero {...SERVICES_HERO} />
       <ServiceBlocks />
+      <PricingNoteSection />
       <ChristmasOfferBand />
       <ProcessSection />
       <FaqSection faqs={faqs} />

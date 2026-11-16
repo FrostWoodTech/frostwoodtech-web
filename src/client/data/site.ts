@@ -87,7 +87,7 @@ export const PROCESS = {
     {
       title: "Plan",
       description:
-        "A written proposal with scope, timeline and a fixed price — within three working days.",
+        "A written proposal with scope, timeline and a price we agree together — within three working days.",
     },
     {
       title: "Build",
@@ -115,9 +115,9 @@ export const WHY_US = {
     },
     {
       usual: "The usual — hourly billing that keeps growing.",
-      title: "A fixed price, agreed up front.",
+      title: "A fair price, agreed up front.",
       description:
-        "You know the cost before we start. Changes are priced before they're made.",
+        "You know the cost before we start, and it's set together with you. Changes are priced before they're made.",
     },
     {
       usual: "The usual — you only see it at the end.",
@@ -162,7 +162,7 @@ export const CLOSING_CTA = {
   lineOne: "Got something",
   lineTwo: "worth building?",
   description:
-    "Tell us about it. A free 30-minute call, then a fixed-price proposal within three working days — or an honest “we're not the right fit”.",
+    "Tell us about it. A free 30-minute call, then a written proposal, with a price we agree together, within three working days — or an honest “we're not the right fit”.",
   secondary: { label: "See our projects", href: "/projects" },
 } as const;
 
@@ -171,7 +171,7 @@ export const SERVICES_HERO = {
   lineOne: "What we build.",
   lineTwo: "How it helps you grow.",
   description:
-    "From a fast new website to the system your whole team works in, every project gets the same senior team, a fixed price and weekly demos.",
+    "From a fast new website to the system your whole team works in, every project gets the same senior team, an agreed price and weekly demos.",
 } as const;
 
 export const ABOUT_HERO = {
@@ -248,7 +248,7 @@ export const NEXT_STEPS = {
     {
       title: "You get a clear plan and price",
       description:
-        "Scope, timeline and a fixed price within three working days of the call.",
+        "Scope, timeline and a price we agree together, within three working days of the call.",
     },
   ] satisfies readonly NumberedItem[],
 } as const;
@@ -281,9 +281,9 @@ export const PROMO = {
   short: "15% off new projects booked before 31 December.",
   headline: "Start the new year with software that works for you.",
   description:
-    "Book any project before 31 December — a web app, mobile app, AI assistant, online store or cloud set-up — and we'll take 15% off the agreed fixed price. Work can start in the new year.",
+    "Book any project before 31 December — a web app, mobile app, AI assistant, online store or cloud set-up — and we'll take 15% off the agreed price. Work can start in the new year.",
   perks: [
-    "15% off the fixed price",
+    "15% off the agreed price",
     "Any of our seven services",
     "Start now or in January",
   ],
@@ -292,4 +292,18 @@ export const PROMO = {
   cta: "Claim 15% off",
   /** Sent as the enquiry's `subject` so the team can see the offer was claimed. */
   enquirySubject: "Seasonal offer (Christmas 2026) — 15% off",
+} as const;
+
+export const PRICING_NOTE = {
+  label: "Pricing",
+  lineOne: "Every project is different,",
+  lineTwo: "so every price is too.",
+  description:
+    "We don't publish a price list. Contact us and we'll talk through what you need, then agree a price that suits your budget and the work involved. It's always settled in writing before we start.",
+  points: [
+    "A free first call, no obligation",
+    "A clear price in writing before any work begins",
+    "We build what you need first, and add more later when you're ready",
+  ],
+  cta: "Talk to us about pricing",
 } as const;

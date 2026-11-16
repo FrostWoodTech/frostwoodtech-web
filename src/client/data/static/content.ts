@@ -60,7 +60,7 @@ export const FAQS: readonly ApiFaq[] = [
     id: "faq-cost",
     question: "How much does a project cost?",
     answer:
-      "It depends on what you need, but you'll always get a fixed price in writing before we start. Websites start from $1,500 and most business systems land between $6,000 and $20,000.",
+      "Every project is different, so we don't publish prices. Contact us and we'll talk through what you need, then agree a price that suits your budget and the work involved, in writing, before we start.",
     sortOrder: 0,
   },
   {
@@ -94,20 +94,6 @@ export const FAQS: readonly ApiFaq[] = [
 ];
 
 export const ARTICLES: readonly ApiArticle[] = [
-  {
-    id: "article-website-cost",
-    slug: "how-much-does-a-website-cost",
-    title: "How much does a business website really cost?",
-    excerpt:
-      "A plain-English guide to website prices, what drives them up, and how to avoid paying for things you don't need.",
-    publishedAt: "2026-09-18T00:00:00Z",
-    updatedAt: "2026-09-18T00:00:00Z",
-    featured: true,
-    sortOrder: 0,
-    tags: [TAGS.guides],
-    contentMarkdown:
-      "## The short answer\n\nA good small-business website usually costs between **$1,500 and $6,000**. Online shops and custom features cost more.\n\n## What changes the price\n\n- **Number of pages.** Five pages is very different from fifty.\n- **Online payments.** Selling online adds checkout, stock and delivery settings.\n- **Custom features.** Calculators, bookings and member areas take extra work.\n\n## How to keep costs down\n\nStart with the pages your customers actually visit, and launch. You can always add more once you see what works.\n\n> Ask for a fixed price in writing. If a studio can't give you one, ask why.",
-  },
   {
     id: "article-spreadsheets",
     slug: "signs-you-have-outgrown-spreadsheets",

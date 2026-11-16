@@ -53,7 +53,7 @@ export const SERVICES: readonly ApiService[] = [
     capabilities:
       "- **Next.js, React and TypeScript** front ends\n- **SaaS platforms** with teams, roles and Stripe subscriptions\n- **Customer portals and admin dashboards**\n- **Business systems** for bookings, stock, orders and staff\n- **PostgreSQL databases** designed to keep data consistent\n- **Performance, security and accessibility** built in",
     inDepth:
-      "## How a web project runs\n\nWe start with a free call about what the software needs to do, then send a fixed-price proposal within three working days.\n\nWe plan the data and architecture first, then build in short cycles with a working version you can click through every week. A focused first version usually takes **six to twelve weeks**.",
+      "## How a web project runs\n\nWe start with a free call about what the software needs to do, then send a written proposal with an agreed price within three working days.\n\nWe plan the data and architecture first, then build in short cycles with a working version you can click through every week. A focused first version usually takes **six to twelve weeks**.",
     ...CONTACT_CTA,
     projects: projectLinks("teamora", "theatre-booking", "aurora"),
     faqs: faqs("full-stack-web", [
