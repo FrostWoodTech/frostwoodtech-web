@@ -24,7 +24,6 @@ import {
   PRODUCTS,
   REVIEWS,
 } from "@/client/data/static/content";
-import { COMBO_PLANS, servicePlans } from "@/client/data/static/pricing";
 
 /**
  * Stand-ins for the `/public/*` endpoints, used while `USE_STATIC_DATA` is on. They mirror the
@@ -82,7 +81,7 @@ export const staticApi = {
       featuredProjects: featured(PROJECTS),
       featuredArticles: featured(ARTICLES),
       featuredServices: featured(SERVICES),
-      featuredPricingPlans: featured(COMBO_PLANS),
+      featuredPricingPlans: [],
       faqs: FAQS,
       featuredReviews: REVIEWS.slice(0, 5),
     }),
@@ -173,20 +172,15 @@ export const staticApi = {
 
   getCurrencies: (): Promise<readonly ApiCurrency[]> => resolve(CURRENCIES),
 
+  /** The site publishes no prices, so there are never any plans. */
   getComboPricingPlans: (
-    params: PageParams,
-  ): Promise<PagedResult<ApiPricingPlan>> => paged(COMBO_PLANS, params),
+    ..._args: unknown[]
+  ): Promise<PagedResult<ApiPricingPlan>> =>
+    resolve({ items: [], page: 1, pageSize: 0, total: 0 }),
   getServicePricingPlans: (
-    serviceId: string,
-  ): Promise<PagedResult<ApiPricingPlan>> => {
-    const plans = servicePlans(serviceId);
-    return resolve({
-      items: plans,
-      page: 1,
-      pageSize: plans.length,
-      total: plans.length,
-    });
-  },
+    ..._args: unknown[]
+  ): Promise<PagedResult<ApiPricingPlan>> =>
+    resolve({ items: [], page: 1, pageSize: 0, total: 0 }),
 
   /** Forms "succeed" without sending anything while the site runs on static data. */
   submit: (): Promise<{ id: string }> =>

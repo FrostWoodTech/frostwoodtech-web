@@ -27,7 +27,7 @@ export const PROJECTS: readonly ApiProject[] = [
         objectKey: "images/projects/theatre-booking.webp",
         url: "/images/projects/theatre-booking.webp",
         altText:
-          "Theatre booking screen: a film poster beside showtime buttons and a seat map with three seats selected",
+          "Theatre booking screen: a film card, day and showtime pickers, a seat map with three seats selected and a pay button",
         width: 1448,
         height: 1086,
         isPrimary: true,
@@ -91,7 +91,7 @@ export const PROJECTS: readonly ApiProject[] = [
         objectKey: "images/projects/aurora.webp",
         url: "/images/projects/aurora.webp",
         altText:
-          "Aurora booking screen: an executive car outside an airport terminal beside a transfer booking form and journey summary",
+          "Aurora transfer booking screen: a choice of vehicles with fixed fares beside a journey summary and passenger details form",
         width: 1448,
         height: 1086,
         isPrimary: true,

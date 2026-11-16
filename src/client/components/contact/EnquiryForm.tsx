@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useServices } from "@/client/hooks/useServices";
 import { useSubmitContact } from "@/client/hooks/useSubmitContact";
 import { toErrorMessage } from "@/client/services/ApiError";
-import type { ContactBudgetRange, SubmitContactPayload } from "@/client/types";
+import type { SubmitContactPayload } from "@/client/types";
 import { pad } from "@/client/utils/text";
 import { isWithinWindow } from "@/client/utils/promo";
 import { PROMO } from "@/client/data/site";
@@ -20,21 +20,11 @@ const stepVariants: Variants = {
 
 const STEPS = ["Your need", "The project", "Your details"] as const;
 
-/** Values are the API's `ContactBudgetRange` enum. */
-const BUDGETS: readonly { value: ContactBudgetRange; label: string }[] = [
-  { value: "under_one_k", label: "Under $1,000" },
-  { value: "one_to_five_k", label: "$1,000 – $5,000" },
-  { value: "five_to_fifteen_k", label: "$5,000 – $15,000" },
-  { value: "over_fifteen_k", label: "$15,000+" },
-  { value: "not_sure", label: "Not sure yet" },
-];
-
 /** Sent as no `serviceId`. */
 const SOMETHING_ELSE = "other";
 
 interface Values {
   service: string;
-  budget: ContactBudgetRange | "";
   message: string;
   name: string;
   email: string;
@@ -44,7 +34,6 @@ interface Values {
 
 const EMPTY: Values = {
   service: "",
-  budget: "",
   message: "",
   name: "",
   email: "",
@@ -172,7 +161,6 @@ export default function EnquiryForm() {
         values.service === SOMETHING_ELSE
           ? "Something else"
           : services.find((service) => service.id === values.service)?.name,
-      budgetRange: values.budget || undefined,
       subject: isWithinWindow(PROMO) ? PROMO.enquirySubject : undefined,
       website: honeypot || undefined,
     };
@@ -315,36 +303,6 @@ export default function EnquiryForm() {
               >
                 Tell us about the project.
               </h2>
-              <fieldset className="mt-8">
-                <legend className="text-[14px] font-bold text-ink">
-                  Rough budget{" "}
-                  <span className="font-medium text-text-muted">
-                    (optional)
-                  </span>
-                </legend>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {BUDGETS.map((budget) => (
-                    <label
-                      key={budget.value}
-                      className={`cursor-pointer rounded-full border px-4 py-2.5 text-[14.5px] font-semibold transition-colors has-focus-visible:ring-2 has-focus-visible:ring-blue ${
-                        values.budget === budget.value
-                          ? "border-ink bg-ink text-white"
-                          : "border-rule text-ink hover:border-ink"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="budget"
-                        value={budget.value}
-                        checked={values.budget === budget.value}
-                        onChange={() => set("budget", budget.value)}
-                        className="sr-only"
-                      />
-                      {budget.label}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
               <label className="mt-8 block text-[14px] font-bold text-ink">
                 What are you building?
                 <textarea

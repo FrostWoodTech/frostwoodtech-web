@@ -6,7 +6,6 @@ const valid = {
   email: "ada@example.com",
   message: "Hello <b>there</b>",
   serviceName: "Mobile applications",
-  budgetRange: "one_to_five_k",
 };
 
 let ipCounter = 0;
@@ -50,7 +49,6 @@ describe("POST /api/contact", () => {
     expect(sent.reply_to).toBe("ada@example.com");
     expect(sent.subject).toBe("New enquiry — Ada");
     expect(sent.text).toContain("Interested in: Mobile applications");
-    expect(sent.text).toContain("Budget: $1,000 – $5,000");
   });
 
   it("sends through Brevo, with a parsed sender, when its key is set", async () => {

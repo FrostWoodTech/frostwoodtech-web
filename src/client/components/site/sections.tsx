@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Plus, UserRound } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
-import { Section, SectionLabel, TwoLineHeading } from "./ui";
+import { PillLink, Section, SectionLabel, TwoLineHeading } from "./ui";
 import AccordionItem from "@/client/components/motion/Accordion";
 import CountUp from "@/client/components/motion/CountUp";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/client/components/motion/Reveal";
 import { EASE, VIEWPORT } from "@/client/components/motion/presets";
 import {
+  PRICING_NOTE,
   PROCESS,
   RESULTS,
   TESTIMONIALS_INTRO,
@@ -150,6 +151,89 @@ export function WhyUsSection() {
         </Stagger>
       </div>
     </Section>
+  );
+}
+
+/** Prices are agreed per project, so this explains how that works instead of listing any. */
+export function PricingNoteSection() {
+  return (
+    <Section labelledBy="pricing-heading">
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
+        <div>
+          <SectionLabel>{PRICING_NOTE.label}</SectionLabel>
+          <TwoLineHeading
+            id="pricing-heading"
+            lineOne={PRICING_NOTE.lineOne}
+            lineTwo={PRICING_NOTE.lineTwo}
+            className="mt-8"
+          />
+        </div>
+        <Reveal>
+          <p className="text-[17px] leading-8 text-slate sm:text-[18px]">
+            {PRICING_NOTE.description}
+          </p>
+          <ul className="mt-8 border-t border-rule">
+            {PRICING_NOTE.points.map((point) => (
+              <li
+                key={point}
+                className="flex items-start gap-3 border-b border-rule py-4 text-[16px] font-semibold text-ink"
+              >
+                <span
+                  aria-hidden="true"
+                  className="mt-[0.55em] h-2 w-2 shrink-0 rounded-full bg-blue"
+                />
+                {point}
+              </li>
+            ))}
+          </ul>
+          <PillLink href="/contact" className="mt-10">
+            {PRICING_NOTE.cta}
+          </PillLink>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/** A short version of the pricing note for the Contact page, sitting just above the form. */
+export function PricingNoteStrip() {
+  return (
+    <section aria-labelledby="pricing-strip-heading" className="pt-14 lg:pt-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="bg-mist p-7 sm:p-9 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
+          <div>
+            <p className="text-[12px] font-bold tracking-[0.16em] text-blue uppercase">
+              {PRICING_NOTE.label}
+            </p>
+            <h2
+              id="pricing-strip-heading"
+              className="mt-3 font-display text-[26px] leading-[1.15] tracking-[-0.03em] text-ink sm:text-[30px]"
+            >
+              {PRICING_NOTE.lineOne} {PRICING_NOTE.lineTwo}
+            </h2>
+          </div>
+          <div className="mt-5 lg:mt-0">
+            <p className="text-[16px] leading-7 text-slate">
+              {PRICING_NOTE.description}
+            </p>
+            <ul className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6">
+              {PRICING_NOTE.points.map((point) => (
+                <li
+                  key={point}
+                  className="flex items-start gap-2.5 text-[14.5px] font-semibold text-ink"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-blue"
+                  />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
+      </div>
+    </section>
   );
 }
 

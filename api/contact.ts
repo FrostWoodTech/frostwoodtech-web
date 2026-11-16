@@ -5,14 +5,6 @@
  * BREVO_API_KEY or RESEND_API_KEY (Brevo wins when both are set).
  */
 
-const BUDGETS: Record<string, string> = {
-  under_one_k: "Under $1,000",
-  one_to_five_k: "$1,000 – $5,000",
-  five_to_fifteen_k: "$5,000 – $15,000",
-  over_fifteen_k: "$15,000+",
-  not_sure: "Not sure yet",
-};
-
 const LIMITS = {
   name: 120,
   email: 254,
@@ -154,10 +146,6 @@ export async function POST(request: Request): Promise<Response> {
   const company = field(body.company, LIMITS.company);
   const subject = field(body.subject, LIMITS.subject);
   const serviceName = field(body.serviceName, LIMITS.serviceName);
-  const budget =
-    typeof body.budgetRange === "string"
-      ? BUDGETS[body.budgetRange]
-      : undefined;
 
   const details: [string, string | undefined][] = [
     ["Name", name],
@@ -165,7 +153,6 @@ export async function POST(request: Request): Promise<Response> {
     ["Phone", phone],
     ["Company", company],
     ["Interested in", serviceName],
-    ["Budget", budget],
   ];
   const shown = details.filter(
     (row): row is [string, string] => row[1] !== undefined,
