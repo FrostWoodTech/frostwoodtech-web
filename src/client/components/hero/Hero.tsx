@@ -5,7 +5,7 @@ import { MaskLine, PillLink, SectionLabel } from "@/client/components/site/ui";
 import { EASE } from "@/client/components/motion/presets";
 import { HOME_HERO, PRIMARY_CTA } from "@/client/data/site";
 
-const PROMISES = ["Fixed price", "Weekly demos", "Fully managed"] as const;
+const PROMISES = ["Agreed price", "Weekly demos", "Fully managed"] as const;
 
 /** Entrance timings (seconds after load), so the hero plays as one sequence. */
 const T = { badge: 0.1, lineOne: 0.15, lineTwo: 0.3, rule: 0.65, body: 0.75 };

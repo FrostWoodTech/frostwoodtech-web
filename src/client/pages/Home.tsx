@@ -5,6 +5,7 @@ import { ChristmasOfferBand } from "@/client/components/promo/ChristmasOffer";
 import ClosingCta from "@/client/components/site/ClosingCta";
 import Marquee from "@/client/components/motion/Marquee";
 import {
+  PricingNoteSection,
   ProcessSection,
   ResultsSection,
   TestimonialsSection,
@@ -24,6 +25,7 @@ export default function Home() {
       <ServiceAccordion />
       <ChristmasOfferBand />
       <ProjectsTeaser />
+      <PricingNoteSection />
       <ProcessSection />
       <WhyUsSection />
       <ResultsSection />

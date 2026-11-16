@@ -418,7 +418,6 @@ export interface SubmitContactPayload {
   readonly subject?: string;
   readonly message: string;
   readonly serviceName?: string;
-  readonly budgetRange?: ContactBudgetRange;
   readonly website?: string;
 }
 
